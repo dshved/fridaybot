@@ -1,33 +1,33 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-Vue.use(Router)
+Vue.use(Router);
 
-const Home = require('../views/Home.vue')
-const Login = require('../views/Login.vue')
+const Home = require('../views/Home.vue');
+const Login = require('../views/Login.vue');
 
 const router = new Router({
   mode: 'history',
   scrollBehavior(to, from, savedPosition) {
-    return { x: 0, y: 0 }
+    return { x: 0, y: 0 };
   },
   routes: [{
     path: '/',
-    redirect: '/home'
+    redirect: '/home',
   }, {
     path: '/home',
     name: 'home',
-    component: Home
+    component: Home,
   }, {
     path: '/login',
     name: 'login',
-    component: Login
-  }]
-})
+    component: Login,
+  }],
+});
 
 router.beforeEach((to, from, next) => {
-  router.app.$store.dispatch('hideHeaderNav')
-  next()
-})
+  router.app.$store.dispatch('hideHeaderNav');
+  next();
+});
 
-export default router
+export default router;
