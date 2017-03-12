@@ -9,7 +9,12 @@ const UserMessages = require('./models/usermessage').UserMessages;
 const BotMessages = require('./models/botmessage').BotMessages;
 const BotSettings = require('./models/botsetting').BotSettings;
 const Anek = require('./models/anek').Anek;
-
+const Alphabet = require('./models/alphabet').Alphabet;
+// const newLetter = new Alphabet({
+//   letter: '',
+//   text: '\n',
+// });
+// newLetter.save();
 // create a bot
 const bot = new SlackBot(config.bot);
 
@@ -72,10 +77,41 @@ bot.on('message', (data) => {
     // console.log(botParams.parrotCount);
     BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
+  if (data.text) {
+    if (~data.text.indexOf('скажи ')) {
+      const userText = data.text.substr(6);
+      const userTextArray = userText.toUpperCase().split('');
+      let sendMessage = '';
+      userTextArray.forEach((item) => {
+        Alphabet.findOne({ letter: item })
+        .then((r) => {
+          if (r) {
+            sendMessage += r.text;
+          }
+        })
+        .then(() => {
+          bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+          sendMessage = '';
+        });
+      });
+    }
+  }
+  // if (~data.text.indexOf('скажи ')) {
+  //   const userText = data.text.substr(6);
+  //   const userTextArray = userText.toUpperCase().split('');
+  //   // var sendMessage = '';
+  //   console.log(userTextArray);
+
+    // Alphabet.findOne({letter: 'А'}).then((r) => {
+      // console.log(r.text);
+      // bot.postMessageToChannel(botParams.channelName, userText.toUpperCase(), messageParams);
+    // });
+  // }
+
   if (data.text === 'бородатый анекдот') {
     const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
     Anek.findOne({id: randomId}).then((r) => {
-      console.log(r);
+      // console.log(r);
       if (r) {
         bot.postMessageToChannel(botParams.channelName, r.text, messageParams);
       } else {
