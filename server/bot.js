@@ -8,7 +8,7 @@ mongoose.connect(config.db.path);
 const UserMessages = require('./models/usermessage').UserMessages;
 const BotMessages = require('./models/botmessage').BotMessages;
 const BotSettings = require('./models/botsetting').BotSettings;
-
+const Anek = require('./models/anek').Anek;
 
 // create a bot
 const bot = new SlackBot(config.bot);
@@ -19,7 +19,12 @@ const botParams = {};
 
 
 bot.on('start', () => {
-  // bot.getUsers().then((res) => console.log(res));
+  bot.getUser(config.bot.name).then((res) => {
+    if (res) {
+      botParams.botId = res.id;
+    }
+  });
+
   BotSettings.findOne().then((result) => {
     if (result) {
       messageParams.username = result.name;
@@ -59,7 +64,7 @@ bot.on('start', () => {
 });
 
 bot.on('message', (data) => {
-  // console.log(data);
+  console.log(data);
   if (data.text) {
     botParams.parrotArray.forEach((item) => {
       botParams.parrotCount += data.text.split(item).length - 1;
@@ -67,6 +72,17 @@ bot.on('message', (data) => {
     // console.log(botParams.parrotCount);
     BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
+  if (data.text === 'бородатый анекдот') {
+    const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
+    Anek.findOne({id: randomId}).then((r) => {
+      if (r.text) {
+        bot.postMessageToChannel(botParams.channelName, r.text, messageParams);
+      } else {
+        bot.postMessageToChannel(botParams.channelName, 'Что-то пошло не так... Попробуйте еще раз', messageParams);
+      }
+    });
+  }
+  
   if (data.text === 'сколько попугаев?') {
     BotSettings.findOne().then((r) => {
       if (r) {
@@ -107,7 +123,7 @@ bot.on('message', (data) => {
         };
 
         if (result.length > 20) {
-          mes = 'Вот десятка людей, которые подают признаки жизни:\n';
+          mes = 'Вот 20-ка людей, которые подают признаки жизни:\n';
           for (let i = 0; i < 20; i += i) {
             mes += `${i + 1}. ${result[i].user_name}: ${result[i].count_messages} ${messagesRus(result[i].count_messages)} \n`;
           }
@@ -131,13 +147,9 @@ bot.on('message', (data) => {
   if (data.subtype === 'channel_join' && data.channel === botParams.channelId) {
     bot.postMessageToChannel(
       botParams.channelName,
-      `Привет <@${data.user_profile.name}>, ${botParams.messageJoin}`,
-      // `Привет <@${data.user_profile.name}>, добро пожаловать в наш ламповый чатик!\n
-      // Есть два вопроса к тебе:\n
-      // - кто твой любимый эмодзи?\n
-      // - какая твоя любимая giphy? \n
-      // #friday - это место свободного общения. Здесь любят попугаев и поздравлют всех с пятницей. \n
-      // P.S. Если будут обежать, то вызывай милицию! :warneng:`,
+      // `Привет <@${data.user_profile.name}>, ${botParams.messageJoin}`,
+      `Привет <@${data.user_profile.name}>, добро пожаловать в наш ламповый чатик!\nЕсть два вопроса к тебе:\n- кто твой любимый эмодзи?\n- какая твоя любимая giphy? \n
+      #friday - это место свободного общения. Здесь любят попугаев и поздравлют всех с пятницей. \nP.S. Если будут обижать, то вызывай милицию! :warneng:`,
       messageParams);
   }
 
