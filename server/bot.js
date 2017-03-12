@@ -64,7 +64,7 @@ bot.on('start', () => {
 });
 
 bot.on('message', (data) => {
-  console.log(data);
+  // console.log(data);
   if (data.text) {
     botParams.parrotArray.forEach((item) => {
       botParams.parrotCount += data.text.split(item).length - 1;
@@ -75,7 +75,8 @@ bot.on('message', (data) => {
   if (data.text === 'бородатый анекдот') {
     const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
     Anek.findOne({id: randomId}).then((r) => {
-      if (r.text) {
+      console.log(r);
+      if (r) {
         bot.postMessageToChannel(botParams.channelName, r.text, messageParams);
       } else {
         bot.postMessageToChannel(botParams.channelName, 'Что-то пошло не так... Попробуйте еще раз', messageParams);
@@ -148,8 +149,7 @@ bot.on('message', (data) => {
     bot.postMessageToChannel(
       botParams.channelName,
       // `Привет <@${data.user_profile.name}>, ${botParams.messageJoin}`,
-      `Привет <@${data.user_profile.name}>, добро пожаловать в наш ламповый чатик!\nЕсть два вопроса к тебе:\n- кто твой любимый эмодзи?\n- какая твоя любимая giphy? \n
-      #friday - это место свободного общения. Здесь любят попугаев и поздравлют всех с пятницей. \nP.S. Если будут обижать, то вызывай милицию! :warneng:`,
+      `Привет <@${data.user_profile.name}>, добро пожаловать в наш ламповый чатик!\nЕсть два вопроса к тебе:\n- кто твой любимый эмодзи?\n- какая твоя любимая giphy? \n<#${botParams.channelId}> - это место свободного общения. Здесь любят попугаев и поздравлют всех с пятницей. \nP.S. Если будут обижать, то вызывай милицию! :warneng:`,
       messageParams);
   }
 
