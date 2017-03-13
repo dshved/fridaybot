@@ -1,6 +1,7 @@
 const SlackBot = require('./../slackbots.js');
+const aParrots = require('./../alphabet_parrots.js');
 const mongoose = require('mongoose');
-
+const async = require('async');
 const config = require('./../config.js');
 mongoose.Promise = global.Promise;
 mongoose.connect(config.db.path);
@@ -78,39 +79,28 @@ bot.on('message', (data) => {
     BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
   if (data.text) {
-    if (~data.text.indexOf('скажи ')) {
+    data.text = data.text.toUpperCase();
+  }
+  if (data.text) {
+    if (~data.text.indexOf('СКАЖИ ') == -1) {
       const userText = data.text.substr(6);
       const userTextArray = userText.toUpperCase().split('');
       let sendMessage = '';
       userTextArray.forEach((item) => {
-        Alphabet.findOne({ letter: item })
-        .then((r) => {
-          if (r) {
-            sendMessage += r.text;
-          }
-        })
-        .then(() => {
-          bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
-          sendMessage = '';
-        });
+        function findLetter(alphabet) {
+          return alphabet.letter === item;
+        }
+        sendMessage += aParrots.find(findLetter).text;
       });
+      bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+      sendMessage = '';
     }
   }
-  // if (~data.text.indexOf('скажи ')) {
-  //   const userText = data.text.substr(6);
-  //   const userTextArray = userText.toUpperCase().split('');
-  //   // var sendMessage = '';
-  //   console.log(userTextArray);
 
-    // Alphabet.findOne({letter: 'А'}).then((r) => {
-      // console.log(r.text);
-      // bot.postMessageToChannel(botParams.channelName, userText.toUpperCase(), messageParams);
-    // });
-  // }
 
-  if (data.text === 'бородатый анекдот') {
+  if (data.text === 'БОРОДАТЫЙ АНЕКДОТ') {
     const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
-    Anek.findOne({id: randomId}).then((r) => {
+    Anek.findOne({ id: randomId }).then((r) => {
       // console.log(r);
       if (r) {
         bot.postMessageToChannel(botParams.channelName, r.text, messageParams);
@@ -119,15 +109,15 @@ bot.on('message', (data) => {
       }
     });
   }
-  
-  if (data.text === 'сколько попугаев?') {
+
+  if (data.text === 'СКОЛЬКО ПОПУГАЕВ?') {
     BotSettings.findOne().then((r) => {
       if (r) {
         bot.postMessageToChannel(botParams.channelName, `Всего отправлено: ${r.parrot_counts} шт.`, messageParams);
       }
     });
   }
-  if (data.text === 'есть кто живой?') {
+  if (data.text === 'ЕСТЬ КТО ЖИВОЙ?') {
     UserMessages.find().then((r) => {
       if (r) {
         const result = r.sort((a, b) => {
