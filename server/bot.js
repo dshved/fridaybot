@@ -86,14 +86,19 @@ bot.on('message', (data) => {
       const userText = data.text.substr(6);
       const userTextArray = userText.toUpperCase().split('');
       let sendMessage = '';
-      userTextArray.forEach((item) => {
-        function findLetter(alphabet) {
-          return alphabet.letter === item;
-        }
-        sendMessage += aParrots.find(findLetter).text;
-      });
-      bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
-      sendMessage = '';
+      if (userTextArray.length <= 10) {
+        userTextArray.forEach((item) => {
+          function findLetter(alphabet) {
+            return alphabet.letter === item;
+          }
+          sendMessage += aParrots.find(findLetter).text;
+        });
+        bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+        sendMessage = '';
+      } else {
+        bot.postMessageToChannel(botParams.channelName, 'Ты просишь слишком много... Я могу сказать не больше 10 символов!', messageParams);
+      }
+
     }
   }
 
