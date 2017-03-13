@@ -9,6 +9,7 @@
     "build:server": "cross-env NODE_ENV=production webpack --config build/webpack.server.js --progress --hide-modules"
   },
   "dependencies": {
+    "async": "^2.1.5",
     "axios": "^0.15.3",
     "body-parser": "^1.17.1",
     "express": "^4.14.0",
