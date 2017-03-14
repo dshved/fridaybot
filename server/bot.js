@@ -84,68 +84,53 @@ bot.on('message', (data) => {
   }
 
   if (data.text) {
-    if (~data.text.indexOf('ГОВОРИ ') == -1) {
-      const F = [
-        ':fp::fp::fp::fp::sp:',
-        ':fp::sp::sp::sp::sp:',
-        ':fp::fp::fp::sp::sp:',
-        ':fp::sp::sp::sp::sp:',
-        ':fp::sp::sp::sp::sp:',
-        ':sp::sp::sp::sp::sp:',
-      ];
+    if (~data.text.indexOf('СКАЖИ ') == -1) {
 
-      const R = [
-        ':fp::fp::fp::fp::sp:',
-        ':fp::sp::sp::sp::fp:',
-        ':fp::fp::fp::fp::sp:',
-        ':fp::sp::sp::fp::sp:',
-        ':fp::sp::sp::sp::fp:',
-        ':sp::sp::sp::sp::sp:',
-      ];
-
-      const I = [
-        ':sp::fp::fp::fp::sp:',
-        ':sp::sp::fp::sp::sp:',
-        ':sp::sp::fp::sp::sp:',
-        ':sp::sp::fp::sp::sp:',
-        ':sp::fp::fp::fp::sp:',
-        ':sp::sp::sp::sp::sp:',
-      ];
-      const userText = data.text.substr(7);
+      const userText = data.text.substr(6);
       const userTextArray = userText.toUpperCase().split('');
-      let sendMessage = '';
-
-      const newLetterArray = [];
-      const count = Math.ceil(userTextArray.length / 3);
-      for (let i = 0; i < count; i++) {
-        newLetterArray.push(userTextArray.slice(i * 3, (i + 1) * 3));
-      }
-
-      newLetterArray.forEach((item) => {
-        console.log(item);
-        const userSays = [F, R, I];
-
-        let msg = '';
-        const lineCount = 6;
-        for (let i = 0; i < lineCount; i++) {
-          let line = '';
-          for (let j = 0; j < userSays.length; j++) {
-            line += userSays[j][i];
-          }
-          line += '\n';
-          msg += line;
+      if (userTextArray.length <= 10) {
+        const newLetterArray = [];
+        const countLetter = 3;
+        const count = Math.ceil(userTextArray.length / countLetter);
+        for (let i = 0; i < count; i++) {
+          newLetterArray.push(userTextArray.slice(i * countLetter, (i + 1) * countLetter));
         }
-        // console.log(msg);
-        bot.postMessageToChannel(botParams.channelName, msg, messageParams);
+        let sendMessage = '';
+        newLetterArray.forEach((item) => {
+          const newArray = [];
+          item.forEach((itm) => {
+            function findLetter(alphabet) {
+              return alphabet.letter === itm;
+            }
+            newArray.push(aParrots.find(findLetter).array);
+          });
+          const userSays = newArray;
 
-      });
+          
+          const lineCount = 6;
 
+          for (let i = 0; i < lineCount; i++) {
+            let line = '';
+            for (let j = 0; j < userSays.length; j++) {
+              line += userSays[j][i];
+            }
+            line += '\n';
+            sendMessage += line;
+          }
+
+          // bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+        });
+        bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+        sendMessage = '';
+      } else {
+        bot.postMessageToChannel(botParams.channelName, 'Ты просишь слишком много... Я могу сказать не больше 10 символов!', messageParams);
+      }
     }
   }
 
   if (data.text) {
-    if (~data.text.indexOf('СКАЖИ ') == -1) {
-      const userText = data.text.substr(6);
+    if (~data.text.indexOf('ГОВОРИ ') == -1) {
+      const userText = data.text.substr(7);
       const userTextArray = userText.toUpperCase().split('');
       let sendMessage = '';
       if (userTextArray.length <= 10) {
