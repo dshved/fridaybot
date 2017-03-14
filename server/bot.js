@@ -78,9 +78,71 @@ bot.on('message', (data) => {
     // console.log(botParams.parrotCount);
     BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
+
   if (data.text) {
     data.text = data.text.toUpperCase();
   }
+
+  if (data.text) {
+    if (~data.text.indexOf('ГОВОРИ ') == -1) {
+      const F = [
+        ':fp::fp::fp::fp::sp:',
+        ':fp::sp::sp::sp::sp:',
+        ':fp::fp::fp::sp::sp:',
+        ':fp::sp::sp::sp::sp:',
+        ':fp::sp::sp::sp::sp:',
+        ':sp::sp::sp::sp::sp:',
+      ];
+
+      const R = [
+        ':fp::fp::fp::fp::sp:',
+        ':fp::sp::sp::sp::fp:',
+        ':fp::fp::fp::fp::sp:',
+        ':fp::sp::sp::fp::sp:',
+        ':fp::sp::sp::sp::fp:',
+        ':sp::sp::sp::sp::sp:',
+      ];
+
+      const I = [
+        ':sp::fp::fp::fp::sp:',
+        ':sp::sp::fp::sp::sp:',
+        ':sp::sp::fp::sp::sp:',
+        ':sp::sp::fp::sp::sp:',
+        ':sp::fp::fp::fp::sp:',
+        ':sp::sp::sp::sp::sp:',
+      ];
+      const userText = data.text.substr(7);
+      const userTextArray = userText.toUpperCase().split('');
+      let sendMessage = '';
+
+      const newLetterArray = [];
+      const count = Math.ceil(userTextArray.length / 3);
+      for (let i = 0; i < count; i++) {
+        newLetterArray.push(userTextArray.slice(i * 3, (i + 1) * 3));
+      }
+
+      newLetterArray.forEach((item) => {
+        console.log(item);
+        const userSays = [F, R, I];
+
+        let msg = '';
+        const lineCount = 6;
+        for (let i = 0; i < lineCount; i++) {
+          let line = '';
+          for (let j = 0; j < userSays.length; j++) {
+            line += userSays[j][i];
+          }
+          line += '\n';
+          msg += line;
+        }
+        // console.log(msg);
+        bot.postMessageToChannel(botParams.channelName, msg, messageParams);
+
+      });
+
+    }
+  }
+
   if (data.text) {
     if (~data.text.indexOf('СКАЖИ ') == -1) {
       const userText = data.text.substr(6);
@@ -98,7 +160,6 @@ bot.on('message', (data) => {
       } else {
         bot.postMessageToChannel(botParams.channelName, 'Ты просишь слишком много... Я могу сказать не больше 10 символов!', messageParams);
       }
-
     }
   }
 
