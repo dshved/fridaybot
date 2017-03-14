@@ -78,12 +78,59 @@ bot.on('message', (data) => {
     // console.log(botParams.parrotCount);
     BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
+
   if (data.text) {
     data.text = data.text.toUpperCase();
   }
+
   if (data.text) {
     if (~data.text.indexOf('СКАЖИ ') == -1) {
+
       const userText = data.text.substr(6);
+      const userTextArray = userText.toUpperCase().split('');
+      if (userTextArray.length <= 10) {
+        const newLetterArray = [];
+        const countLetter = 3;
+        const count = Math.ceil(userTextArray.length / countLetter);
+        for (let i = 0; i < count; i++) {
+          newLetterArray.push(userTextArray.slice(i * countLetter, (i + 1) * countLetter));
+        }
+        let sendMessage = '';
+        newLetterArray.forEach((item) => {
+          const newArray = [];
+          item.forEach((itm) => {
+            function findLetter(alphabet) {
+              return alphabet.letter === itm;
+            }
+            newArray.push(aParrots.find(findLetter).array);
+          });
+          const userSays = newArray;
+
+          
+          const lineCount = 6;
+
+          for (let i = 0; i < lineCount; i++) {
+            let line = '';
+            for (let j = 0; j < userSays.length; j++) {
+              line += userSays[j][i];
+            }
+            line += '\n';
+            sendMessage += line;
+          }
+
+          // bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+        });
+        bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+        sendMessage = '';
+      } else {
+        bot.postMessageToChannel(botParams.channelName, 'Ты просишь слишком много... Я могу сказать не больше 10 символов!', messageParams);
+      }
+    }
+  }
+
+  if (data.text) {
+    if (~data.text.indexOf('ГОВОРИ ') == -1) {
+      const userText = data.text.substr(7);
       const userTextArray = userText.toUpperCase().split('');
       let sendMessage = '';
       if (userTextArray.length <= 10) {
@@ -98,7 +145,6 @@ bot.on('message', (data) => {
       } else {
         bot.postMessageToChannel(botParams.channelName, 'Ты просишь слишком много... Я могу сказать не больше 10 символов!', messageParams);
       }
-
     }
   }
 
