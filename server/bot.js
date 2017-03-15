@@ -124,7 +124,7 @@ bot.on('message', (data) => {
         bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
         sendMessage = '';
       } else {
-        bot.postMessageToChannel(botParams.channelName, 'Ты просишь слишком много... Я могу сказать не больше 12 символов!', messageParams);
+        bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 12 символов!`, messageParams);
       }
     }
   }
@@ -144,7 +144,7 @@ bot.on('message', (data) => {
         bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
         sendMessage = '';
       } else {
-        bot.postMessageToChannel(botParams.channelName, 'Ты просишь слишком много... Я могу сказать не больше 10 символов!', messageParams);
+        bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 10 символов!`, messageParams);
       }
     }
   }
@@ -232,7 +232,7 @@ bot.on('message', (data) => {
   }
 
   if (data.type === 'message') {
-    BotMessages.findOne({ user_message: data.text })
+    BotMessages.findOne({ user_message: data.text.toLowerCase() })
       .then((result) => {
         if (result) {
           bot.postMessageToChannel(botParams.channelName, result.bot_message, messageParams);
