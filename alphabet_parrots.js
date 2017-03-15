@@ -548,7 +548,7 @@ const alphabet = [
       ':sp::sp::sp:',
       ':sp::fp::sp:',
       ':fp::sp::sp:',
-      ],
+    ],
     text: ':sp::fp::sp::sp::sp:\n:fp::sp::sp::sp::sp:\n',
   },
   {
