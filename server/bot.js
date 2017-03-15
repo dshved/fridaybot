@@ -144,7 +144,7 @@ bot.on('message', (data) => {
         bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
         sendMessage = '';
       } else {
-        bot.postMessageToChannel(botParams.channelName, 'Ты просишь слишком много... Я могу сказать не больше 10 символов!', messageParams);
+        bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 10 символов!`, messageParams);
       }
     }
   }
