@@ -103,7 +103,6 @@ bot.on('message', (data) => {
               return alphabet.letter === itm;
             }
             if (!!aParrots.find(findLetter)) {
-              console.log('a');
               newArray.push(aParrots.find(findLetter).array);
             }
           });
