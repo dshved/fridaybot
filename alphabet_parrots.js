@@ -542,12 +542,12 @@ const alphabet = [
   {
     letter: '@',
     array: [
-      ':sp::fp::fp::fp::fp::sp:',
-      ':fp::sp::sp::sp::sp::fp:',
-      ':fp::sp::fp::fp::sp::fp:',
-      ':fp::sp::fp::fp::sp::fp:',
-      ':fp::sp::sp::fp::sp::fp:',
-      ':sp::fp::fp::fp::sp::fp:',
+      ':sp::fp::fp::fp::sp::sp:',
+      ':fp::sp::sp::sp::fp::sp:',
+      ':fp::sp::fp::sp::fp::sp:',
+      ':fp::sp::fp::sp::fp::sp:',
+      ':sp::fp::fp::sp::fp::sp:',
+      ':sp::sp::sp::sp::sp::sp:',
     ],
     text: '',
   },
