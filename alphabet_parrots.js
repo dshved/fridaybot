@@ -528,6 +528,42 @@ const alphabet = [
     text: ':sp::fp::fp::fp::sp:\n:fp::sp::sp::sp::fp:\n:fp::sp::fp::sp::fp:\n:fp::sp::sp::sp::fp:\n:sp::fp::fp::fp::sp:\n:sp::sp::sp::sp::sp:\n',
   },
   {
+    letter: '/',
+    array: [
+      ':sp::sp::fp::sp:',
+      ':sp::sp::fp::sp:',
+      ':sp::fp::sp::sp:',
+      ':fp::sp::sp::sp:',
+      ':fp::sp::sp::sp:',
+      ':sp::sp::sp::sp:',
+    ],
+    text: '',
+  },
+  {
+    letter: '\\',
+    array: [
+      ':fp::sp::sp::sp:',
+      ':fp::sp::sp::sp:',
+      ':sp::fp::sp::sp:',
+      ':sp::sp::fp::sp:',
+      ':sp::sp::fp::sp:',
+      ':sp::sp::sp::sp:',
+    ],
+    text: '',
+  },
+  {
+    letter: '-',
+    array: [
+      ':sp::sp::sp:',
+      ':sp::sp::sp:',
+      ':fp::fp::fp:',
+      ':sp::sp::sp:',
+      ':sp::sp::sp:',
+      ':sp::sp::sp:',
+    ],
+    text: '',
+  },
+  {
     letter: '.',
     array: [
       ':sp::sp::sp:',
