@@ -88,7 +88,7 @@ bot.on('message', (data) => {
 
       const userText = data.text.substr(6);
       const userTextArray = userText.toUpperCase().split('');
-      if (userTextArray.length <= 10) {
+      if (userTextArray.length <= 12) {
         const newLetterArray = [];
         const countLetter = 3;
         const count = Math.ceil(userTextArray.length / countLetter);
@@ -102,11 +102,12 @@ bot.on('message', (data) => {
             function findLetter(alphabet) {
               return alphabet.letter === itm;
             }
-            newArray.push(aParrots.find(findLetter).array);
+            if (!!aParrots.find(findLetter)) {
+              newArray.push(aParrots.find(findLetter).array);
+            }
           });
           const userSays = newArray;
 
-          
           const lineCount = 6;
 
           for (let i = 0; i < lineCount; i++) {
@@ -123,7 +124,7 @@ bot.on('message', (data) => {
         bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
         sendMessage = '';
       } else {
-        bot.postMessageToChannel(botParams.channelName, 'Ты просишь слишком много... Я могу сказать не больше 10 символов!', messageParams);
+        bot.postMessageToChannel(botParams.channelName, 'Ты просишь слишком много... Я могу сказать не больше 12 символов!', messageParams);
       }
     }
   }
