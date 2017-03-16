@@ -150,7 +150,7 @@ bot.on('message', (data) => {
   }
 
 
-  if (data.text === 'БОРОДАТЫЙ АНЕКДОТ') {
+  if ((data.text === 'БОРОДАТЫЙ АНЕКДОТ') || (data.text === 'АНЕКДОТ') || (data.text === 'РАССКАЖИ АНЕКДОТ')) {
     const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
     Anek.findOne({ id: randomId }).then((r) => {
       // console.log(r);
@@ -162,14 +162,14 @@ bot.on('message', (data) => {
     });
   }
 
-  if (data.text === 'СКОЛЬКО ПОПУГАЕВ?') {
+  if ((data.text === 'СКОЛЬКО ПОПУГАЕВ?') || (data.text === 'СКОЛЬКО ПОПУГАЕВ') || (data.text === 'СКОЛЬКО?') || (data.text === 'СКОЛЬКО')) {
     BotSettings.findOne().then((r) => {
       if (r) {
         bot.postMessageToChannel(botParams.channelName, `Всего отправлено: ${r.parrot_counts} шт.`, messageParams);
       }
     });
   }
-  if (data.text === 'ЕСТЬ КТО ЖИВОЙ?') {
+  if ((data.text === 'ЕСТЬ КТО ЖИВОЙ?') || (data.text === 'ЕСТЬ КТО ЖИВОЙ') || (data.text === 'ЕСТЬ КТО') || (data.text === 'ЕСТЬ КТО?') || (data.text === 'КТО ЖИВОЙ?') || (data.text === 'КТО ЖИВОЙ')) {
     UserMessages.find().then((r) => {
       if (r) {
         const result = r.sort((a, b) => {
