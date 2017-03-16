@@ -70,7 +70,6 @@ bot.on('start', () => {
 
 bot.on('message', (data) => {
   // console.log(data);
-
   const sendToWhom = (d, m) => {
     if (d.channel === botParams.channelId) {
       bot.postMessageToChannel(botParams.channelName, m, messageParams);
@@ -165,14 +164,16 @@ bot.on('message', (data) => {
     axios.get(chageLogURL)
       .then((res) => {
         const attachmentData = [{
-          title: 'Changelog',
           pretext: 'Вот список изменений:',
           text: res.data,
           mrkdwn_in: ['text', 'pretext', 'fields'],
         }];
         const attachmentMessage = messageParams;
         attachmentMessage.attachments = attachmentData;
-        bot.postMessageToChannel(botParams.channelName, '', attachmentMessage);
+        bot.postMessageToChannel(botParams.channelName, '', attachmentMessage)
+          .then(() => {
+            messageParams.attachments = [];
+          });
       })
       .catch((error) => {
         bot.postMessageToChannel(botParams.channelName, `Не удалось получить список изменений... \n${error}`, messageParams);
@@ -183,14 +184,16 @@ bot.on('message', (data) => {
     axios.get(commandsURL)
       .then((res) => {
         const attachmentData = [{
-          title: 'Commands',
           pretext: 'Вот список доступных команд:',
           text: res.data,
           mrkdwn_in: ['text', 'pretext', 'fields'],
         }];
         const attachmentMessage = messageParams;
         attachmentMessage.attachments = attachmentData;
-        bot.postMessageToChannel(botParams.channelName, '', attachmentMessage);
+        bot.postMessageToChannel(botParams.channelName, '', attachmentMessage)
+          .then(() => {
+            messageParams.attachments = [];
+          });
       })
       .catch((error) => {
         bot.postMessageToChannel(botParams.channelName, `Не удалось получить список команд... \n${error}`, messageParams);
