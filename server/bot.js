@@ -1,8 +1,10 @@
 const SlackBot = require('./../slackbots.js');
 const aParrots = require('./../alphabet_parrots.js');
-const mongoose = require('mongoose');
-const async = require('async');
 const config = require('./../config.js');
+const mongoose = require('mongoose');
+
+const axios = require('axios');
+
 mongoose.Promise = global.Promise;
 mongoose.connect(config.db.path);
 
@@ -10,13 +12,10 @@ const UserMessages = require('./models/usermessage').UserMessages;
 const BotMessages = require('./models/botmessage').BotMessages;
 const BotSettings = require('./models/botsetting').BotSettings;
 const Anek = require('./models/anek').Anek;
-const Alphabet = require('./models/alphabet').Alphabet;
-// const newLetter = new Alphabet({
-//   letter: '',
-//   text: '\n',
-// });
-// newLetter.save();
-// create a bot
+
+const chageLogURL = 'https://raw.githubusercontent.com/dshved/fridaybot/master/CHANGELOG.md';
+const commandsURL = 'https://raw.githubusercontent.com/dshved/fridaybot/master/COMMANDS.md';
+
 const bot = new SlackBot(config.bot);
 
 const messageParams = {};
@@ -71,11 +70,24 @@ bot.on('start', () => {
 
 bot.on('message', (data) => {
   // console.log(data);
+
+  const sendToWhom = (d, m) => {
+    if (d.channel === botParams.channelId) {
+      bot.postMessageToChannel(botParams.channelName, m, messageParams);
+    } else {
+      bot.getUserById(d.user).then((res) => {
+        if (res) {
+          botParams.botId = res.id;
+          bot.postMessageToUser(res.name, m, messageParams);
+        }
+      });
+    }
+  };
+
   if (data.text) {
     botParams.parrotArray.forEach((item) => {
       botParams.parrotCount += data.text.split(item).length - 1;
     });
-    // console.log(botParams.parrotCount);
     BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
 
@@ -149,11 +161,45 @@ bot.on('message', (data) => {
     }
   }
 
+  if (data.text === '--CHANGELOG') {
+    axios.get(chageLogURL)
+      .then((res) => {
+        const attachmentData = [{
+          title: 'Changelog',
+          pretext: 'Вот список изменений:',
+          text: res.data,
+          mrkdwn_in: ['text', 'pretext', 'fields'],
+        }];
+        const attachmentMessage = messageParams;
+        attachmentMessage.attachments = attachmentData;
+        bot.postMessageToChannel(botParams.channelName, '', attachmentMessage);
+      })
+      .catch((error) => {
+        bot.postMessageToChannel(botParams.channelName, `Не удалось получить список изменений... \n${error}`, messageParams);
+      });
+  }
 
-  if (data.text === 'БОРОДАТЫЙ АНЕКДОТ') {
+  if (data.text === '--COMMANDS') {
+    axios.get(chageLogURL)
+      .then((res) => {
+        const attachmentData = [{
+          title: 'Commands',
+          pretext: 'Вот список доступных команд:',
+          text: res.data,
+          mrkdwn_in: ['text', 'pretext', 'fields'],
+        }];
+        const attachmentMessage = messageParams;
+        attachmentMessage.attachments = attachmentData;
+        bot.postMessageToChannel(botParams.channelName, '', attachmentMessage);
+      })
+      .catch((error) => {
+        bot.postMessageToChannel(botParams.channelName, `Не удалось получить список команд... \n${error}`, messageParams);
+      });
+  }
+
+  if ((data.text === 'БОРОДАТЫЙ АНЕКДОТ') || (data.text === 'АНЕКДОТ') || (data.text === 'РАССКАЖИ АНЕКДОТ')) {
     const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
     Anek.findOne({ id: randomId }).then((r) => {
-      // console.log(r);
       if (r) {
         bot.postMessageToChannel(botParams.channelName, r.text, messageParams);
       } else {
@@ -162,14 +208,14 @@ bot.on('message', (data) => {
     });
   }
 
-  if (data.text === 'СКОЛЬКО ПОПУГАЕВ?') {
+  if ((data.text === 'СКОЛЬКО ПОПУГАЕВ?') || (data.text === 'СКОЛЬКО ПОПУГАЕВ') || (data.text === 'СКОЛЬКО?') || (data.text === 'СКОЛЬКО')) {
     BotSettings.findOne().then((r) => {
       if (r) {
         bot.postMessageToChannel(botParams.channelName, `Всего отправлено: ${r.parrot_counts} шт.`, messageParams);
       }
     });
   }
-  if (data.text === 'ЕСТЬ КТО ЖИВОЙ?') {
+  if ((data.text === 'ЕСТЬ КТО ЖИВОЙ?') || (data.text === 'ЕСТЬ КТО ЖИВОЙ') || (data.text === 'ЕСТЬ КТО') || (data.text === 'ЕСТЬ КТО?') || (data.text === 'КТО ЖИВОЙ?') || (data.text === 'КТО ЖИВОЙ')) {
     UserMessages.find().then((r) => {
       if (r) {
         const result = r.sort((a, b) => {
