@@ -69,7 +69,7 @@ bot.on('start', () => {
 });
 
 bot.on('message', (data) => {
-  // console.log(data);
+  console.log(data);
   const sendToWhom = (d, m) => {
     if (d.channel === botParams.channelId) {
       bot.postMessageToChannel(botParams.channelName, m, messageParams);
