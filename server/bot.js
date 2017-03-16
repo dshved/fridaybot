@@ -13,12 +13,12 @@ const BotMessages = require('./models/botmessage').BotMessages;
 const BotSettings = require('./models/botsetting').BotSettings;
 const Anek = require('./models/anek').Anek;
 
-const cheerio = require('cheerio');
-const request = require('request');
-const Iconv = require('iconv').Iconv;
-const fromEnc = 'cp1251';
-const toEnc = 'utf-8';
-const translator = new Iconv(fromEnc, toEnc);
+// const cheerio = require('cheerio');
+// const request = require('request');
+// const Iconv = require('iconv').Iconv;
+// const fromEnc = 'cp1251';
+// const toEnc = 'utf-8';
+// const translator = new Iconv(fromEnc, toEnc);
 
 
 const bot = new SlackBot(config.bot);
@@ -30,28 +30,28 @@ const botParams = {};
 const commandsSlackMessage = fs.readFileSync(__dirname + '/./../COMMANDS_SLACK.txt', 'utf-8');
 const changelogSlackMessage = fs.readFileSync(__dirname + '/./../CHANGELOG.md', 'utf-8');
 
-let bashArray = [];
+// let bashArray = [];
 
-setInterval(() => {
-  bashArray = [];
-  request({
-    url: 'http://bash.im/random',
-    encoding: null,
-  },
-  (err, res, body) => {
-    let $ = cheerio.load(translator.convert(body).toString(), { decodeEntities: false });
+// setInterval(() => {
+//   bashArray = [];
+//   request({
+//     url: 'http://bash.im/random',
+//     encoding: null,
+//   },
+//   (err, res, body) => {
+//     let $ = cheerio.load(translator.convert(body).toString(), { decodeEntities: false });
 
-    const quote = $('#body > .quote > .text');
+//     const quote = $('#body > .quote > .text');
 
-    quote.each((i, post) => {
-      bashArray[i] = $(post).html()
-        .replace(/<br>/g, '\n')
-        .replace(/&quot;/g, '')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>');
-    });
-  });
-}, 180000);
+//     quote.each((i, post) => {
+//       bashArray[i] = $(post).html()
+//         .replace(/<br>/g, '\n')
+//         .replace(/&quot;/g, '')
+//         .replace(/&lt;/g, '<')
+//         .replace(/&gt;/g, '>');
+//     });
+//   });
+// }, 180000);
 
 
 bot.on('start', () => {
@@ -195,10 +195,10 @@ bot.on('message', (data) => {
     bot.postMessageToChannel(botParams.channelName, changelogSlackMessage, messageParams);
   }
 
-  if ((data.text === 'БАШ') || (data.text === 'BASH') || (data.text === 'БАШОРГ')){
-    const randomBashId = Math.floor(Math.random() * (50 - 1 + 1)) + 1;
-    bot.postMessageToChannel(botParams.channelName, bashArray[randomBashId], messageParams);
-  }
+  // if ((data.text === 'БАШ') || (data.text === 'BASH') || (data.text === 'БАШОРГ')){
+  //   const randomBashId = Math.floor(Math.random() * (50 - 1 + 1)) + 1;
+  //   bot.postMessageToChannel(botParams.channelName, bashArray[randomBashId], messageParams);
+  // }
 
   if (data.text === 'COMMANDS') {
     bot.postMessageToChannel(botParams.channelName, commandsSlackMessage, messageParams);
