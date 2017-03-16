@@ -180,7 +180,7 @@ bot.on('message', (data) => {
   }
 
   if (data.text === '--COMMANDS') {
-    axios.get(chageLogURL)
+    axios.get(commandsURL)
       .then((res) => {
         const attachmentData = [{
           title: 'Commands',
