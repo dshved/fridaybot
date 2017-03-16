@@ -160,45 +160,45 @@ bot.on('message', (data) => {
     }
   }
 
-  if (data.text === '--CHANGELOG') {
-    axios.get(chageLogURL)
-      .then((res) => {
-        const attachmentData = [{
-          pretext: 'Вот список изменений:',
-          text: res.data,
-          mrkdwn_in: ['text', 'pretext', 'fields'],
-        }];
-        const attachmentMessage = messageParams;
-        attachmentMessage.attachments = attachmentData;
-        bot.postMessageToChannel(botParams.channelName, '', attachmentMessage)
-          .then(() => {
-            messageParams.attachments = [];
-          });
-      })
-      .catch((error) => {
-        bot.postMessageToChannel(botParams.channelName, `Не удалось получить список изменений... \n${error}`, messageParams);
-      });
-  }
+  // if (data.text === '--CHANGELOG') {
+  //   axios.get(chageLogURL)
+  //     .then((res) => {
+  //       const attachmentData = [{
+  //         pretext: 'Вот список изменений:',
+  //         text: res.data,
+  //         mrkdwn_in: ['text', 'pretext', 'fields'],
+  //       }];
+  //       const attachmentMessage = messageParams;
+  //       attachmentMessage.attachments = attachmentData;
+  //       bot.postMessageToChannel(botParams.channelName, '', attachmentMessage)
+  //         .then(() => {
+  //           messageParams.attachments = [];
+  //         });
+  //     })
+  //     .catch((error) => {
+  //       bot.postMessageToChannel(botParams.channelName, `Не удалось получить список изменений... \n${error}`, messageParams);
+  //     });
+  // }
 
-  if (data.text === '--COMMANDS') {
-    axios.get(commandsURL)
-      .then((res) => {
-        const attachmentData = [{
-          pretext: 'Вот список доступных команд:',
-          text: res.data,
-          mrkdwn_in: ['text', 'pretext', 'fields'],
-        }];
-        const attachmentMessage = messageParams;
-        attachmentMessage.attachments = attachmentData;
-        bot.postMessageToChannel(botParams.channelName, '', attachmentMessage)
-          .then(() => {
-            messageParams.attachments = [];
-          });
-      })
-      .catch((error) => {
-        bot.postMessageToChannel(botParams.channelName, `Не удалось получить список команд... \n${error}`, messageParams);
-      });
-  }
+  // if (data.text === '--COMMANDS') {
+  //   axios.get(commandsURL)
+  //     .then((res) => {
+  //       const attachmentData = [{
+  //         pretext: 'Вот список доступных команд:',
+  //         text: res.data,
+  //         mrkdwn_in: ['text', 'pretext', 'fields'],
+  //       }];
+  //       const attachmentMessage = messageParams;
+  //       attachmentMessage.attachments = attachmentData;
+  //       bot.postMessageToChannel(botParams.channelName, '', attachmentMessage)
+  //         .then(() => {
+  //           messageParams.attachments = [];
+  //         });
+  //     })
+  //     .catch((error) => {
+  //       bot.postMessageToChannel(botParams.channelName, `Не удалось получить список команд... \n${error}`, messageParams);
+  //     });
+  // }
 
   if ((data.text === 'БОРОДАТЫЙ АНЕКДОТ') || (data.text === 'АНЕКДОТ') || (data.text === 'РАССКАЖИ АНЕКДОТ')) {
     const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
