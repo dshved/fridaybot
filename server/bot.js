@@ -3,7 +3,7 @@ const aParrots = require('./../alphabet_parrots.js');
 const config = require('./../config.js');
 const mongoose = require('mongoose');
 
-const axios = require('axios');
+const fs = require('fs');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.db.path);
@@ -13,15 +13,14 @@ const BotMessages = require('./models/botmessage').BotMessages;
 const BotSettings = require('./models/botsetting').BotSettings;
 const Anek = require('./models/anek').Anek;
 
-const chageLogURL = 'https://raw.githubusercontent.com/dshved/fridaybot/master/CHANGELOG.md';
-const commandsURL = 'https://raw.githubusercontent.com/dshved/fridaybot/master/COMMANDS.md';
-
 const bot = new SlackBot(config.bot);
 
 const messageParams = {};
 
 const botParams = {};
 
+const commandsSlackMessage = fs.readFileSync(__dirname + './../COMMANDS_SLACK.txt', 'utf-8');
+const changelogSlackMessage = fs.readFileSync(__dirname + './../CHANGELOG.md', 'utf-8');
 
 bot.on('start', () => {
   bot.getUser(config.bot.name).then((res) => {
@@ -69,7 +68,7 @@ bot.on('start', () => {
 });
 
 bot.on('message', (data) => {
-  console.log(data);
+  // console.log(data);
   const sendToWhom = (d, m) => {
     if (d.channel === botParams.channelId) {
       bot.postMessageToChannel(botParams.channelName, m, messageParams);
@@ -160,45 +159,13 @@ bot.on('message', (data) => {
     }
   }
 
-  // if (data.text === '--CHANGELOG') {
-  //   axios.get(chageLogURL)
-  //     .then((res) => {
-  //       const attachmentData = [{
-  //         pretext: 'Вот список изменений:',
-  //         text: res.data,
-  //         mrkdwn_in: ['text', 'pretext', 'fields'],
-  //       }];
-  //       const attachmentMessage = messageParams;
-  //       attachmentMessage.attachments = attachmentData;
-  //       bot.postMessageToChannel(botParams.channelName, '', attachmentMessage)
-  //         .then(() => {
-  //           messageParams.attachments = [];
-  //         });
-  //     })
-  //     .catch((error) => {
-  //       bot.postMessageToChannel(botParams.channelName, `Не удалось получить список изменений... \n${error}`, messageParams);
-  //     });
-  // }
+  if (data.text === '--CHANGELOG') {
+    bot.postMessageToChannel(botParams.channelName, changelogSlackMessage, messageParams);
+  }
 
-  // if (data.text === '--COMMANDS') {
-  //   axios.get(commandsURL)
-  //     .then((res) => {
-  //       const attachmentData = [{
-  //         pretext: 'Вот список доступных команд:',
-  //         text: res.data,
-  //         mrkdwn_in: ['text', 'pretext', 'fields'],
-  //       }];
-  //       const attachmentMessage = messageParams;
-  //       attachmentMessage.attachments = attachmentData;
-  //       bot.postMessageToChannel(botParams.channelName, '', attachmentMessage)
-  //         .then(() => {
-  //           messageParams.attachments = [];
-  //         });
-  //     })
-  //     .catch((error) => {
-  //       bot.postMessageToChannel(botParams.channelName, `Не удалось получить список команд... \n${error}`, messageParams);
-  //     });
-  // }
+  if (data.text === '--COMMANDS') {
+    bot.postMessageToChannel(botParams.channelName, commandsSlackMessage, messageParams);
+  }
 
   if ((data.text === 'БОРОДАТЫЙ АНЕКДОТ') || (data.text === 'АНЕКДОТ') || (data.text === 'РАССКАЖИ АНЕКДОТ')) {
     const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
@@ -250,17 +217,12 @@ bot.on('message', (data) => {
           return 'сообщений';
         };
 
-        if (result.length > 20) {
-          mes = 'Вот 20-ка людей, которые подают признаки жизни:\n';
-          for (let i = 0; i < 20; i += i) {
-            mes += `${i + 1}. ${result[i].user_name}: ${result[i].count_messages} ${messagesRus(result[i].count_messages)} \n`;
-          }
-        } else {
-          mes = 'Вот люди, которые подают признаки жизни: \n';
-          result.forEach((item, i) => {
-            mes += `${i + 1}. ${item.user_name}: ${item.count_messages} ${messagesRus(result[i].count_messages)}\n`;
-          });
-        }
+
+        mes = 'Вот люди, которые подают признаки жизни: \n';
+        result.forEach((item, i) => {
+          mes += `${i + 1}. ${item.user_name}: ${item.count_messages} ${messagesRus(result[i].count_messages)}\n`;
+        });
+
         bot.postMessageToChannel(botParams.channelName, mes, messageParams);
       }
     });
