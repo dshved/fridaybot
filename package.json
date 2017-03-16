@@ -16,7 +16,7 @@
     "cheerio": "^0.22.0",
     "express": "^4.14.0",
     "glob": "^7.1.1",
-    "iconv": "^2.2.1",
+    "iconv-lite": "^0.4.15",
     "mongoose": "^4.8.6",
     "pug": "^2.0.0-beta11",
     "request": "^2.81.0",
