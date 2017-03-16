@@ -281,7 +281,7 @@ bot.on('message', (data) => {
   }
 
   if (data.type === 'message') {
-    BotMessages.findOne({ user_message: data.text.toLowerCase() })
+    BotMessages.findOne({ user_message: data.text })
       .then((result) => {
         if (result) {
           bot.postMessageToChannel(botParams.channelName, result.bot_message, messageParams);
