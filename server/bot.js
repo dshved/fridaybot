@@ -3,7 +3,7 @@ const aParrots = require('./../alphabet_parrots.js');
 const config = require('./../config.js');
 const mongoose = require('mongoose');
 
-const axios = require('axios');
+const fs = require('fs');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.db.path);
@@ -13,14 +13,41 @@ const BotMessages = require('./models/botmessage').BotMessages;
 const BotSettings = require('./models/botsetting').BotSettings;
 const Anek = require('./models/anek').Anek;
 
-const chageLogURL = 'https://raw.githubusercontent.com/dshved/fridaybot/master/CHANGELOG.md';
-const commandsURL = 'https://raw.githubusercontent.com/dshved/fridaybot/master/COMMANDS.md';
+const cheerio = require('cheerio');
+const request = require('request');
+const iconv = require('iconv-lite');
 
 const bot = new SlackBot(config.bot);
 
 const messageParams = {};
 
 const botParams = {};
+
+const commandsSlackMessage = fs.readFileSync(__dirname + '/./../COMMANDS_SLACK.txt', 'utf-8');
+const changelogSlackMessage = fs.readFileSync(__dirname + '/./../CHANGELOG.md', 'utf-8');
+
+let bashArray = [];
+
+setInterval(() => {
+  bashArray = [];
+  request({
+    url: 'http://bash.im/random',
+    encoding: null,
+  },
+  (err, res, body) => {
+    let $ = cheerio.load(iconv.decode(body, 'cp1251'), { decodeEntities: false });
+
+    const quote = $('#body > .quote > .text');
+
+    quote.each((i, post) => {
+      bashArray[i] = $(post).html()
+        .replace(/<br>/g, '\n')
+        .replace(/&quot;/g, '')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
+    });
+  });
+}, 180000);
 
 
 bot.on('start', () => {
@@ -86,7 +113,7 @@ bot.on('message', (data) => {
   if (data.text) {
     botParams.parrotArray.forEach((item) => {
       botParams.parrotCount += data.text.split(item).length - 1;
-    });
+    })
     BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
 
@@ -160,44 +187,17 @@ bot.on('message', (data) => {
     }
   }
 
-  if (data.text === '--CHANGELOG') {
-    axios.get(chageLogURL)
-      .then((res) => {
-        const attachmentData = [{
-          pretext: 'Вот список изменений:',
-          text: res.data,
-          mrkdwn_in: ['text', 'pretext', 'fields'],
-        }];
-        const attachmentMessage = messageParams;
-        attachmentMessage.attachments = attachmentData;
-        bot.postMessageToChannel(botParams.channelName, '', attachmentMessage)
-          .then(() => {
-            messageParams.attachments = [];
-          });
-      })
-      .catch((error) => {
-        bot.postMessageToChannel(botParams.channelName, `Не удалось получить список изменений... \n${error}`, messageParams);
-      });
+  if (data.text === 'CHANGELOG') {
+    bot.postMessageToChannel(botParams.channelName, changelogSlackMessage, messageParams);
   }
 
-  if (data.text === '--COMMANDS') {
-    axios.get(commandsURL)
-      .then((res) => {
-        const attachmentData = [{
-          pretext: 'Вот список доступных команд:',
-          text: res.data,
-          mrkdwn_in: ['text', 'pretext', 'fields'],
-        }];
-        const attachmentMessage = messageParams;
-        attachmentMessage.attachments = attachmentData;
-        bot.postMessageToChannel(botParams.channelName, '', attachmentMessage)
-          .then(() => {
-            messageParams.attachments = [];
-          });
-      })
-      .catch((error) => {
-        bot.postMessageToChannel(botParams.channelName, `Не удалось получить список команд... \n${error}`, messageParams);
-      });
+  if ((data.text === 'БАШ') || (data.text === 'BASH') || (data.text === 'БАШОРГ')) {
+    const randomBashId = Math.floor(Math.random() * (50 - 1 + 1)) + 1;
+    bot.postMessageToChannel(botParams.channelName, bashArray[randomBashId], messageParams);
+  }
+
+  if (data.text === 'COMMANDS') {
+    bot.postMessageToChannel(botParams.channelName, commandsSlackMessage, messageParams);
   }
 
   if ((data.text === 'БОРОДАТЫЙ АНЕКДОТ') || (data.text === 'АНЕКДОТ') || (data.text === 'РАССКАЖИ АНЕКДОТ')) {
@@ -219,51 +219,42 @@ bot.on('message', (data) => {
     });
   }
   if ((data.text === 'ЕСТЬ КТО ЖИВОЙ?') || (data.text === 'ЕСТЬ КТО ЖИВОЙ') || (data.text === 'ЕСТЬ КТО') || (data.text === 'ЕСТЬ КТО?') || (data.text === 'КТО ЖИВОЙ?') || (data.text === 'КТО ЖИВОЙ')) {
-    UserMessages.find().then((r) => {
-      if (r) {
-        const result = r.sort((a, b) => {
-          const c = a.count_messages;
-          const d = b.count_messages;
 
-          if (c < d) {
-            return 1;
-          } else if (c > d) {
-            return -1;
-          }
+    const messagesRus = (num) => {
+      num = Math.abs(num);
+      num %= 100;
+      if (num >= 5 && num <= 20) {
+        return 'сообщений';
+      }
+      num %= 10;
+      if (num === 1) {
+        return 'сообщение';
+      }
+      if (num >= 2 && num <= 4) {
+        return 'сообщения';
+      }
+      return 'сообщений';
+    };
 
-          return 0;
-        });
+    UserMessages.find().sort([
+        ['count_messages', 'descending'],
+      ])
+      .then((r) => {
         let mes = '';
-        const messagesRus = (num) => {
-          num = Math.abs(num);
-          num %= 100;
-          if (num >= 5 && num <= 20) {
-            return 'сообщений';
+        if (r.length > 10) {
+          mes = 'TOP 10: \n';
+          for (let i = 0; i < 10; i++) {
+            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
           }
-          num %= 10;
-          if (num === 1) {
-            return 'сообщение';
-          }
-          if (num >= 2 && num <= 4) {
-            return 'сообщения';
-          }
-          return 'сообщений';
-        };
-
-        if (result.length > 20) {
-          mes = 'Вот 20-ка людей, которые подают признаки жизни:\n';
-          for (let i = 0; i < 20; i += i) {
-            mes += `${i + 1}. ${result[i].user_name}: ${result[i].count_messages} ${messagesRus(result[i].count_messages)} \n`;
-          }
+          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
         } else {
           mes = 'Вот люди, которые подают признаки жизни: \n';
-          result.forEach((item, i) => {
-            mes += `${i + 1}. ${item.user_name}: ${item.count_messages} ${messagesRus(result[i].count_messages)}\n`;
-          });
+          for (let i = 0; i < r.length; i++) {
+            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
+          }
+          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
         }
-        bot.postMessageToChannel(botParams.channelName, mes, messageParams);
-      }
-    });
+      });
   }
   if (data.subtype === 'channel_leave' && data.channel === botParams.channelId) {
     bot.postMessageToChannel(
@@ -281,32 +272,29 @@ bot.on('message', (data) => {
   }
 
   if (data.type === 'message') {
-    BotMessages.findOne({ user_message: data.text.toLowerCase() })
+    BotMessages.findOne({ user_message: data.text })
       .then((result) => {
         if (result) {
           bot.postMessageToChannel(botParams.channelName, result.bot_message, messageParams);
         }
       });
-
-    bot.getUserById(data.user)
-      .then((d) => {
-        if (d) {
-          UserMessages.findOne({ user_id: d.id })
-            .then((result) => {
-              if (!result) {
-                const newMessage = new UserMessages({
-                  user_id: d.id,
-                  user_name: d.name,
-                  user_full_name: d.real_name,
-                  count_messages: 1,
-                });
-                newMessage.save();
-              } else {
-                const newCountMessages = result.count_messages + 1;
-                UserMessages.findOneAndUpdate({ user_id: d.id }, { count_messages: newCountMessages }).then();
-              }
+    UserMessages.findOne({ user_id: data.user })
+      .then((result) => {
+        if (!result) {
+          bot.getUserById(data.user)
+            .then((d) => {
+              const newMessage = new UserMessages({
+                user_id: d.id,
+                user_name: d.name,
+                user_full_name: d.real_name,
+                count_messages: 1,
+              });
+              newMessage.save(d.id);
             });
+        } else {
+          const newCountMessages = result.count_messages + 1;
+          UserMessages.findOneAndUpdate({ user_id: data.user }, { count_messages: newCountMessages }).then();
         }
-      });
+      })
   }
 });
