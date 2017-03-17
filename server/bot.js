@@ -31,22 +31,22 @@ let bashArray = [];
 setInterval(() => {
   bashArray = [];
   request({
-      url: 'http://bash.im/random',
-      encoding: null,
-    },
-    (err, res, body) => {
-      let $ = cheerio.load(iconv.decode(body, 'cp1251'), { decodeEntities: false });
+    url: 'http://bash.im/random',
+    encoding: null,
+  },
+  (err, res, body) => {
+    let $ = cheerio.load(iconv.decode(body, 'cp1251'), { decodeEntities: false });
 
-      const quote = $('#body > .quote > .text');
+    const quote = $('#body > .quote > .text');
 
-      quote.each((i, post) => {
-        bashArray[i] = $(post).html()
-          .replace(/<br>/g, '\n')
-          .replace(/&quot;/g, '')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>');
-      });
+    quote.each((i, post) => {
+      bashArray[i] = $(post).html()
+        .replace(/<br>/g, '\n')
+        .replace(/&quot;/g, '')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
     });
+  });
 }, 180000);
 
 
@@ -113,7 +113,7 @@ bot.on('message', (data) => {
   if (data.text) {
     botParams.parrotArray.forEach((item) => {
       botParams.parrotCount += data.text.split(item).length - 1;
-    });
+    })
     BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
 
