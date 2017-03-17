@@ -84,9 +84,12 @@ bot.on('message', (data) => {
   };
 
   if (data.text) {
-    botParams.parrotArray.forEach((item) => {
-      botParams.parrotCount += data.text.split(item).length - 1;
-    });
+    const matches = data.text.match(/:fp:|parrot/g);
+
+    if(matches !== null) {
+      botParams.parrotCount += matches.length;
+    }
+    
     BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
 
