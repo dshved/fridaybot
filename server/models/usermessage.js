@@ -19,6 +19,10 @@ const userMessages = new Schema({
     type: Number,
     required: true,
   },
+  count_parrots: {
+    type: Number,
+    required: true,
+  },
 });
 
 const UserMessages = mongoose.model('UserMessages', userMessages);
