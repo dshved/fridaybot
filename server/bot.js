@@ -273,7 +273,10 @@ bot.on('message', (data) => {
         if (r.length > 10) {
           mes = ':crown:Илита Friday:crown: \n';
           for (let i = 0; i < 10; i++) {
-            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
+            if (r[i].count_parrots > 0) {
+              mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
+            }
+
           }
           bot.postMessageToChannel(botParams.channelName, mes, messageParams);
         } else {
