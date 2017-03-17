@@ -249,7 +249,7 @@ bot.on('message', (data) => {
           bot.postMessageToChannel(botParams.channelName, mes, messageParams);
         } else {
           mes = 'Вот люди, которые подают признаки жизни: \n';
-          for (let i = 0; i < 10; i++) {
+          for (let i = 0; i < r.length; i++) {
             mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
           }
           bot.postMessageToChannel(botParams.channelName, mes, messageParams);
@@ -278,26 +278,23 @@ bot.on('message', (data) => {
           bot.postMessageToChannel(botParams.channelName, result.bot_message, messageParams);
         }
       });
-
-    bot.getUserById(data.user)
-      .then((d) => {
-        if (d) {
-          UserMessages.findOne({ user_id: d.id })
-            .then((result) => {
-              if (!result) {
-                const newMessage = new UserMessages({
-                  user_id: d.id,
-                  user_name: d.name,
-                  user_full_name: d.real_name,
-                  count_messages: 1,
-                });
-                newMessage.save();
-              } else {
-                const newCountMessages = result.count_messages + 1;
-                UserMessages.findOneAndUpdate({ user_id: d.id }, { count_messages: newCountMessages }).then();
-              }
+    UserMessages.findOne({ user_id: data.user })
+      .then((result) => {
+        if (!result) {
+          bot.getUserById(data.user)
+            .then((d) => {
+              const newMessage = new UserMessages({
+                user_id: d.id,
+                user_name: d.name,
+                user_full_name: d.real_name,
+                count_messages: 1,
+              });
+              newMessage.save(d.id);
             });
+        } else {
+          const newCountMessages = result.count_messages + 1;
+          UserMessages.findOneAndUpdate({ user_id: data.user }, { count_messages: newCountMessages }).then();
         }
-      });
+      })
   }
 });
