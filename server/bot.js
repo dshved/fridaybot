@@ -31,22 +31,22 @@ let bashArray = [];
 setInterval(() => {
   bashArray = [];
   request({
-    url: 'http://bash.im/random',
-    encoding: null,
-  },
-  (err, res, body) => {
-    let $ = cheerio.load(iconv.decode(body, 'cp1251'), { decodeEntities: false });
+      url: 'http://bash.im/random',
+      encoding: null,
+    },
+    (err, res, body) => {
+      let $ = cheerio.load(iconv.decode(body, 'cp1251'), { decodeEntities: false });
 
-    const quote = $('#body > .quote > .text');
+      const quote = $('#body > .quote > .text');
 
-    quote.each((i, post) => {
-      bashArray[i] = $(post).html()
-        .replace(/<br>/g, '\n')
-        .replace(/&quot;/g, '')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>');
+      quote.each((i, post) => {
+        bashArray[i] = $(post).html()
+          .replace(/<br>/g, '\n')
+          .replace(/&quot;/g, '')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>');
+      });
     });
-  });
 }, 180000);
 
 
@@ -191,7 +191,7 @@ bot.on('message', (data) => {
     bot.postMessageToChannel(botParams.channelName, changelogSlackMessage, messageParams);
   }
 
-  if ((data.text === 'БАШ') || (data.text === 'BASH') || (data.text === 'БАШОРГ')){
+  if ((data.text === 'БАШ') || (data.text === 'BASH') || (data.text === 'БАШОРГ')) {
     const randomBashId = Math.floor(Math.random() * (50 - 1 + 1)) + 1;
     bot.postMessageToChannel(botParams.channelName, bashArray[randomBashId], messageParams);
   }
@@ -219,46 +219,42 @@ bot.on('message', (data) => {
     });
   }
   if ((data.text === 'ЕСТЬ КТО ЖИВОЙ?') || (data.text === 'ЕСТЬ КТО ЖИВОЙ') || (data.text === 'ЕСТЬ КТО') || (data.text === 'ЕСТЬ КТО?') || (data.text === 'КТО ЖИВОЙ?') || (data.text === 'КТО ЖИВОЙ')) {
-    UserMessages.find().then((r) => {
-      if (r) {
-        const result = r.sort((a, b) => {
-          const c = a.count_messages;
-          const d = b.count_messages;
 
-          if (c < d) {
-            return 1;
-          } else if (c > d) {
-            return -1;
-          }
-
-          return 0;
-        });
-        let mes = '';
-        const messagesRus = (num) => {
-          num = Math.abs(num);
-          num %= 100;
-          if (num >= 5 && num <= 20) {
-            return 'сообщений';
-          }
-          num %= 10;
-          if (num === 1) {
-            return 'сообщение';
-          }
-          if (num >= 2 && num <= 4) {
-            return 'сообщения';
-          }
-          return 'сообщений';
-        };
-
-
-        mes = 'Вот люди, которые подают признаки жизни: \n';
-        result.forEach((item, i) => {
-          mes += `${i + 1}. ${item.user_name}: ${item.count_messages} ${messagesRus(result[i].count_messages)}\n`;
-        });
-
-        bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+    const messagesRus = (num) => {
+      num = Math.abs(num);
+      num %= 100;
+      if (num >= 5 && num <= 20) {
+        return 'сообщений';
       }
-    });
+      num %= 10;
+      if (num === 1) {
+        return 'сообщение';
+      }
+      if (num >= 2 && num <= 4) {
+        return 'сообщения';
+      }
+      return 'сообщений';
+    };
+
+    UserMessages.find().sort([
+        ['count_messages', 'descending'],
+      ])
+      .then((r) => {
+        let mes = '';
+        if (r.length > 10) {
+          mes = 'TOP 10: \n';
+          for (let i = 0; i < 10; i++) {
+            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
+          }
+          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+        } else {
+          mes = 'Вот люди, которые подают признаки жизни: \n';
+          for (let i = 0; i < 10; i++) {
+            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
+          }
+          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+        }
+      });
   }
   if (data.subtype === 'channel_leave' && data.channel === botParams.channelId) {
     bot.postMessageToChannel(
