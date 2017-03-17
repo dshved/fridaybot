@@ -109,14 +109,16 @@ bot.on('message', (data) => {
       });
     }
   };
-
+  let countParrots = 0;
   if (data.text) {
+
     const matches = data.text.match(/:fp:|parrot/g);
-    
+
     if(matches !== null) {
       botParams.parrotCount += matches.length;
+      countParrots += matches.length;
     }
-    
+
     BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
 
@@ -221,6 +223,7 @@ bot.on('message', (data) => {
       }
     });
   }
+
   if ((data.text === 'ЕСТЬ КТО ЖИВОЙ?') || (data.text === 'ЕСТЬ КТО ЖИВОЙ') || (data.text === 'ЕСТЬ КТО') || (data.text === 'ЕСТЬ КТО?') || (data.text === 'КТО ЖИВОЙ?') || (data.text === 'КТО ЖИВОЙ')) {
 
     const messagesRus = (num) => {
@@ -259,6 +262,30 @@ bot.on('message', (data) => {
         }
       });
   }
+
+  if ((data.text === 'КТО ИЛИТА') || (data.text === 'КТО ИЛИТА?') || (data.text === 'ИЛИТА')) {
+
+    UserMessages.find().sort([
+        ['count_parrots', 'descending'],
+      ])
+      .then((r) => {
+        let mes = '';
+        if (r.length > 10) {
+          mes = ':crown:Илита Friday:crown: \n';
+          for (let i = 0; i < 10; i++) {
+            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} pps\n`;
+          }
+          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+        } else {
+          mes = ':crown:Илита Friday:crown: \n';
+          for (let i = 0; i < r.length; i++) {
+            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} pps\n`;
+          }
+          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+        }
+      });
+  }
+
   if (data.subtype === 'channel_leave' && data.channel === botParams.channelId) {
     bot.postMessageToChannel(
       botParams.channelName,
@@ -291,12 +318,16 @@ bot.on('message', (data) => {
                 user_name: d.name,
                 user_full_name: d.real_name,
                 count_messages: 1,
+                count_parrots: 0,
               });
               newMessage.save(d.id);
             });
         } else {
+
+          const newCountParrots = result.count_parrots + countParrots;
           const newCountMessages = result.count_messages + 1;
-          UserMessages.findOneAndUpdate({ user_id: data.user }, { count_messages: newCountMessages }).then();
+
+          UserMessages.findOneAndUpdate({ user_id: data.user }, { count_parrots: newCountParrots } ).then();
         }
       })
   }
