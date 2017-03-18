@@ -111,15 +111,17 @@ bot.on('message', (data) => {
   };
   let countParrots = 0;
   if (data.text) {
+    if (data.channel === botParams.channelId) {
 
-    const matches = data.text.match(/:fp:|parrot/g);
+      const matches = data.text.match(/:fp:|parrot/g);
 
-    if(matches !== null) {
-      botParams.parrotCount += matches.length;
-      countParrots += matches.length;
+      if (matches !== null) {
+        botParams.parrotCount += matches.length;
+        countParrots += matches.length;
+      }
+
+      BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
     }
-
-    BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
   }
 
   if (data.text) {
@@ -265,7 +267,7 @@ bot.on('message', (data) => {
 
   if ((data.text === 'КТО ИЛИТА') || (data.text === 'КТО ИЛИТА?') || (data.text === 'ИЛИТА')) {
 
-    UserMessages.find().sort([
+    UserMessages.find({ user_name: { $ne: 'slackbot' } }).sort([
         ['count_parrots', 'descending'],
       ])
       .then((r) => {
@@ -276,15 +278,26 @@ bot.on('message', (data) => {
             if (r[i].count_parrots > 0) {
               mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
             }
-
           }
-          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+          UserMessages.findOne({ user_name: 'slackbot' })
+            .then((d) => {
+              if (d) {
+                mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
+              }
+              bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+            });
         } else {
           mes = ':crown:Илита Friday:crown: \n';
           for (let i = 0; i < r.length; i++) {
             mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
           }
-          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+          UserMessages.findOne({ user_name: 'slackbot' })
+            .then((d) => {
+              if (d) {
+                mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
+              }
+              bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+            });
         }
       });
   }
@@ -304,7 +317,7 @@ bot.on('message', (data) => {
       messageParams);
   }
 
-  if (data.type === 'message') {
+  if (data.type === 'message' && data.channel === botParams.channelId) {
     BotMessages.findOne({ user_message: data.text })
       .then((result) => {
         if (result) {
@@ -326,12 +339,11 @@ bot.on('message', (data) => {
               newMessage.save(d.id);
             });
         } else {
-
           const newCountParrots = result.count_parrots + countParrots;
           const newCountMessages = result.count_messages + 1;
 
-          UserMessages.findOneAndUpdate({ user_id: data.user }, { count_parrots: newCountParrots } ).then();
+          UserMessages.findOneAndUpdate({ user_id: data.user }, { count_parrots: newCountParrots, count_messages: newCountMessages } ).then();
         }
-      })
+      });
   }
 });
