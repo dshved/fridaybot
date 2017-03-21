@@ -317,7 +317,7 @@ bot.on('message', (data) => {
       messageParams);
   }
 
-  if (data.type === 'message' && data.channel === botParams.channelId) {
+  if (data.type === 'message' && data.channel === botParams.channelId && data.subtype !== 'bot_message') {
     BotMessages.findOne({ user_message: data.text })
       .then((result) => {
         if (result) {
