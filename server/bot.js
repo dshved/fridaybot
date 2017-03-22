@@ -12,6 +12,7 @@ const UserMessages = require('./models/usermessage').UserMessages;
 const BotMessages = require('./models/botmessage').BotMessages;
 const BotSettings = require('./models/botsetting').BotSettings;
 const Anek = require('./models/anek').Anek;
+const Log = require('./models/log').Log;
 
 const cheerio = require('cheerio');
 const request = require('request');
@@ -22,6 +23,16 @@ const bot = new SlackBot(config.bot);
 const messageParams = {};
 
 const botParams = {};
+
+
+const saveLog = (d) => {
+  const newCommand = new Log({
+    user: d.user,
+    command: d.text,
+    date: d.ts,
+  });
+  newCommand.save();
+};
 
 const commandsSlackMessage = fs.readFileSync(__dirname + '/./../COMMANDS_SLACK.txt', 'utf-8');
 const changelogSlackMessage = fs.readFileSync(__dirname + '/./../CHANGELOG.md', 'utf-8');
@@ -35,7 +46,7 @@ setInterval(() => {
     encoding: null,
   },
   (err, res, body) => {
-    let $ = cheerio.load(iconv.decode(body, 'cp1251'), { decodeEntities: false });
+    const $ = cheerio.load(iconv.decode(body, 'cp1251'), { decodeEntities: false });
 
     const quote = $('#body > .quote > .text');
 
@@ -168,6 +179,10 @@ bot.on('message', (data) => {
         });
         bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
         sendMessage = '';
+
+        const newData = data;
+        newData.text = 'СКАЖИ';
+        saveLog(newData);
       } else {
         bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 12 символов!`, messageParams);
       }
@@ -188,6 +203,10 @@ bot.on('message', (data) => {
         });
         bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
         sendMessage = '';
+
+        const newData = data;
+        newData.text = 'ГОВОРИ';
+        saveLog(newData);
       } else {
         bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 10 символов!`, messageParams);
       }
@@ -196,15 +215,41 @@ bot.on('message', (data) => {
 
   if (data.text === 'CHANGELOG') {
     bot.postMessageToChannel(botParams.channelName, changelogSlackMessage, messageParams);
+    saveLog(data);
   }
 
   if ((data.text === 'БАШ') || (data.text === 'BASH') || (data.text === 'БАШОРГ')) {
     const randomBashId = Math.floor(Math.random() * (50 - 1 + 1)) + 1;
     bot.postMessageToChannel(botParams.channelName, bashArray[randomBashId], messageParams);
+    saveLog(data);
   }
 
   if (data.text === 'COMMANDS') {
     bot.postMessageToChannel(botParams.channelName, commandsSlackMessage, messageParams);
+    saveLog(data);
+  }
+
+  if (data.text === 'LOG') {
+    Log.aggregate([
+      {
+        $group: {
+          _id: '$command',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { count: -1 },
+      },
+    ],
+      function (err, res) {
+        let mes = 'Статистика вызова команд:\n';
+        for (let i = 0; i < res.length; i++) {
+          mes += `${i + 1}. ${res[i]._id} - ${res[i].count}\n`;
+        }
+        bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+        mes = '';
+      }
+    );
   }
 
   if ((data.text === 'БОРОДАТЫЙ АНЕКДОТ') || (data.text === 'АНЕКДОТ') || (data.text === 'РАССКАЖИ АНЕКДОТ')) {
@@ -212,6 +257,7 @@ bot.on('message', (data) => {
     Anek.findOne({ id: randomId }).then((r) => {
       if (r) {
         bot.postMessageToChannel(botParams.channelName, r.text, messageParams);
+        saveLog(data);
       } else {
         bot.postMessageToChannel(botParams.channelName, 'Что-то пошло не так... Попробуйте еще раз', messageParams);
       }
@@ -222,6 +268,7 @@ bot.on('message', (data) => {
     BotSettings.findOne().then((r) => {
       if (r) {
         bot.postMessageToChannel(botParams.channelName, `Всего отправлено: ${r.parrot_counts} шт.`, messageParams);
+        saveLog(data);
       }
     });
   }
@@ -255,12 +302,14 @@ bot.on('message', (data) => {
             mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
           }
           bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+          saveLog(data);
         } else {
           mes = 'Вот люди, которые подают признаки жизни: \n';
           for (let i = 0; i < r.length; i++) {
             mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
           }
           bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+          saveLog(data);
         }
       });
   }
@@ -285,6 +334,7 @@ bot.on('message', (data) => {
                 mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
               }
               bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+              saveLog(data);
             });
         } else {
           mes = ':crown:Илита Friday:crown: \n';
@@ -297,6 +347,7 @@ bot.on('message', (data) => {
                 mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
               }
               bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+              saveLog(data);
             });
         }
       });
@@ -312,16 +363,16 @@ bot.on('message', (data) => {
   if (data.subtype === 'channel_join' && data.channel === botParams.channelId) {
     bot.postMessageToChannel(
       botParams.channelName,
-      // `Привет <@${data.user_profile.name}>, ${botParams.messageJoin}`,
       `Привет <@${data.user_profile.name}>, добро пожаловать в наш ламповый чатик!\nЕсть два вопроса к тебе:\n- кто твой любимый эмодзи?\n- какая твоя любимая giphy? \n<#${botParams.channelId}> - это место свободного общения. Здесь любят попугаев и поздравлют всех с пятницей. \nP.S. Если будут обижать, то вызывай милицию! :warneng:`,
       messageParams);
   }
 
-  if (data.type === 'message' && data.channel === botParams.channelId) {
+  if (data.type === 'message' && data.channel === botParams.channelId && data.subtype !== 'bot_message') {
     BotMessages.findOne({ user_message: data.text })
       .then((result) => {
         if (result) {
           bot.postMessageToChannel(botParams.channelName, result.bot_message, messageParams);
+          saveLog(data);
         }
       });
     UserMessages.findOne({ user_id: data.user })
@@ -342,7 +393,7 @@ bot.on('message', (data) => {
           const newCountParrots = result.count_parrots + countParrots;
           const newCountMessages = result.count_messages + 1;
 
-          UserMessages.findOneAndUpdate({ user_id: data.user }, { count_parrots: newCountParrots, count_messages: newCountMessages } ).then();
+          UserMessages.findOneAndUpdate({ user_id: data.user }, { count_parrots: newCountParrots, count_messages: newCountMessages }).then();
         }
       });
   }
