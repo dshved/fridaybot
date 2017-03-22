@@ -1,18 +1,32 @@
-doctype html
-html(
-  lang="ru-RU"
-)
-  head
-    meta(charset="utf-8")
-    meta(name="renderer", content="webkit")
-    title=title
-    meta(name="viewport", content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no")
-    meta(name="description", content="Slack bot")
-    if NODE_ENV !== 'development'
-      link(
-        rel="stylesheet"
-        href="css/" + bundle + ".css"
-      )
-  body
-    | {{ APP }}
-    script(src='client/' + bundle +'.js')
+extends layouts/main
+
+block content
+  form(method="POST" action="/auth")
+    input(type="text" name="name")
+    input(type="password" name="password")
+    button(type="submit") Login
+  //- .wrapper
+  //-   .logo
+  //-     .logo__img
+  //-       img(src="http://cultofthepartyparrot.com/assets/parrot.svg", alt="Friday")
+  //-     .logo__text #friday
+  //-   .tabs
+  //-     .tab
+  //-       input#tab-1(type='radio', name='tab-group-1', checked='')
+  //-       label(for='tab-1') Fridaybot
+  //-       .content
+  //-         p Fridaybot может овечать на сообщения, которые отправляют пользователи
+  //-         textarea
+  //-     .tab
+  //-       input#tab-2(type='radio', name='tab-group-1')
+  //-       label(for='tab-2') Команды
+  //-       .content
+  //-         p Stuff for Tab Two
+  //-         img(src='http://placekitten.com/200/100')
+  //-     .tab
+  //-       input#tab-3(type='radio', name='tab-group-1')
+  //-       label(for='tab-3') Настройки
+  //-       .content
+  //-         p Stuff for Tab Three
+  //-         img(src='http://placedog.com/200/100')
+  //-   button(type="submit") Сохранить
