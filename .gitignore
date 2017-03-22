@@ -3,3 +3,4 @@ node_modules/
 dist/
 npm-debug.log
 config.js
+server/bot1.js
