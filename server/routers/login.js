@@ -6,10 +6,11 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 const User = require('../models/usermessage').UserMessages;
-
+const Auth = require('../middlewares/auth');
 
 router.get('/', function(req, res) {
-  res.json({ message: 'Welcome to the cooest API on earth!' });
+  res.redirect('/');
+  // res.json({ message: 'Welcome to the cooest API on earth!' });
 })
 
 
@@ -49,29 +50,8 @@ router.post('/', function (req, res, next) {
   };
 });
 
-const auth = function(req, res, next) {
-  var token = req.session.token || req.body.token || req.query.token || req.headers['x-access-token'];
 
-  if (token) {
-    jwt.verify(token, 'abcdef', function(err, decoded) {
-      if (err) {
-        return res.json({success: false, message: 'Failed token'});
-      } else {
-        req.decoded = decoded;
-        next();
-      }
-    })
-  } else {
-    return res.status(403).send({
-      success: false,
-      message: 'No token provided.'
-    })
-  }
-}
-
-
-
-router.use(auth);
+router.use(Auth);
 
 router.get('/users', function(req, res) {
   User.find({}, function(err, users) {

@@ -10,17 +10,32 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
 
+
+
+
 mongoose.Promise = global.Promise;
 mongoose.connect(config.db.path);
 
 const app = express();
 const router = require('./server/routers/router');
 const api = require('./server/routers/api');
-const auth = require('./server/routers/auth');
+const login = require('./server/routers/login');
 
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+global.io = io;
+
+require('./server/middlewares/socket').io;
+
+require('./server/bot1');
 
 app.set('views', path.join(__dirname, 'server/views'));
 app.set('view engine', 'pug');
+
+app.use(function(req, res, next) {
+  res.io = io;
+  next();
+});
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -43,7 +58,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(router);
-app.use('/auth', auth);
+app.use('/login', login);
 app.use('/api', api);
 
 
@@ -68,4 +83,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+module.exports = { app: app, server: server };

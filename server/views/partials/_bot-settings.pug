@@ -1,0 +1,11 @@
+p Задайте настроки для вашего бота
+laberl(for="name") Имя бота
+input.input(type="text" value=settings.name)
+
+laberl(for="name") Привественное сообщение
+textarea= settings.user_join.message
+input(type="checkbox" checked=settings.user_join.active)
+
+laberl(for="name") Прощальное сообщение
+textarea= settings.user_leave.message
+input(type="checkbox" checked=settings.user_leave.active)
