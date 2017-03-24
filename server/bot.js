@@ -147,6 +147,13 @@ bot.on('message', (data) => {
   }
 
   if (data.text) {
+    if (~data.text.indexOf('повтори ') == -1) {
+      const userText = data.text.substr(8);
+      bot.postMessageToChannel(botParams.channelName, userText, messageParams);
+    }
+  }
+
+  if (data.text) {
     data.text = data.text.toUpperCase();
   }
 
