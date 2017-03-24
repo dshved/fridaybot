@@ -1,0 +1,23 @@
+extends layouts/main
+
+block content
+  a.logout(href="/logout") Выйти
+  .bg
+  .parrots.parrots_home
+    span Уже отправлено
+    span.parrots__count
+    span.parrots__word шт.
+  #tabs.tabs
+    ul
+      li
+        a(href='#tabs-1') Fridaybot
+      li
+        a(href='#tabs-2') Команды
+      li
+        a(href='#tabs-3') Настройки
+    #tabs-1
+      include partials/_bot-responsed
+    #tabs-2
+      include partials/_bot-commands
+    #tabs-3
+      include partials/_bot-settings

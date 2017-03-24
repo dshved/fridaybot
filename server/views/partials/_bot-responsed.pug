@@ -1,0 +1,16 @@
+p Fridaybot может овечать на сообщения, которые отправляют пользователи
+.messages
+  .messages__list
+    for item in messages
+      .messages__item
+        input.input.messages__input(disabled, value=item.user_message)
+        textarea.textarea.messages__textarea(disabled)= item.bot_message
+        .messages__buttons
+          a(href="#" data-item-id=item._id).messages__button-edit
+            i.fa.fa-pencil
+          a(href="#" data-item-id=item._id).messages__button-check
+            i.fa.fa-check
+          a(href="#" data-item-id=item._id).messages__button-del
+            i.fa.fa-trash
+  .messages__add
+    button Добавить

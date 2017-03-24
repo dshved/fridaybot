@@ -1,18 +1,14 @@
-doctype html
-html(
-  lang="ru-RU"
-)
-  head
-    meta(charset="utf-8")
-    meta(name="renderer", content="webkit")
-    title=title
-    meta(name="viewport", content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no")
-    meta(name="description", content="Slack bot")
-    if NODE_ENV !== 'development'
-      link(
-        rel="stylesheet"
-        href="css/" + bundle + ".css"
-      )
-  body
-    | {{ APP }}
-    script(src='client/' + bundle +'.js')
+extends layouts/main
+
+block content
+  .bg
+  .login
+    form(method="POST" action="/login").form.login__form#login
+      .login__status
+      input#username.input.login__input(type="text" name="name" placeholder="Имя пользователя")
+      input#password.input.login__input(type="password" name="password" placeholder="Пароль")
+      button.button(type="submit") Войти
+  .parrots.parrots_login
+    span Уже отправлено
+    span.parrots__count
+    span.parrots__word шт.

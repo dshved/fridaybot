@@ -1,12 +1,13 @@
+
 const SlackBot = require('./../slackbots.js');
 const aParrots = require('./../alphabet_parrots.js');
 const config = require('./../config.js');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
 const fs = require('fs');
 
-mongoose.Promise = global.Promise;
-mongoose.connect(config.db.path);
+// mongoose.Promise = global.Promise;
+// mongoose.connect(config.db.path);
 
 const UserMessages = require('./models/usermessage').UserMessages;
 const BotMessages = require('./models/botmessage').BotMessages;
@@ -17,6 +18,8 @@ const Log = require('./models/log').Log;
 const cheerio = require('cheerio');
 const request = require('request');
 const iconv = require('iconv-lite');
+
+
 
 const bot = new SlackBot(config.bot);
 
@@ -60,6 +63,15 @@ setInterval(() => {
   });
 }, 180000);
 
+const replaseEmoji = (value, message) => {
+  message = value === 'REACT' || value === 'РЕАКТ' ? message.replace(/fp/g, 'rt') : message;
+  message = value === 'JS' || value === 'ЖС' || value === 'ДЖС'|| value === 'ДЖАВАСКРИПТ'|| value === 'JAVASCRIPT' ? message.replace(/fp/g, 'js') : message;
+  message = value === 'ANGULAR' || value === 'АНГУЛЯР' ? message.replace(/fp/g, 'ag') : message;
+  message = value === 'JQUERY' || value === 'ЖКВЕРИ' || value === 'ДЖКВЕРИ' ? message.replace(/fp/g, 'jquery') : message;
+  message = value === 'VUE' || value === 'ВУЙ' || value === 'ВУЕ' ? message.replace(/fp/g, 'vue') : message;
+
+  return message;
+};
 
 const replaseEmoji = (value, message) => {
   message = value === 'REACT' || value === 'РЕАКТ' ? message.replace(/fp/g, 'rt') : message;
@@ -143,6 +155,14 @@ bot.on('message', (data) => {
       }
 
       BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }).then();
+      global.io.emit('parrot count', botParams.parrotCount);
+    }
+  }
+
+  if (data.text) {
+    if (~data.text.indexOf('повтори ') == -1) {
+      const userText = data.text.substr(8);
+      bot.postMessageToChannel(botParams.channelName, userText, messageParams);
     }
   }
 
@@ -227,8 +247,10 @@ bot.on('message', (data) => {
         const newData = data;
         newData.text = 'ГОВОРИ';
         saveLog(newData);
+
       } else {
         bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 10 символов!`, messageParams);
+
       }
     }
   }
@@ -383,6 +405,7 @@ bot.on('message', (data) => {
   if (data.subtype === 'channel_join' && data.channel === botParams.channelId) {
     bot.postMessageToChannel(
       botParams.channelName,
+      // `Привет <@${data.user_profile.name}>, ${botParams.messageJoin}`,
       `Привет <@${data.user_profile.name}>, добро пожаловать в наш ламповый чатик!\nЕсть два вопроса к тебе:\n- кто твой любимый эмодзи?\n- какая твоя любимая giphy? \n<#${botParams.channelId}> - это место свободного общения. Здесь любят попугаев и поздравлют всех с пятницей. \nP.S. Если будут обижать, то вызывай милицию! :warneng:`,
       messageParams);
   }
@@ -418,3 +441,5 @@ bot.on('message', (data) => {
       });
   }
 });
+
+
