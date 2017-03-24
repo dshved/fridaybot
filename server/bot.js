@@ -61,6 +61,17 @@ setInterval(() => {
 }, 180000);
 
 
+const replaseEmoji = (value, message) => {
+  message = value === 'REACT' || value === 'РЕАКТ' ? message.replace(/fp/g, 'rt') : message;
+  message = value === 'JS' || value === 'ЖС' || value === 'ДЖС'|| value === 'ДЖАВАСКРИПТ'|| value === 'JAVASCRIPT' ? message.replace(/fp/g, 'js') : message;
+  message = value === 'ANGULAR' || value === 'АНГУЛЯР' ? message.replace(/fp/g, 'ag') : message;
+  message = value === 'JQUERY' || value === 'ЖКВЕРИ' || value === 'ДЖКВЕРИ' ? message.replace(/fp/g, 'jquery') : message;
+  message = value === 'VUE' || value === 'ВУЙ' || value === 'ВУЕ' ? message.replace(/fp/g, 'vue') : message;
+
+  return message;
+};
+
+
 bot.on('start', () => {
   bot.getUser(config.bot.name).then((res) => {
     if (res) {
@@ -177,7 +188,8 @@ bot.on('message', (data) => {
 
           // bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
         });
-        bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+        const newMessage = replaseEmoji(userText, sendMessage);
+        bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
         sendMessage = '';
 
         const newData = data;
@@ -201,7 +213,8 @@ bot.on('message', (data) => {
           }
           sendMessage += aParrots.find(findLetter).text;
         });
-        bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+        const newMessage = replaseEmoji(userText, sendMessage);
+        bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
         sendMessage = '';
 
         const newData = data;
