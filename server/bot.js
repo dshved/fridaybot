@@ -2,12 +2,8 @@
 const SlackBot = require('./../slackbots.js');
 const aParrots = require('./../alphabet_parrots.js');
 const config = require('./../config.js');
-// const mongoose = require('mongoose');
 
 const fs = require('fs');
-
-// mongoose.Promise = global.Promise;
-// mongoose.connect(config.db.path);
 
 const UserMessages = require('./models/usermessage').UserMessages;
 const BotMessages = require('./models/botmessage').BotMessages;
@@ -18,8 +14,6 @@ const Log = require('./models/log').Log;
 const cheerio = require('cheerio');
 const request = require('request');
 const iconv = require('iconv-lite');
-
-
 
 const bot = new SlackBot(config.bot);
 
@@ -62,16 +56,6 @@ setInterval(() => {
     });
   });
 }, 180000);
-
-const replaseEmoji = (value, message) => {
-  message = value === 'REACT' || value === 'РЕАКТ' ? message.replace(/fp/g, 'rt') : message;
-  message = value === 'JS' || value === 'ЖС' || value === 'ДЖС'|| value === 'ДЖАВАСКРИПТ'|| value === 'JAVASCRIPT' ? message.replace(/fp/g, 'js') : message;
-  message = value === 'ANGULAR' || value === 'АНГУЛЯР' ? message.replace(/fp/g, 'ag') : message;
-  message = value === 'JQUERY' || value === 'ЖКВЕРИ' || value === 'ДЖКВЕРИ' ? message.replace(/fp/g, 'jquery') : message;
-  message = value === 'VUE' || value === 'ВУЙ' || value === 'ВУЕ' ? message.replace(/fp/g, 'vue') : message;
-
-  return message;
-};
 
 const replaseEmoji = (value, message) => {
   message = value === 'REACT' || value === 'РЕАКТ' ? message.replace(/fp/g, 'rt') : message;
