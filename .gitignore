@@ -4,3 +4,4 @@ dist/
 npm-debug.log
 config.js
 server/bot1.js
+server/bot2.js
