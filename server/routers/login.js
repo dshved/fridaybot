@@ -15,8 +15,9 @@ router.get('/', function(req, res) {
 
 
 router.post('/', function (req, res, next) {
+  console.log(req.body);
   var name = req.body.name;
-
+  var password = req.body.password;
   var token = req.session.token || req.body.token || req.query.token || req.headers['x-access-token'];
 
   if (token) {
@@ -34,8 +35,11 @@ router.post('/', function (req, res, next) {
       if (err) return next(err);
 
       if (!user) {
-        res.status(400);
-        res.write('email или пароль неверен');
+        // res.status(400);
+        res.send({status: 400, message: 'Не верное имя пользователя или пароль'});
+        res.end();
+      } else if (password !== 'parrot') {
+        res.send({status: 400, message: 'Не верное имя пользователя или пароль'});
         res.end();
       } else {
         token = jwt.sign(user, 'abcdef', {
@@ -43,7 +47,8 @@ router.post('/', function (req, res, next) {
         });
         res.status(200);
         req.session.token = token;
-        res.redirect('/');
+        res.send({status: 200, message: 'ОК'});
+        // res.redirect('/');
         res.end();
       }
     })

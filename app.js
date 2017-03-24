@@ -27,7 +27,7 @@ global.io = io;
 
 require('./server/middlewares/socket').io;
 
-require('./server/bot1');
+require('./server/bot');
 
 app.set('views', path.join(__dirname, 'server/views'));
 app.set('view engine', 'pug');

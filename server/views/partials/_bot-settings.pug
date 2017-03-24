@@ -1,11 +1,32 @@
 p Задайте настроки для вашего бота
-laberl(for="name") Имя бота
-input.input(type="text" value=settings.name)
+.settings
+  .settings__item
+    .settings__item-col
+      label(for="bot_name") Имя бота
+    .settings__item-col
+      input.input.settings__input(disabled type="text" name="bot_name" id="bot_name" value=settings.name)
+  .settings__item
+    .settings__item-col
+      label(for="bot_name") Канал
+    .settings__item-col
+      input.input.settings__input(disabled type="text" name="bot_name" id="bot_name" value=settings.channel_name)
+  .settings__item
+    .settings__item-col
+      label(for="bot_name") Изображение
+    .settings__item-col
+      input.input.settings__input(disabled type="text" name="bot_name" id="bot_name" value=settings.icon.emoji)
+  .settings__item
+    .settings__item-col
+      label(for="user_join") Привественное сообщение
+      input.input.settings__checkbox(type="checkbox" checked=settings.user_join.active)
+    .settings__item-col
+      textarea(disabled name="user_join" id="user_join").textarea.settings__textarea= settings.user_join.message
+  .settings__item
+    .settings__item-col
+      label(for="user_leave") Прощальное сообщение
+      input.input.settings__checkbox(type="checkbox" checked=settings.user_leave.active)
+    .settings__item-col
+      textarea(disabled name="user_leave" id="user_leave").textarea.settings__textarea= settings.user_leave.message
+  .settings__save
+    button Сохранить
 
-laberl(for="name") Привественное сообщение
-textarea= settings.user_join.message
-input(type="checkbox" checked=settings.user_join.active)
-
-laberl(for="name") Прощальное сообщение
-textarea= settings.user_leave.message
-input(type="checkbox" checked=settings.user_leave.active)
