@@ -214,6 +214,7 @@ $(document).ready(function() {
           $('.modal').css('display', 'none');
           userMessage.val('');
           botMessage.val('');
+          $('body').css('overflow', '');
         },
         failure: function(errMsg) {
           console.log(errMsg);
