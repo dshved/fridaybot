@@ -236,7 +236,7 @@ bot.on('message', (data) => {
         } else {
           bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 12 символов!`, messageParams);
         }
-      }, 500);
+      }, 1000);
     }
   }
 
@@ -266,7 +266,7 @@ bot.on('message', (data) => {
         } else {
           bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 10 символов!`, messageParams);
         }
-      }, 500);
+      }, 1000);
     }
   }
 
