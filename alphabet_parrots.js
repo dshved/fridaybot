@@ -585,7 +585,7 @@ const alphabet = [
       ':sp::fp::fp::sp::fp::sp:',
       ':sp::sp::sp::sp::sp::sp:',
     ],
-    text: '',
+    text: ':sp::fp::fp::fp::sp::sp:\n:fp::sp::sp::sp::fp::sp:\n:fp::sp::fp::sp::fp::sp:\n:fp::sp::fp::sp::fp::sp:\n:sp::fp::fp::sp::fp::sp:\n:sp::sp::sp::sp::sp::sp:\n',
   },
   {
     letter: '#',
@@ -597,7 +597,7 @@ const alphabet = [
       ':sp::fp::sp::fp::sp::sp:',
       ':sp::sp::sp::sp::sp::sp:',
     ],
-    text: '',
+    text: ':sp::fp::sp::fp::sp::sp:\n:fp::fp::fp::fp::fp::sp:\n:sp::fp::sp::fp::sp::sp:\n:fp::fp::fp::fp::fp::sp:\n:sp::fp::sp::fp::sp::sp:\n:sp::sp::sp::sp::sp::sp:\n',
   },
   {
     letter: ':',
