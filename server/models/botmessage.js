@@ -11,6 +11,9 @@ const botMessages = new Schema({
     type: String,
     required: true,
   },
+  last_edited: {
+    type: String,
+  },
 });
 
 const BotMessages = mongoose.model('BotMessages', botMessages);
