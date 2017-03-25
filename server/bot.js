@@ -1,4 +1,3 @@
-
 const SlackBot = require('./../slackbots.js');
 const aParrots = require('./../alphabet_parrots.js');
 const config = require('./../config.js');
@@ -39,32 +38,58 @@ let bashArray = [];
 setInterval(() => {
   bashArray = [];
   request({
-    url: 'http://bash.im/random',
-    encoding: null,
-  },
-  (err, res, body) => {
-    const $ = cheerio.load(iconv.decode(body, 'cp1251'), { decodeEntities: false });
+      url: 'http://bash.im/random',
+      encoding: null,
+    },
+    (err, res, body) => {
+      const $ = cheerio.load(iconv.decode(body, 'cp1251'), { decodeEntities: false });
 
-    const quote = $('#body > .quote > .text');
+      const quote = $('#body > .quote > .text');
 
-    quote.each((i, post) => {
-      bashArray[i] = $(post).html()
-        .replace(/<br>/g, '\n')
-        .replace(/&quot;/g, '')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>');
+      quote.each((i, post) => {
+        bashArray[i] = $(post).html()
+          .replace(/<br>/g, '\n')
+          .replace(/&quot;/g, '')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>');
+      });
     });
-  });
 }, 180000);
 
 const replaseEmoji = (value, message) => {
   message = value === 'REACT' || value === 'РЕАКТ' ? message.replace(/fp/g, 'rt') : message;
-  message = value === 'JS' || value === 'ЖС' || value === 'ДЖС'|| value === 'ДЖАВАСКРИПТ'|| value === 'JAVASCRIPT' ? message.replace(/fp/g, 'js') : message;
+  message = value === 'JS' || value === 'ЖС' || value === 'ДЖС' || value === 'ДЖАВАСКРИПТ' || value === 'JAVASCRIPT' ? message.replace(/fp/g, 'js') : message;
   message = value === 'ANGULAR' || value === 'АНГУЛЯР' ? message.replace(/fp/g, 'ag') : message;
   message = value === 'JQUERY' || value === 'ЖКВЕРИ' || value === 'ДЖКВЕРИ' ? message.replace(/fp/g, 'jquery') : message;
   message = value === 'VUE' || value === 'ВУЙ' || value === 'ВУЕ' ? message.replace(/fp/g, 'vue') : message;
 
   return message;
+};
+
+
+const replaceMention = function(str, resolve) {
+  const myRegexpChannel = /(#\w+)\|(\w+)/g;
+  const myRegexpUser = /@\w+/g;
+
+  const matchChannel = myRegexpChannel.exec(str);
+  const matchUser = myRegexpUser.exec(str);
+  let message = str;
+
+  if (matchChannel) {
+    message = matchChannel[1].substr(0, 1) + matchChannel[2];
+    resolve(message);
+  }
+
+  if (matchUser) {
+    const userId = matchUser[0].substr(1, matchUser[0].length);
+    UserMessages.findOne({ user_id: userId })
+      .then((result) => {
+        if (result) {
+          message = `@${result.user_name}`;
+          resolve(message);
+        }
+      });
+  }
 };
 
 
@@ -164,78 +189,84 @@ bot.on('message', (data) => {
   if (data.text) {
     if (~data.text.indexOf('СКАЖИ ') == -1) {
 
-      const userText = data.text.substr(6);
-      const userTextArray = userText.toUpperCase().split('');
-      if (userTextArray.length <= 12) {
-        const newLetterArray = [];
-        const countLetter = 3;
-        const count = Math.ceil(userTextArray.length / countLetter);
-        for (let i = 0; i < count; i++) {
-          newLetterArray.push(userTextArray.slice(i * countLetter, (i + 1) * countLetter));
-        }
-        let sendMessage = '';
-        newLetterArray.forEach((item) => {
-          const newArray = [];
-          item.forEach((itm) => {
-            function findLetter(alphabet) {
-              return alphabet.letter === itm;
-            }
-            if (!!aParrots.find(findLetter)) {
-              newArray.push(aParrots.find(findLetter).array);
+      let userText = data.text.substr(6);
+      replaceMention(userText, function(message) {
+        userText = message;
+      });
+      setTimeout(function() {
+        const userTextArray = userText.toUpperCase().split('');
+        if (userTextArray.length <= 12) {
+          const newLetterArray = [];
+          const countLetter = 3;
+          const count = Math.ceil(userTextArray.length / countLetter);
+          for (let i = 0; i < count; i++) {
+            newLetterArray.push(userTextArray.slice(i * countLetter, (i + 1) * countLetter));
+          }
+          let sendMessage = '';
+          newLetterArray.forEach((item) => {
+            const newArray = [];
+            item.forEach((itm) => {
+              function findLetter(alphabet) {
+                return alphabet.letter === itm;
+              }
+              if (!!aParrots.find(findLetter)) {
+                newArray.push(aParrots.find(findLetter).array);
+              }
+            });
+            const userSays = newArray;
+
+            const lineCount = 6;
+
+            for (let i = 0; i < lineCount; i++) {
+              let line = '';
+              for (let j = 0; j < userSays.length; j++) {
+                line += userSays[j][i];
+              }
+              line += '\n';
+              sendMessage += line;
             }
           });
-          const userSays = newArray;
+          const newMessage = replaseEmoji(userText, sendMessage);
+          bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
+          sendMessage = '';
 
-          const lineCount = 6;
-
-          for (let i = 0; i < lineCount; i++) {
-            let line = '';
-            for (let j = 0; j < userSays.length; j++) {
-              line += userSays[j][i];
-            }
-            line += '\n';
-            sendMessage += line;
-          }
-
-          // bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
-        });
-        const newMessage = replaseEmoji(userText, sendMessage);
-        bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
-        sendMessage = '';
-
-        const newData = data;
-        newData.text = 'СКАЖИ';
-        saveLog(newData);
-      } else {
-        bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 12 символов!`, messageParams);
-      }
+          const newData = data;
+          newData.text = 'СКАЖИ';
+          saveLog(newData);
+        } else {
+          bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 12 символов!`, messageParams);
+        }
+      }, 1000);
     }
   }
 
   if (data.text) {
     if (~data.text.indexOf('ГОВОРИ ') == -1) {
-      const userText = data.text.substr(7);
-      const userTextArray = userText.toUpperCase().split('');
-      let sendMessage = '';
-      if (userTextArray.length <= 10) {
-        userTextArray.forEach((item) => {
-          function findLetter(alphabet) {
-            return alphabet.letter === item;
-          }
-          sendMessage += aParrots.find(findLetter).text;
-        });
-        const newMessage = replaseEmoji(userText, sendMessage);
-        bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
-        sendMessage = '';
+      let userText = data.text.substr(7);
+      replaceMention(userText, function(message) {
+        userText = message;
+      });
+      setTimeout(function() {
+        const userTextArray = userText.toUpperCase().split('');
+        let sendMessage = '';
+        if (userTextArray.length <= 10) {
+          userTextArray.forEach((item) => {
+            function findLetter(alphabet) {
+              return alphabet.letter === item;
+            }
+            sendMessage += aParrots.find(findLetter).text;
+          });
+          const newMessage = replaseEmoji(userText, sendMessage);
+          bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
+          sendMessage = '';
 
-        const newData = data;
-        newData.text = 'ГОВОРИ';
-        saveLog(newData);
-
-      } else {
-        bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 10 символов!`, messageParams);
-
-      }
+          const newData = data;
+          newData.text = 'ГОВОРИ';
+          saveLog(newData);
+        } else {
+          bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 10 символов!`, messageParams);
+        }
+      }, 1000);
     }
   }
 
@@ -256,18 +287,15 @@ bot.on('message', (data) => {
   }
 
   if (data.text === 'LOG') {
-    Log.aggregate([
-      {
+    Log.aggregate([{
         $group: {
           _id: '$command',
           count: { $sum: 1 },
         },
-      },
-      {
+      }, {
         $sort: { count: -1 },
-      },
-    ],
-      function (err, res) {
+      }, ],
+      function(err, res) {
         let mes = 'Статистика вызова команд:\n';
         for (let i = 0; i < res.length; i++) {
           mes += `${i + 1}. ${res[i]._id} - ${res[i].count}\n`;
@@ -425,5 +453,3 @@ bot.on('message', (data) => {
       });
   }
 });
-
-
