@@ -21,11 +21,14 @@ const getBotMessages = (req, res, next) => {
 };
 
 const addBotMessage = (req, res, next) => {
-  const botMessage = new BotMessages(req.body);
+  const newMessage = req.body;
+  newMessage.last_edited = req.session.user;
+  const botMessage = new BotMessages(newMessage);
   botMessage.save((err, data) => {
     if (!err) {
       res.send({
-        'msg': 'success',
+        msg: 'success',
+        data,
       });
     } else {
       res.send(404);
@@ -34,10 +37,11 @@ const addBotMessage = (req, res, next) => {
 };
 
 const editBotMessage = (req, res, next) => {
-  BotMessages.update({ _id: req.body.id }, { $set: req.body.params }, (err, result) => {
+  BotMessages.update({ _id: req.body.id }, { $set: req.body.params, last_edited: req.session.user }, (err, result) => {
     if (!err) {
       res.send({
         msg: 'success',
+        user: req.session.user,
       });
     } else {
       console.log(err);

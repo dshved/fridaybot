@@ -47,6 +47,7 @@ router.post('/', function (req, res, next) {
         });
         res.status(200);
         req.session.token = token;
+        req.session.user = name;
         res.send({status: 200, message: 'ОК'});
         // res.redirect('/');
         res.end();

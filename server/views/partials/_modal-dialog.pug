@@ -1,0 +1,13 @@
+.modal
+  .modal__container
+    a(href="#").modal__close
+      i.fa.fa-close
+    form(id="save_message" action="#").form.modal__form
+      .modal__form-item
+        label(for="user_message") Когда пользователь говорит
+        input.input.modal__input(id="user_message" type="text")
+      .modal__form-item
+        label(for="bot_message") Fridaybot ему отвечает
+        textarea.textarea.modal__textarea(id="bot_message")
+      .modal__form-item
+        button(type="submit") Сохранить

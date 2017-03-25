@@ -3,7 +3,11 @@ p Fridaybot может овечать на сообщения, которые о
   .messages__list
     for item in messages
       .messages__item
-        input.input.messages__input(disabled, value=item.user_message)
+        .messages__item-input
+          input.input.messages__input(disabled, value=item.user_message)
+          .last_edited
+            span Last edited by
+            span.edited-name= item.last_edited
         textarea.textarea.messages__textarea(disabled)= item.bot_message
         .messages__buttons
           a(href="#" data-item-id=item._id).messages__button-edit
