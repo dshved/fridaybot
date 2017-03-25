@@ -29,9 +29,9 @@ $(document).ready(function() {
 
   $('#login').submit(function(e) {
     e.preventDefault();
-    const username = $('#username').val();
-    const password = $('#password').val();
-    if (username == '' || password == '') {
+    const username = $('#username').val().toLowerCase();
+    const password = $('#password').val().toLowerCase();
+    if (username === '' || password === '') {
       $('input[type="text"],input[type="password"]').css('border', '1px solid #ea8282');
       $('input[type="text"],input[type="password"]').css('box-shadow', '0 0 3px #ea8282');
     } else {
