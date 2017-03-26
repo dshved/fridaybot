@@ -29,9 +29,9 @@ $(document).ready(function() {
 
   $('#login').submit(function(e) {
     e.preventDefault();
-    const username = $('#username').val();
-    const password = $('#password').val();
-    if (username == '' || password == '') {
+    const username = $('#username').val().toLowerCase();
+    const password = $('#password').val().toLowerCase();
+    if (username === '' || password === '') {
       $('input[type="text"],input[type="password"]').css('border', '1px solid #ea8282');
       $('input[type="text"],input[type="password"]').css('box-shadow', '0 0 3px #ea8282');
     } else {
@@ -49,7 +49,7 @@ $(document).ready(function() {
 
   $('#tabs').tabs();
 
-  $('a.messages__button-edit').on('click', function(e) {
+  $('.messages__list').on('click', 'a.messages__button-edit', function(e) {
     e.preventDefault();
 
     const $this = $(this);
@@ -63,7 +63,7 @@ $(document).ready(function() {
     textarea.attr('disabled', false);
   });
 
-  $('a.messages__button-check').on('click', function(e) {
+  $('.messages__list').on('click', 'a.messages__button-check', function(e) {
     e.preventDefault();
 
     const $this = $(this);
@@ -101,13 +101,13 @@ $(document).ready(function() {
     });
   });
 
-  $('a.messages__button-del').on('click', function(e) {
+  $('.messages__list').on('click', 'a.messages__button-del', function(e) {
     e.preventDefault();
     const $this = $(this);
     const item = $this.closest('.messages__item');
     const itemId = $this.data('item-id');
 
-    const confirmRemove = confirm("Вы точно хотите удалить?");
+    const confirmRemove = confirm('Вы точно хотите удалить?');
     if (confirmRemove) {
       const message = {
         id: itemId,
@@ -184,7 +184,6 @@ $(document).ready(function() {
           </a>
         </div>
       </div>`;
-      console.log(template)
       $('.messages__list').append(template);
   };
 
@@ -209,11 +208,11 @@ $(document).ready(function() {
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         success: function(data) {
-          // console.log(data);
           addNewMessage(data.data);
           $('.modal').css('display', 'none');
           userMessage.val('');
           botMessage.val('');
+          $('body').css('overflow', '');
         },
         failure: function(errMsg) {
           console.log(errMsg);

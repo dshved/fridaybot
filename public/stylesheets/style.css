@@ -124,6 +124,7 @@ button {
   padding: 10px;
   margin-bottom: 10px;
   font-size: 18px;
+  text-transform: lowercase;
 }
 
 .login__status {
