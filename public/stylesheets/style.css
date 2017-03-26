@@ -71,16 +71,28 @@ body {
   padding: 10px;
 }
 
-button {
+
+.button {
   cursor: pointer;
-  background: #1DB379;
   border-radius: 5px;
   font-size: 18px;
-  color: #FBFBFA;
   letter-spacing: -0.49px;
   border: none;
   padding: 10px;
+}
+
+.button_default {
+  color: #fff;
+  background-color: #cdcdcd;
+}
+
+.button_primary {
+  background: #1DB379;
+  color: #FBFBFA;
   min-width: 200px;
+}
+.button_primary:hover {
+  box-shadow: 0px 1px 0px 0px #0e714b
 }
 
 .input {
@@ -220,9 +232,11 @@ button {
   display: flex;
   justify-content: flex-end;
 }
-
+.messages__add i {
+  margin-right: 10px;
+}
 .messages__buttons a {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .messages__buttons a:hover {
