@@ -93,6 +93,23 @@ const replaceMention = function(str, resolve) {
 };
 
 
+const replaceTextEmoji = function(str) {
+  const myRegexpEmoji = /^:\w+:/g;
+  const matchEmoji = myRegexpEmoji.exec(str);
+  const myObj = {};
+  if (matchEmoji) {
+    myObj.isExec = true;
+    myObj.emoji = matchEmoji[0];
+    myObj.message = str.substr(matchEmoji[0].length+1, str.length)
+    return myObj;
+  }else {
+    myObj.message = str;
+    myObj.isExec = false;
+    return myObj;
+  }
+};
+
+
 bot.on('start', () => {
   bot.getUser(config.bot.name).then((res) => {
     if (res) {
@@ -176,13 +193,6 @@ bot.on('message', (data) => {
   }
 
   if (data.text) {
-    if (~data.text.indexOf('повтори ') == -1) {
-      const userText = data.text.substr(8);
-      bot.postMessageToChannel(botParams.channelName, userText, messageParams);
-    }
-  }
-
-  if (data.text) {
     data.text = data.text.toUpperCase();
   }
 
@@ -193,6 +203,14 @@ bot.on('message', (data) => {
       replaceMention(userText, function(message) {
         userText = message;
       });
+      const newStr = replaceTextEmoji(userText);
+      let replaced = false;
+      let replacedEmoji;
+      if (newStr.isExec) {
+        replaced = true;
+        replacedEmoji = newStr.emoji;
+        userText = newStr.message;
+      }
       setTimeout(function() {
         const userTextArray = userText.toUpperCase().split('');
         if (userTextArray.length <= 12) {
@@ -226,7 +244,10 @@ bot.on('message', (data) => {
               sendMessage += line;
             }
           });
-          const newMessage = replaseEmoji(userText, sendMessage);
+          let newMessage = replaseEmoji(userText, sendMessage);
+          if (replaced) {
+            newMessage = newMessage.replace(/:fp:/g, replacedEmoji);
+          }
           bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
           sendMessage = '';
 
@@ -246,6 +267,14 @@ bot.on('message', (data) => {
       replaceMention(userText, function(message) {
         userText = message;
       });
+      const newStr = replaceTextEmoji(userText);
+      let replaced = false;
+      let replacedEmoji;
+      if (newStr.isExec) {
+        replaced = true;
+        replacedEmoji = newStr.emoji;
+        userText = newStr.message;
+      }
       setTimeout(function() {
         const userTextArray = userText.toUpperCase().split('');
         let sendMessage = '';
@@ -256,7 +285,10 @@ bot.on('message', (data) => {
             }
             sendMessage += aParrots.find(findLetter).text;
           });
-          const newMessage = replaseEmoji(userText, sendMessage);
+          let newMessage = replaseEmoji(userText, sendMessage);
+          if (replaced) {
+            newMessage = newMessage.replace(/:fp:/g, replacedEmoji);
+          }
           bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
           sendMessage = '';
 
