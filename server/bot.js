@@ -94,15 +94,17 @@ const replaceMention = function(str, resolve) {
 
 
 const replaceTextEmoji = function(str) {
-  const myRegexpEmoji = /^:\w+:/g;
+  // const myRegexpEmoji = /^:\w+:/g;
+  const myRegexpEmoji = /^(:\w+:)|(:\w+.*.\w+:)/g;
   const matchEmoji = myRegexpEmoji.exec(str);
+  console.log(matchEmoji);
   const myObj = {};
   if (matchEmoji) {
     myObj.isExec = true;
     myObj.emoji = matchEmoji[0];
-    myObj.message = str.substr(matchEmoji[0].length+1, str.length)
+    myObj.message = str.substr(matchEmoji[0].length + 1, str.length);
     return myObj;
-  }else {
+  } else {
     myObj.message = str;
     myObj.isExec = false;
     return myObj;
@@ -121,12 +123,18 @@ bot.on('start', () => {
     if (result) {
       messageParams.username = result.name;
       messageParams.icon_emoji = result.icon.emoji;
+      // messageParams.parse = 'full';
       // botParams.channelId = result.channel_id;
       botParams.parrotCount = result.parrot_counts;
       botParams.parrotArray = result.parrot_array;
       botParams.channelName = result.channel_name;
-      botParams.messageJoin = result.user_join.message;
-      botParams.messageLeave = result.user_leave.message;
+
+      botParams.joinActive = result.user_join.active;
+      botParams.joinMessage = result.user_join.message;
+
+      botParams.leaveActive = result.user_leave.active;
+      botParams.leaveMessage = result.user_leave.message;
+
       if (!result.channel_id) {
         bot.getChannel(result.channel_name).then((data) => {
           if (data) {
@@ -440,18 +448,29 @@ bot.on('message', (data) => {
   }
 
   if (data.subtype === 'channel_leave' && data.channel === botParams.channelId) {
-    bot.postMessageToChannel(
-      botParams.channelName,
-      `Мы потеряли бойца :sad_parrot: ${data.user_profile.first_name}  покинул нас`,
-      messageParams);
+    if (botParams.leaveActive) {
+      const leaveMessage = botParams.leaveMessage
+        .replace(/first_name/g, data.user_profile.first_name)
+        .replace(/real_name/g, data.user_profile.real_name)
+        .replace(/name/g, `<@${data.user_profile.name}>`);
+      bot.postMessageToChannel(
+        botParams.channelName,
+        leaveMessage,
+        messageParams);
+    }
   }
 
   if (data.subtype === 'channel_join' && data.channel === botParams.channelId) {
-    bot.postMessageToChannel(
-      botParams.channelName,
-      // `Привет <@${data.user_profile.name}>, ${botParams.messageJoin}`,
-      `Привет <@${data.user_profile.name}>, добро пожаловать в наш ламповый чатик!\nЕсть два вопроса к тебе:\n- кто твой любимый эмодзи?\n- какая твоя любимая giphy? \n<#${botParams.channelId}> - это место свободного общения. Здесь любят попугаев и поздравлют всех с пятницей. \nP.S. Если будут обижать, то вызывай милицию! :warneng:`,
+    if (botParams.joinActive) {
+      const joinMessage = botParams.joinMessage
+        .replace(/first_name/g, data.user_profile.first_name)
+        .replace(/real_name/g, data.user_profile.real_name)
+        .replace(/name/g, `<@${data.user_profile.name}>`)
+        .replace(/channel_name/g, `<${botParams.channelId}>`);
+      bot.postMessageToChannel(
+      botParams.channelName, joinMessage,
       messageParams);
+    }
   }
 
   if (data.type === 'message' && data.channel === botParams.channelId && data.subtype !== 'bot_message') {
