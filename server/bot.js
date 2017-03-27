@@ -465,7 +465,7 @@ bot.on('message', (data) => {
       const joinMessage = botParams.joinMessage
         .replace(/first_name/g, data.user_profile.first_name)
         .replace(/real_name/g, data.user_profile.real_name)
-        .replace(/name/g, `<@${data.user_profile.name}>`)
+        .replace(/user_name/g, `<@${data.user_profile.name}>`)
         .replace(/channel_name/g, `<${botParams.channelId}>`);
       bot.postMessageToChannel(
       botParams.channelName, joinMessage,
