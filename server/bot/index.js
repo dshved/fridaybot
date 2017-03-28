@@ -56,62 +56,7 @@ setInterval(() => {
           .replace(/&gt;/g, '>');
       });
     });
-}, 1000);
-
-// const replaseEmoji = (value, message) => {
-//   message = value === 'REACT' || value === 'РЕАКТ' ? message.replace(/fp/g, 'rt') : message;
-//   message = value === 'JS' || value === 'ЖС' || value === 'ДЖС' || value === 'ДЖАВАСКРИПТ' || value === 'JAVASCRIPT' ? message.replace(/fp/g, 'js') : message;
-//   message = value === 'ANGULAR' || value === 'АНГУЛЯР' ? message.replace(/fp/g, 'ag') : message;
-//   message = value === 'JQUERY' || value === 'ЖКВЕРИ' || value === 'ДЖКВЕРИ' ? message.replace(/fp/g, 'jquery') : message;
-//   message = value === 'VUE' || value === 'ВУЙ' || value === 'ВУЕ' ? message.replace(/fp/g, 'vue') : message;
-
-//   return message;
-// };
-
-
-// const replaceMention = function(str, resolve) {
-//   const myRegexpChannel = /(#\w+)\|(\w+)/g;
-//   const myRegexpUser = /@\w+/g;
-
-//   const matchChannel = myRegexpChannel.exec(str);
-//   const matchUser = myRegexpUser.exec(str);
-//   let message = str;
-
-//   if (matchChannel) {
-//     message = matchChannel[1].substr(0, 1) + matchChannel[2];
-//     resolve(message);
-//   }
-
-//   if (matchUser) {
-//     const userId = matchUser[0].substr(1, matchUser[0].length);
-//     UserMessages.findOne({ user_id: userId })
-//       .then((result) => {
-//         if (result) {
-//           message = `@${result.user_name}`;
-//           resolve(message);
-//         }
-//       });
-//   }
-// };
-
-
-// const replaceTextEmoji = function(str) {
-//   // const myRegexpEmoji = /^:\w+:/g;
-//   const myRegexpEmoji = /^(:\w+:)|(:\w+.*.\w+:)/g;
-//   const matchEmoji = myRegexpEmoji.exec(str);
-//   // console.log(matchEmoji);
-//   const myObj = {};
-//   if (matchEmoji) {
-//     myObj.isExec = true;
-//     myObj.emoji = matchEmoji[0];
-//     myObj.message = str.substr(matchEmoji[0].length + 1, str.length);
-//     return myObj;
-//   } else {
-//     myObj.message = str;
-//     myObj.isExec = false;
-//     return myObj;
-//   }
-// };
+}, 180000);
 
 
 bot.on('start', () => {
@@ -202,131 +147,26 @@ bot.on('message', (data) => {
     }
   }
 
-  // if (data.text) {
-  //   data.text = data.text.toUpperCase();
-  // }
 
   if (data.text) {
     botResponse.userMessageRes(data, function(text, error){
-      if(!error.message){
-       bot.postMessageToChannel(botParams.channelName, text, messageParams);
-      }
-      else{
-       bot.postMessageToChannel(botParams.channelName, `<@${data.user}> `+error.message, messageParams);
+      if (!error.message) {
+        bot.postMessageToChannel(botParams.channelName, text, messageParams);
+      } else {
+        bot.postMessageToChannel(botParams.channelName, `<@${data.user}> `+error.message, messageParams);
       }
     });
   }
 
-  // if (data.text) {
-  //   if (~data.text.indexOf('sСКАЖИ ') == -1) {
+  if (data.text) {
+    data.text = data.text.toUpperCase();
+  }
 
-  //     let userText = data.text.substr(6);
-  //     replaceMention(userText, function(message) {
-  //       userText = message;
-  //     });
-  //     const newStr = replaceTextEmoji(userText);
-  //     let replaced = false;
-  //     let replacedEmoji;
-  //     if (newStr.isExec) {
-  //       replaced = true;
-  //       replacedEmoji = newStr.emoji;
-  //       userText = newStr.message;
-  //     }
-  //     setTimeout(function() {
-  //       const userTextArray = userText.toUpperCase().split('');
-  //       if (userTextArray.length <= 12) {
-  //         const newLetterArray = [];
-  //         const countLetter = 3;
-  //         const count = Math.ceil(userTextArray.length / countLetter);
-  //         for (let i = 0; i < count; i++) {
-  //           newLetterArray.push(userTextArray.slice(i * countLetter, (i + 1) * countLetter));
-  //         }
-  //         let sendMessage = '';
-  //         newLetterArray.forEach((item) => {
-  //           const newArray = [];
-  //           item.forEach((itm) => {
-  //             function findLetter(alphabet) {
-  //               return alphabet.letter === itm;
-  //             }
-  //             if (!!aParrots.find(findLetter)) {
-  //               newArray.push(aParrots.find(findLetter).array);
-  //             }
-  //           });
-  //           const userSays = newArray;
 
-  //           const lineCount = 6;
-
-  //           for (let i = 0; i < lineCount; i++) {
-  //             let line = '';
-  //             for (let j = 0; j < userSays.length; j++) {
-  //               line += userSays[j][i];
-  //             }
-  //             line += '\n';
-  //             sendMessage += line;
-  //           }
-  //         });
-  //         let newMessage = replaseEmoji(userText, sendMessage);
-  //         if (replaced) {
-  //           newMessage = newMessage.replace(/:fp:/g, replacedEmoji);
-  //         }
-  //         bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
-  //         sendMessage = '';
-
-  //         const newData = data;
-  //         newData.text = 'СКАЖИ';
-  //         saveLog(newData);
-  //       } else {
-  //         bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 12 символов!`, messageParams);
-  //       }
-  //     }, 1000);
-  //   }
-  // }
-
-  // if (data.text) {
-  //   if (~data.text.indexOf('ГОВОРИ ') == -1) {
-  //     let userText = data.text.substr(7);
-  //     replaceMention(userText, function(message) {
-  //       userText = message;
-  //     });
-  //     const newStr = replaceTextEmoji(userText);
-  //     let replaced = false;
-  //     let replacedEmoji;
-  //     if (newStr.isExec) {
-  //       replaced = true;
-  //       replacedEmoji = newStr.emoji;
-  //       userText = newStr.message;
-  //     }
-  //     setTimeout(function() {
-  //       const userTextArray = userText.toUpperCase().split('');
-  //       let sendMessage = '';
-  //       if (userTextArray.length <= 10) {
-  //         userTextArray.forEach((item) => {
-  //           function findLetter(alphabet) {
-  //             return alphabet.letter === item;
-  //           }
-  //           sendMessage += aParrots.find(findLetter).text;
-  //         });
-  //         let newMessage = replaseEmoji(userText, sendMessage);
-  //         if (replaced) {
-  //           newMessage = newMessage.replace(/:fp:/g, replacedEmoji);
-  //         }
-  //         bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
-  //         sendMessage = '';
-
-  //         const newData = data;
-  //         newData.text = 'ГОВОРИ';
-  //         saveLog(newData);
-  //       } else {
-  //         bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 10 символов!`, messageParams);
-  //       }
-  //     }, 1000);
-  //   }
-  // }
-
-  // if (data.text === 'CHANGELOG') {
-  //   bot.postMessageToChannel(botParams.channelName, changelogSlackMessage, messageParams);
-  //   saveLog(data);
-  // }
+  if (data.text === 'CHANGELOG') {
+    bot.postMessageToChannel(botParams.channelName, changelogSlackMessage, messageParams);
+    saveLog(data);
+  }
 
   if ((data.text === 'БАШ') || (data.text === 'BASH') || (data.text === 'БАШОРГ')) {
     const randomBashId = Math.floor(Math.random() * (50 - 1 + 1)) + 1;
@@ -334,131 +174,25 @@ bot.on('message', (data) => {
     saveLog(data);
   }
 
-  // if (data.text === 'COMMANDS') {
-  //   bot.postMessageToChannel(botParams.channelName, commandsSlackMessage, messageParams);
-  //   saveLog(data);
-  // }
+  if (data.text === 'COMMANDS') {
+    bot.postMessageToChannel(botParams.channelName, commandsSlackMessage, messageParams);
+    saveLog(data);
+  }
 
-  // if (data.text === 'LOG') {
-  //   Log.aggregate([{
-  //       $group: {
-  //         _id: '$command',
-  //         count: { $sum: 1 },
-  //       },
-  //     }, {
-  //       $sort: { count: -1 },
-  //     }, ],
-  //     function(err, res) {
-  //       let mes = 'Статистика вызова команд:\n';
-  //       for (let i = 0; i < res.length; i++) {
-  //         mes += `${i + 1}. ${res[i]._id} - ${res[i].count}\n`;
-  //       }
-  //       bot.postMessageToChannel(botParams.channelName, mes, messageParams);
-  //       mes = '';
-  //     }
-  //   );
-  // }
 
-  // if ((data.text === 'БОРОДАТЫЙ АНЕКДОТ') || (data.text === 'АНЕКДОТ') || (data.text === 'РАССКАЖИ АНЕКДОТ')) {
-  //   const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
-  //   Anek.findOne({ id: randomId }).then((r) => {
-  //     if (r) {
-  //       bot.postMessageToChannel(botParams.channelName, r.text, messageParams);
-  //       saveLog(data);
-  //     } else {
-  //       bot.postMessageToChannel(botParams.channelName, 'Что-то пошло не так... Попробуйте еще раз', messageParams);
-  //     }
-  //   });
-  // }
 
-  // if ((data.text === 'СКОЛЬКО ПОПУГАЕВ?') || (data.text === 'СКОЛЬКО ПОПУГАЕВ') || (data.text === 'СКОЛЬКО?') || (data.text === 'СКОЛЬКО')) {
-  //   BotSettings.findOne().then((r) => {
-  //     if (r) {
-  //       bot.postMessageToChannel(botParams.channelName, `Всего отправлено: ${r.parrot_counts} шт.`, messageParams);
-  //       saveLog(data);
-  //     }
-  //   });
-  // }
+  if ((data.text === 'БОРОДАТЫЙ АНЕКДОТ') || (data.text === 'АНЕКДОТ') || (data.text === 'РАССКАЖИ АНЕКДОТ')) {
+    const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
+    Anek.findOne({ id: randomId }).then((r) => {
+      if (r) {
+        bot.postMessageToChannel(botParams.channelName, r.text, messageParams);
+        saveLog(data);
+      } else {
+        bot.postMessageToChannel(botParams.channelName, 'Что-то пошло не так... Попробуйте еще раз', messageParams);
+      }
+    });
+  }
 
-  // if ((data.text === 'ЕСТЬ КТО ЖИВОЙ?') || (data.text === 'ЕСТЬ КТО ЖИВОЙ') || (data.text === 'ЕСТЬ КТО') || (data.text === 'ЕСТЬ КТО?') || (data.text === 'КТО ЖИВОЙ?') || (data.text === 'КТО ЖИВОЙ')) {
-
-  //   const messagesRus = (num) => {
-  //     num = Math.abs(num);
-  //     num %= 100;
-  //     if (num >= 5 && num <= 20) {
-  //       return 'сообщений';
-  //     }
-  //     num %= 10;
-  //     if (num === 1) {
-  //       return 'сообщение';
-  //     }
-  //     if (num >= 2 && num <= 4) {
-  //       return 'сообщения';
-  //     }
-  //     return 'сообщений';
-  //   };
-
-  //   UserMessages.find().sort([
-  //       ['count_messages', 'descending'],
-  //     ])
-  //     .then((r) => {
-  //       let mes = '';
-  //       if (r.length > 10) {
-  //         mes = 'TOP 10: \n';
-  //         for (let i = 0; i < 10; i++) {
-  //           mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
-  //         }
-  //         bot.postMessageToChannel(botParams.channelName, mes, messageParams);
-  //         saveLog(data);
-  //       } else {
-  //         mes = 'Вот люди, которые подают признаки жизни: \n';
-  //         for (let i = 0; i < r.length; i++) {
-  //           mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
-  //         }
-  //         bot.postMessageToChannel(botParams.channelName, mes, messageParams);
-  //         saveLog(data);
-  //       }
-  //     });
-  // }
-
-  // if ((data.text === 'КТО ИЛИТА') || (data.text === 'КТО ИЛИТА?') || (data.text === 'ИЛИТА')) {
-
-  //   UserMessages.find({ user_name: { $ne: 'slackbot' } }).sort([
-  //       ['count_parrots', 'descending'],
-  //     ])
-  //     .then((r) => {
-  //       let mes = '';
-  //       if (r.length > 10) {
-  //         mes = ':crown:Илита Friday:crown: \n';
-  //         for (let i = 0; i < 10; i++) {
-  //           if (r[i].count_parrots > 0) {
-  //             mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
-  //           }
-  //         }
-  //         UserMessages.findOne({ user_name: 'slackbot' })
-  //           .then((d) => {
-  //             if (d) {
-  //               mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
-  //             }
-  //             bot.postMessageToChannel(botParams.channelName, mes, messageParams);
-  //             saveLog(data);
-  //           });
-  //       } else {
-  //         mes = ':crown:Илита Friday:crown: \n';
-  //         for (let i = 0; i < r.length; i++) {
-  //           mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
-  //         }
-  //         UserMessages.findOne({ user_name: 'slackbot' })
-  //           .then((d) => {
-  //             if (d) {
-  //               mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
-  //             }
-  //             bot.postMessageToChannel(botParams.channelName, mes, messageParams);
-  //             saveLog(data);
-  //           });
-  //       }
-  //     });
-  // }
 
   if (data.subtype === 'channel_leave' && data.channel === botParams.channelId) {
     if (botParams.leaveActive) {
