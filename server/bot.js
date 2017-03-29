@@ -450,13 +450,13 @@ bot.on('message', (data) => {
           mes = ':crown:Илита Friday:crown: \n';
           for (let i = 0; i < 10; i++) {
             if (r[i].count_parrots > 0) {
-              mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
+              mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} parrots\n`;
             }
           }
           UserMessages.findOne({ user_name: 'slackbot' })
             .then((d) => {
               if (d) {
-                mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
+                mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} parrots\n`;
               }
               bot.postMessageToChannel(botParams.channelName, mes, messageParams);
               saveLog(data);
@@ -464,12 +464,12 @@ bot.on('message', (data) => {
         } else {
           mes = ':crown:Илита Friday:crown: \n';
           for (let i = 0; i < r.length; i++) {
-            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
+            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} parrots\n`;
           }
           UserMessages.findOne({ user_name: 'slackbot' })
             .then((d) => {
               if (d) {
-                mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
+                mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} parrots\n`;
               }
               bot.postMessageToChannel(botParams.channelName, mes, messageParams);
               saveLog(data);
