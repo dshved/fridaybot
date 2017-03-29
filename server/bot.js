@@ -345,6 +345,37 @@ bot.on('message', (data) => {
       }
     );
   }
+  if (data.text === 'PPM') {
+    UserMessages.aggregate([{
+        $project: {
+          user_name: 1,
+          ppm: {
+            $divide: ['$count_parrots', '$count_messages']
+          },
+        },
+      }, {
+        $sort: { ppm: -1 }
+      }],
+      function(err, res) {
+        let mes = ':fp: Рейтинг PPM: :fp:\n';
+        if (res.length > 10) {
+          for (let i = 0; i < 10; i++) {
+            let ppm = Math.round(res[i].ppm * 100) / 100;
+            mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
+          }
+          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+          mes = '';
+        } else {
+          for (let i = 0; i < res.length; i++) {
+            let ppm = Math.round(res[i].ppm * 100) / 100;
+            mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
+          }
+          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+          mes = '';
+        }
+      }
+    );
+  }
 
   if ((data.text === 'БОРОДАТЫЙ АНЕКДОТ') || (data.text === 'АНЕКДОТ') || (data.text === 'РАССКАЖИ АНЕКДОТ')) {
     const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
@@ -468,8 +499,8 @@ bot.on('message', (data) => {
         .replace(/user_name/g, `<@${data.user_profile.name}>`)
         .replace(/channel_name/g, `<#${botParams.channelId}>`);
       bot.postMessageToChannel(
-      botParams.channelName, joinMessage,
-      messageParams);
+        botParams.channelName, joinMessage,
+        messageParams);
     }
   }
 
