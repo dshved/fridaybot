@@ -20,6 +20,9 @@
 - Считать количество отправленных пэрротов:
 <img src="images/count.gif">
 
+- Показывать кто больше всех отправляет пэрротов:
+<img src="images/elite.gif">
+
 - Показывать PPM:
 <img src="images/ppm.gif">
 
