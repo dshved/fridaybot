@@ -9,7 +9,7 @@ const alphabet = [
   },
   {
     letter: 'В',
-    text: ':bb',
+    text: ':bb:',
   },
   {
     letter: 'Г',
