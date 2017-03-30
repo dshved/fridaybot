@@ -7,6 +7,12 @@
 [Web site](http://fridaybot.tk)
 
 ## Что умеет бот?
+- Приветствовать новых пользователей:
+<img src="images/join.gif">
+
+- Прощаться с ушедшими пользователями:
+<img src="images/leave.gif">
+
 - Писать текст из попугаев:
 <img src="images/hi.gif">
 
