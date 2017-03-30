@@ -1,5 +1,6 @@
 const SlackBot = require('./../slackbots.js');
 const aParrots = require('./../alphabet_parrots.js');
+const aEpilepsy = require('./../alphabet_epilepsy.js');
 const config = require('./../config.js');
 
 const fs = require('fs');
@@ -94,15 +95,17 @@ const replaceMention = function(str, resolve) {
 
 
 const replaceTextEmoji = function(str) {
-  const myRegexpEmoji = /^:\w+:/g;
+  // const myRegexpEmoji = /^:\w+:/g;
+  const myRegexpEmoji = /^(:\w+:)|(:\w+.*.\w+:)/g;
   const matchEmoji = myRegexpEmoji.exec(str);
+  console.log(matchEmoji);
   const myObj = {};
   if (matchEmoji) {
     myObj.isExec = true;
     myObj.emoji = matchEmoji[0];
-    myObj.message = str.substr(matchEmoji[0].length+1, str.length)
+    myObj.message = str.substr(matchEmoji[0].length + 1, str.length);
     return myObj;
-  }else {
+  } else {
     myObj.message = str;
     myObj.isExec = false;
     return myObj;
@@ -121,12 +124,18 @@ bot.on('start', () => {
     if (result) {
       messageParams.username = result.name;
       messageParams.icon_emoji = result.icon.emoji;
+      // messageParams.parse = 'full';
       // botParams.channelId = result.channel_id;
       botParams.parrotCount = result.parrot_counts;
       botParams.parrotArray = result.parrot_array;
       botParams.channelName = result.channel_name;
-      botParams.messageJoin = result.user_join.message;
-      botParams.messageLeave = result.user_leave.message;
+
+      botParams.joinActive = result.user_join.active;
+      botParams.joinMessage = result.user_join.message;
+
+      botParams.leaveActive = result.user_leave.active;
+      botParams.leaveMessage = result.user_leave.message;
+
       if (!result.channel_id) {
         bot.getChannel(result.channel_name).then((data) => {
           if (data) {
@@ -194,6 +203,34 @@ bot.on('message', (data) => {
 
   if (data.text) {
     data.text = data.text.toUpperCase();
+  }
+  if (data.text) {
+    if (~data.text.indexOf('ТЕКСТ ') == -1) {
+      let userText = data.text.substr(6);
+      replaceMention(userText, function(message) {
+        userText = message;
+      });
+      setTimeout(function() {
+        const userTextArray = userText.toUpperCase().split('');
+        let sendMessage = '';
+        if (userTextArray.length <= 40) {
+          userTextArray.forEach((item) => {
+            function findLetter(alphabet) {
+              return alphabet.letter === item;
+            }
+            sendMessage += aEpilepsy.find(findLetter).text;
+          });
+          bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+          sendMessage = '';
+
+          const newData = data;
+          newData.text = 'ТЕКСТ';
+          saveLog(newData);
+        } else {
+          bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 40 символов!`, messageParams);
+        }
+      }, 1000);
+    }
   }
 
   if (data.text) {
@@ -337,6 +374,37 @@ bot.on('message', (data) => {
       }
     );
   }
+  if (data.text === 'PPM') {
+    UserMessages.aggregate([{
+        $project: {
+          user_name: 1,
+          ppm: {
+            $divide: ['$count_parrots', '$count_messages']
+          },
+        },
+      }, {
+        $sort: { ppm: -1 }
+      }],
+      function(err, res) {
+        let mes = ':fp: Рейтинг PPM: :fp:\n';
+        if (res.length > 10) {
+          for (let i = 0; i < 10; i++) {
+            let ppm = Math.round(res[i].ppm * 100) / 100;
+            mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
+          }
+          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+          mes = '';
+        } else {
+          for (let i = 0; i < res.length; i++) {
+            let ppm = Math.round(res[i].ppm * 100) / 100;
+            mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
+          }
+          bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+          mes = '';
+        }
+      }
+    );
+  }
 
   if ((data.text === 'БОРОДАТЫЙ АНЕКДОТ') || (data.text === 'АНЕКДОТ') || (data.text === 'РАССКАЖИ АНЕКДОТ')) {
     const randomId = Math.floor(Math.random() * (153260 - 1 + 1)) + 1;
@@ -411,13 +479,13 @@ bot.on('message', (data) => {
           mes = ':crown:Илита Friday:crown: \n';
           for (let i = 0; i < 10; i++) {
             if (r[i].count_parrots > 0) {
-              mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
+              mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} parrots\n`;
             }
           }
           UserMessages.findOne({ user_name: 'slackbot' })
             .then((d) => {
               if (d) {
-                mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
+                mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} parrots\n`;
               }
               bot.postMessageToChannel(botParams.channelName, mes, messageParams);
               saveLog(data);
@@ -425,12 +493,12 @@ bot.on('message', (data) => {
         } else {
           mes = ':crown:Илита Friday:crown: \n';
           for (let i = 0; i < r.length; i++) {
-            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
+            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} parrots\n`;
           }
           UserMessages.findOne({ user_name: 'slackbot' })
             .then((d) => {
               if (d) {
-                mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
+                mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} parrots\n`;
               }
               bot.postMessageToChannel(botParams.channelName, mes, messageParams);
               saveLog(data);
@@ -440,18 +508,29 @@ bot.on('message', (data) => {
   }
 
   if (data.subtype === 'channel_leave' && data.channel === botParams.channelId) {
-    bot.postMessageToChannel(
-      botParams.channelName,
-      `Мы потеряли бойца :sad_parrot: ${data.user_profile.first_name}  покинул нас`,
-      messageParams);
+    if (botParams.leaveActive) {
+      const leaveMessage = botParams.leaveMessage
+        .replace(/first_name/g, data.user_profile.first_name)
+        .replace(/real_name/g, data.user_profile.real_name)
+        .replace(/name/g, `<@${data.user_profile.name}>`);
+      bot.postMessageToChannel(
+        botParams.channelName,
+        leaveMessage,
+        messageParams);
+    }
   }
 
   if (data.subtype === 'channel_join' && data.channel === botParams.channelId) {
-    bot.postMessageToChannel(
-      botParams.channelName,
-      // `Привет <@${data.user_profile.name}>, ${botParams.messageJoin}`,
-      `Привет <@${data.user_profile.name}>, добро пожаловать в наш ламповый чатик!\nЕсть два вопроса к тебе:\n- кто твой любимый эмодзи?\n- какая твоя любимая giphy? \n<#${botParams.channelId}> - это место свободного общения. Здесь любят попугаев и поздравлют всех с пятницей. \nP.S. Если будут обижать, то вызывай милицию! :warneng:`,
-      messageParams);
+    if (botParams.joinActive) {
+      const joinMessage = botParams.joinMessage
+        .replace(/first_name/g, data.user_profile.first_name)
+        .replace(/real_name/g, data.user_profile.real_name)
+        .replace(/user_name/g, `<@${data.user_profile.name}>`)
+        .replace(/channel_name/g, `<#${botParams.channelId}>`);
+      bot.postMessageToChannel(
+        botParams.channelName, joinMessage,
+        messageParams);
+    }
   }
 
   if (data.type === 'message' && data.channel === botParams.channelId && data.subtype !== 'bot_message') {
