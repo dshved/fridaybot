@@ -206,25 +206,30 @@ bot.on('message', (data) => {
   }
   if (data.text) {
     if (~data.text.indexOf('ТЕКСТ ') == -1) {
-      const userText = data.text.substr(6);
-      const userTextArray = userText.toUpperCase().split('');
-      let sendMessage = '';
-      if (userTextArray.length <= 40) {
-        userTextArray.forEach((item) => {
-          function findLetter(alphabet) {
-            return alphabet.letter === item;
-          }
-          sendMessage += aEpilepsy.find(findLetter).text;
-        });
-        bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
-        sendMessage = '';
+      let userText = data.text.substr(6);
+      replaceMention(userText, function(message) {
+        userText = message;
+      });
+      setTimeout(function() {
+        const userTextArray = userText.toUpperCase().split('');
+        let sendMessage = '';
+        if (userTextArray.length <= 40) {
+          userTextArray.forEach((item) => {
+            function findLetter(alphabet) {
+              return alphabet.letter === item;
+            }
+            sendMessage += aEpilepsy.find(findLetter).text;
+          });
+          bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
+          sendMessage = '';
 
-        const newData = data;
-        newData.text = 'ТЕКСТ';
-        saveLog(newData);
-      } else {
-        bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 40 символов!`, messageParams);
-      }
+          const newData = data;
+          newData.text = 'ТЕКСТ';
+          saveLog(newData);
+        } else {
+          bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 40 символов!`, messageParams);
+        }
+      }, 1000);
     }
   }
 
