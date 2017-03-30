@@ -213,7 +213,7 @@ const alphabet = [
   },
   {
     letter: '!',
-    text: 'ex_point',
+    text: ':ex_point:',
   },
   {
     letter: '=',
