@@ -197,7 +197,7 @@ const alphabet = [
   },
   {
     letter: '@',
-    text: 'dogs',
+    text: ':dogs:',
   },
   {
     letter: '#',
