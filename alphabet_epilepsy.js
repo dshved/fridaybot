@@ -109,15 +109,15 @@ const alphabet = [
   },
   {
     letter: 'Ъ',
-    text: 'tz_rus',
+    text: ':tz_rus:',
   },
   {
     letter: 'Ы',
-    text: 'yi_rus',
+    text: ':yi_rus:',
   },
   {
     letter: 'Ь',
-    text: 'mz_rus',
+    text: ':mz_rus:',
   },
   {
     letter: 'Э',
