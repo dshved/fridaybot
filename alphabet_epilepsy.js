@@ -232,6 +232,22 @@ const alphabet = [
     text: ':numbers:',
   },
   {
+    letter: '{',
+    text: ':brace_left:',
+  },
+  {
+    letter: '}',
+    text: ':brace_right:',
+  },
+  {
+    letter: '[',
+    text: ':parenthesis_left:',
+  },
+  {
+    letter: ']',
+    text: ':parenthesis_left:',
+  },
+  {
     letter: ',',
     text: ',',
   },

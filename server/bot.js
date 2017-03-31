@@ -218,7 +218,9 @@ bot.on('message', (data) => {
             function findLetter(alphabet) {
               return alphabet.letter === item;
             }
-            sendMessage += aEpilepsy.find(findLetter).text;
+            if (!!aEpilepsy.find(findLetter)) {
+              sendMessage += aEpilepsy.find(findLetter).text;
+            }
           });
           bot.postMessageToChannel(botParams.channelName, sendMessage, messageParams);
           sendMessage = '';
@@ -320,7 +322,10 @@ bot.on('message', (data) => {
             function findLetter(alphabet) {
               return alphabet.letter === item;
             }
-            sendMessage += aParrots.find(findLetter).text;
+            if (!!aParrots.find(findLetter)) {
+              sendMessage += aParrots.find(findLetter).text;
+            }
+
           });
           let newMessage = replaseEmoji(userText, sendMessage);
           if (replaced) {
