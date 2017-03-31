@@ -4,6 +4,8 @@ const messages = [
   { msg: 'СКАЖИ',  startFrom: true, callback: require('./say').inRow },
   { msg: 'ГОВОРИ', startFrom: true, callback: require('./say').inColumn },
 
+  { msg: 'ТЕКСТ', startFrom: true, callback: require('./say').emojiText },
+
   { msg: 'СКОЛЬКО ПОПУГАЕВ?', startFrom: false, callback: require('./statistic').parrotCount },
   { msg: 'СКОЛЬКО ПОПУГАЕВ',  startFrom: false, callback: require('./statistic').parrotCount },
   { msg: 'СКОЛЬКО?', startFrom: false, callback: require('./statistic').parrotCount },

@@ -1,6 +1,7 @@
 'use strict';
 
 const aParrots = require('./../../../alphabet_parrots.js');
+const aEpilepsy = require('./../../../alphabet_epilepsy.js');
 const UserMessages = require('./../../models/usermessage').UserMessages;
 
 const replaseEmoji = (value, message) => {
@@ -115,11 +116,37 @@ function sayText(text, split, maxW, callback) {
   }, 500);
 }
 
+function sayEmoji(text, split, maxW, callback) {
+  if (text.length > maxW) {
+    callback('', { message: `, ты просишь слишком много... Я могу сказать не больше ${maxW} символов!` });
+    return '';
+  }
+  let userText = text;
+  replaceMention(userText, function(message) {
+    userText = message;
+  });
+  setTimeout(function() {
+    const userTextArray = userText.toUpperCase().split('');
+    let sendMessage = '';
+    userTextArray.forEach((item) => {
+      function findLetter(alphabet) {
+        return alphabet.letter === item;
+      }
+      sendMessage += aEpilepsy.find(findLetter).text;
+    });
+    callback(sendMessage, {});
+    sendMessage = '';
+  }, 1000);
+}
+
 module.exports = {
   inRow: function(text, callback) {
     sayText(text, true, 12, callback);
   },
   inColumn: function(text, callback) {
     sayText(text, false, 10, callback);
+  },
+  emojiText: function(text, callback) {
+    sayEmoji(text, false, 40, callback);
   },
 };
