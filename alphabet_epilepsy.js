@@ -245,7 +245,7 @@ const alphabet = [
   },
   {
     letter: ']',
-    text: ':parenthesis_left:',
+    text: ':parenthesis_right:',
   },
   {
     letter: ',',
