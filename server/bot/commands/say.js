@@ -122,6 +122,7 @@ function sayEmoji(text, split, maxW, callback) {
     return '';
   }
   let userText = text;
+  console.log(userText);
   replaceMention(userText, function(message) {
     userText = message;
   });
@@ -132,7 +133,10 @@ function sayEmoji(text, split, maxW, callback) {
       function findLetter(alphabet) {
         return alphabet.letter === item;
       }
-      sendMessage += aEpilepsy.find(findLetter).text;
+      if (!!aEpilepsy.find(findLetter)) {
+        sendMessage += aEpilepsy.find(findLetter).text;
+      }
+
     });
     callback(sendMessage, {});
     sendMessage = '';
