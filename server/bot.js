@@ -205,6 +205,55 @@ bot.on('message', (data) => {
     data.text = data.text.toUpperCase();
   }
   if (data.text) {
+    if (~data.text.indexOf('РАМКА ') == -1) {
+      let sendMessage = '';
+      const newLetterArray = [];
+      let userText = data.text.substr(6);
+      let countLetters = userText.length > 18 ? 18 : userText.length;
+      var reg = new RegExp(".{1,"+ countLetters +"}","g");
+      userText.match(reg).forEach(w => { newLetterArray.push(w.split('')) });
+      sendMessage += ':cptl:';
+      for (let i=0; i < countLetters; i++) {
+        sendMessage += ':cpt:';
+      }
+      sendMessage += ':cptr:\n';
+      newLetterArray.forEach((item) => {
+        const newArray = [];
+        item.forEach((itm) => {
+          function findLetter(alphabet) {
+            return alphabet.letter === itm;
+          }
+          if (!!aEpilepsy.find(findLetter)) {
+            newArray.push(aEpilepsy.find(findLetter).text);
+          }
+        });
+        if (newArray.length < countLetters) {
+          let contSpace = countLetters - newArray.length;
+          for (let i = 0; i < contSpace; i++ ) {
+            newArray.push(':sp:');
+          }
+        }
+        sendMessage += ':cpl:';
+        for (let i=0; i < newArray.length; i++) {
+          if (i == (countLetters -1)) {
+            sendMessage  +=  newArray[i] + ':cpr:\n';
+          } else {
+            sendMessage  += newArray[i];
+          }
+        }
+      });
+      sendMessage += ':cpbl:';
+      for (let i=0; i < countLetters; i++) {
+        sendMessage += ':cpt:';
+      }
+      sendMessage += ':cpbr:\n';
+      let newMessage = sendMessage;
+      bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
+
+    }
+  }
+
+  if (data.text) {
     if (~data.text.indexOf('ТЕКСТ ') == -1) {
       let userText = data.text.substr(6);
       replaceMention(userText, function(message) {
