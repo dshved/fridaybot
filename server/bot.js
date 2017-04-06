@@ -224,7 +224,7 @@ bot.on('message', (data) => {
         }
         
 
-        let countLetters = userText.length > 18 ? 18 : userText.length;
+        let countLetters = userText.length > 16 ? 16 : userText.length;
         var reg = new RegExp(".{1," + countLetters + "}", "g");
         userText.match(reg).forEach(w => { newLetterArray.push(w.split('')) });
         sendMessage += ':cptl:';
