@@ -133,7 +133,7 @@ const alphabet = [
   },
   {
     letter: ' ',
-    text: '   ',
+    text: ':sp:',
   },
   {
     letter: '1',

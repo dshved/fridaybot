@@ -98,7 +98,6 @@ const replaceTextEmoji = function(str) {
   // const myRegexpEmoji = /^:\w+:/g;
   const myRegexpEmoji = /^(:\w+:)|(:\w+.*.\w+:)/g;
   const matchEmoji = myRegexpEmoji.exec(str);
-  console.log(matchEmoji);
   const myObj = {};
   if (matchEmoji) {
     myObj.isExec = true;
@@ -209,46 +208,71 @@ bot.on('message', (data) => {
       let sendMessage = '';
       const newLetterArray = [];
       let userText = data.text.substr(6);
-      let countLetters = userText.length > 18 ? 18 : userText.length;
-      var reg = new RegExp(".{1,"+ countLetters +"}","g");
-      userText.match(reg).forEach(w => { newLetterArray.push(w.split('')) });
-      sendMessage += ':cptl:';
-      for (let i=0; i < countLetters; i++) {
-        sendMessage += ':cpt:';
-      }
-      sendMessage += ':cptr:\n';
-      newLetterArray.forEach((item) => {
-        const newArray = [];
-        item.forEach((itm) => {
-          function findLetter(alphabet) {
-            return alphabet.letter === itm;
+      replaceMention(userText, function(message) {
+        userText = message;
+
+      });
+      setTimeout(function() {
+        userText = userText.toUpperCase();
+        const newStr = replaceTextEmoji(userText);
+        let replaced = false;
+        let replacedEmoji;
+        if (newStr.isExec) {
+          replaced = true;
+          replacedEmoji = newStr.emoji;
+          userText = newStr.message;
+        }
+        
+
+        let countLetters = userText.length > 18 ? 18 : userText.length;
+        var reg = new RegExp(".{1," + countLetters + "}", "g");
+        userText.match(reg).forEach(w => { newLetterArray.push(w.split('')) });
+        sendMessage += ':cptl:';
+        for (let i = 0; i < countLetters; i++) {
+          sendMessage += ':cpt:';
+        }
+        sendMessage += ':cptr:\n';
+        newLetterArray.forEach((item) => {
+          const newArray = [];
+          item.forEach((itm) => {
+            function findLetter(alphabet) {
+              return alphabet.letter === itm;
+            }
+            if (!!aEpilepsy.find(findLetter)) {
+              newArray.push(aEpilepsy.find(findLetter).text);
+            }
+          });
+
+          if (newArray.length < countLetters) {
+            let contSpace = countLetters - newArray.length;
+            for (let i = 0; i < contSpace; i++) {
+              newArray.push(':sp:');
+            }
           }
-          if (!!aEpilepsy.find(findLetter)) {
-            newArray.push(aEpilepsy.find(findLetter).text);
+          sendMessage += ':cpl:';
+          for (let i = 0; i < newArray.length; i++) {
+            if (i == (countLetters - 1)) {
+              sendMessage += newArray[i] + ':cpr:\n';
+            } else {
+              sendMessage += newArray[i];
+            }
           }
         });
-        if (newArray.length < countLetters) {
-          let contSpace = countLetters - newArray.length;
-          for (let i = 0; i < contSpace; i++ ) {
-            newArray.push(':sp:');
-          }
+        sendMessage += ':cpbl:';
+        for (let i = 0; i < countLetters; i++) {
+          sendMessage += ':cpb:';
         }
-        sendMessage += ':cpl:';
-        for (let i=0; i < newArray.length; i++) {
-          if (i == (countLetters -1)) {
-            sendMessage  +=  newArray[i] + ':cpr:\n';
-          } else {
-            sendMessage  += newArray[i];
-          }
+        sendMessage += ':cpbr:\n';
+
+        let newMessage = replaseEmoji(userText, sendMessage);
+        if (replaced) {
+          newMessage = newMessage
+            .replace(/:cpt:|:cpb:|:cpl:|:cpr:|:cptl:|:cptr:|:cpbl:|:cpbr:/g, replacedEmoji);
         }
-      });
-      sendMessage += ':cpbl:';
-      for (let i=0; i < countLetters; i++) {
-        sendMessage += ':cpt:';
-      }
-      sendMessage += ':cpbr:\n';
-      let newMessage = sendMessage;
-      bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
+        bot.postMessageToChannel(botParams.channelName, newMessage, messageParams);
+
+      }, 1000);
+
 
     }
   }
