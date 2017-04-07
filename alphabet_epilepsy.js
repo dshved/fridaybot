@@ -177,7 +177,7 @@ const alphabet = [
   },
   {
     letter: '/',
-    text: '/',
+    text: ':slash:',
   },
   {
     letter: '\n',
@@ -185,7 +185,7 @@ const alphabet = [
   },
   {
     letter: '\\',
-    text: '',
+    text: ':slash_back:',
   },
   {
     letter: '-',
@@ -193,7 +193,7 @@ const alphabet = [
   },
   {
     letter: '.',
-    text: '.',
+    text: ':dot:',
   },
   {
     letter: '@',
@@ -205,7 +205,7 @@ const alphabet = [
   },
   {
     letter: ':',
-    text: ':',
+    text: ':colon:',
   },
   {
     letter: '*',
@@ -221,11 +221,11 @@ const alphabet = [
   },
   {
     letter: '"',
-    text: '"',
+    text: ':quotes:',
   },
   {
     letter: '"',
-    text: '"',
+    text: ':quotes:',
   },
   {
     letter: '№',
@@ -249,7 +249,7 @@ const alphabet = [
   },
   {
     letter: ',',
-    text: ',',
+    text: ':coma:',
   },
   {
     letter: '+',
