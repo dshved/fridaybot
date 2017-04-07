@@ -208,6 +208,8 @@ bot.on('message', (data) => {
       let sendMessage = '';
       const newLetterArray = [];
       let userText = data.text.substr(6);
+      userText = userText.replace(/&AMP;/g, '&').replace(/&LT;/g, '<').replace(/&GT;/g, '>');
+      userText.replace(/&AMP;/g, '&').replace(/&LT;/g, '<').replace(/&GT;/g, '>');
       replaceMention(userText, function(message) {
         userText = message;
 
@@ -285,6 +287,7 @@ bot.on('message', (data) => {
   if (data.text) {
     if (~data.text.indexOf('ТЕКСТ ') == -1) {
       let userText = data.text.substr(6);
+      userText = userText.replace(/&AMP;/g, '&').replace(/&LT;/g, '<').replace(/&GT;/g, '>');
       replaceMention(userText, function(message) {
         userText = message;
       });
