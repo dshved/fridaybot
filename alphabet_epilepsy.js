@@ -208,6 +208,10 @@ const alphabet = [
     text: ':colon:',
   },
   {
+    letter: ';',
+    text: ':semi_colon:',
+  },
+  {
     letter: '*',
     text: ':starss:',
   },
