@@ -221,11 +221,55 @@ const alphabet = [
   },
   {
     letter: '"',
+    text: ':quotes_two:',
+  },
+  {
+    letter: '\'',
     text: ':quotes:',
   },
   {
+    letter: '<',
+    text: ':less_sign:',
+  },
+  {
+    letter: '>',
+    text: ':more_sign:',
+  },
+  {
+    letter: '^',
+    text: ':caret:',
+  },
+  {
+    letter: '&',
+    text: ':ampersand:',
+  },
+  {
+    letter: '$',
+    text: ':dollar:',
+  },
+  {
+    letter: '%',
+    text: ':procent:',
+  },
+  {
+    letter: '|',
+    text: ':line:',
+  },
+  {
+    letter: '`',
+    text: ':coma_up:',
+  },
+  {
+    letter: '_',
+    text: ':underscore:',
+  },
+  {
+    letter: '~',
+    text: ':tilda:',
+  },
+  {
     letter: '"',
-    text: ':quotes:',
+    text: ':quotes_two:',
   },
   {
     letter: '№',
