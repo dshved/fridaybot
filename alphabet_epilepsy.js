@@ -228,11 +228,11 @@ const alphabet = [
     text: ':quotes:',
   },
   {
-    letter: '\<',
+    letter: '<',
     text: ':less_sign:',
   },
   {
-    letter: '\>',
+    letter: '>',
     text: ':more_sign:',
   },
   {
@@ -240,7 +240,7 @@ const alphabet = [
     text: ':caret:',
   },
   {
-    letter: '\&',
+    letter: '&',
     text: ':ampersand:',
   },
   {
