@@ -224,6 +224,14 @@ const alphabet = [
     text: ':equally:',
   },
   {
+    letter: ')',
+    text: ':closing_bracket:',
+  },
+  {
+    letter: '(',
+    text: ':opening_bracket:',
+  },
+  {
     letter: '"',
     text: ':quotes_two:',
   },
