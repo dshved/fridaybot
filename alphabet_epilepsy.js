@@ -245,7 +245,7 @@ const alphabet = [
   },
   {
     letter: '$',
-    text: ':dollar:',
+    text: ':dollars:',
   },
   {
     letter: '%',
