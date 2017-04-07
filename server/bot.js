@@ -225,7 +225,7 @@ bot.on('message', (data) => {
           userText = newStr.message;
         }
 
-        if (userText.length <= 100) {
+        if (userText.length <= 300) {
           let countLetters = userText.length > 16 ? 16 : userText.length;
           var reg = new RegExp(".{1," + countLetters + "}", "g");
           userText.match(reg).forEach(w => { newLetterArray.push(w.split('')) });
@@ -275,7 +275,7 @@ bot.on('message', (data) => {
 
 
         } else {
-          bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 100 символов!`, messageParams);
+          bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 300 символов!`, messageParams);
         }
 
       }, 1000);
@@ -294,7 +294,7 @@ bot.on('message', (data) => {
       setTimeout(function() {
         const userTextArray = userText.toUpperCase().split('');
         let sendMessage = '';
-        if (userTextArray.length <= 100) {
+        if (userTextArray.length <= 300) {
           userTextArray.forEach((item) => {
             function findLetter(alphabet) {
               return alphabet.letter === item;
@@ -310,7 +310,7 @@ bot.on('message', (data) => {
           newData.text = 'ТЕКСТ';
           saveLog(newData);
         } else {
-          bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 100 символов!`, messageParams);
+          bot.postMessageToChannel(botParams.channelName, `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 300 символов!`, messageParams);
         }
       }, 1000);
     }
