@@ -650,3 +650,12 @@ bot.on('message', (data) => {
       });
   }
 });
+
+
+bot.on('close', (e) => {
+  console.log('websocket closing', e);
+});
+
+bot.on('error', (e) => {
+  console.log('error', e);
+});

@@ -148,13 +148,23 @@ class Bot extends EventEmitter {
      * @param {string} id
      * @returns {object}
      */
-    getUserById(id) {
-        return this.getUsers().then(function(data) {
-            var res = _.find(data.members, { id: id });
+    // getUserById(id) {
+    //     return this.getUsers().then(function(data) {
+    //         var res = _.find(data.members, { id: id });
 
-            console.assert(res, 'user not found');
-            return res;
-        });
+    //         console.assert(res, 'user not found');
+    //         return res;
+    //     });
+    // }
+    getUserById(id) {
+        return this.getUsers()
+          .then(function(data) {
+              var res = _.find(data.members, { id: id });
+
+              console.assert(res, 'user not found');
+              return res;
+          })
+          .catch((data) => console.log(data));
     }
 
      /**
