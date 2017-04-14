@@ -214,7 +214,7 @@ bot.on('message', (data) => {
             "fallback": currentReddit.title,
             "color": "#36a64f",
             // "pretext": "Optional text that appears above the attachment block",
-            "author_name": "gregsometimes",
+            "author_name": currentReddit.author,
             // "author_link": "http://flickr.com/bobby/",
             // "author_icon": "http://flickr.com/icons/bobby.jpg",
             "title": currentReddit.title,
