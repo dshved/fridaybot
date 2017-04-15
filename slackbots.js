@@ -120,7 +120,7 @@ class Bot extends EventEmitter {
      */
   getUser(name) {
     return this.getUsers().then(data => {
-      const res = _.find(data.members, { name: name });
+      const res = _.find(data.members, { name });
 
       console.assert(res, 'user not found');
       return res;
@@ -134,7 +134,7 @@ class Bot extends EventEmitter {
      */
   getChannel(name) {
     return this.getChannels().then(data => {
-      const res = _.find(data.channels, { name: name });
+      const res = _.find(data.channels, { name });
 
       console.assert(res, 'channel not found');
       return res;
@@ -148,7 +148,7 @@ class Bot extends EventEmitter {
      */
   getGroup(name) {
     return this.getGroups().then(data => {
-      const res = _.find(data.groups, { name: name });
+      const res = _.find(data.groups, { name });
 
       console.assert(res, 'group not found');
       return res;
@@ -171,7 +171,7 @@ class Bot extends EventEmitter {
   getUserById(id) {
     return this.getUsers()
       .then(data => {
-        const res = _.find(data.members, { id: id });
+        const res = _.find(data.members, { id });
 
         console.assert(res, 'user not found');
         return res;
@@ -186,7 +186,7 @@ class Bot extends EventEmitter {
       */
   getChannelById(id) {
     return this.getChannels().then(data => {
-      const res = _.find(data.channels, { id: id });
+      const res = _.find(data.channels, { id });
 
       console.assert(res, 'channel not found');
       return res;
@@ -200,7 +200,7 @@ class Bot extends EventEmitter {
      */
   getGroupById(id) {
     return this.getGroups().then(data => {
-      const res = _.find(data.groups, { id: id });
+      const res = _.find(data.groups, { id });
 
       console.assert(res, 'group not found');
       return res;
@@ -240,7 +240,7 @@ class Bot extends EventEmitter {
      * @returns {object}
      */
   getUserByEmail(email) {
-    return this.getUsers().then(data => _.find(data.members, { profile: { email: email } }));
+    return this.getUsers().then(data => _.find(data.members, { profile: { email } }));
   }
 
   /**
@@ -279,7 +279,7 @@ class Bot extends EventEmitter {
   postMessage(id, text, params) {
     params = extend(
       {
-        text: text,
+        text,
         channel: id,
         username: this.name,
       },
@@ -300,10 +300,10 @@ class Bot extends EventEmitter {
   updateMessage(id, ts, text, params) {
     params = extend(
       {
-        ts: ts,
+        ts,
         channel: id,
         username: this.name,
-        text: text,
+        text,
       },
       params || {},
     );
@@ -403,7 +403,7 @@ class Bot extends EventEmitter {
     ]).then(
       data => {
         const all = [].concat(data[0].channels, data[1].members, data[2].groups);
-        const result = _.find(all, { name: name });
+        const result = _.find(all, { name });
 
         console.assert(result, 'wrong name');
 
