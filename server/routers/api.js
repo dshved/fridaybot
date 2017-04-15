@@ -12,7 +12,7 @@ const getBotMessages = (req, res, next) => {
     if (data) {
       res.send({
         msg: 'success',
-        data: data,
+        data,
       });
     } else {
       res.send(404);
@@ -70,7 +70,7 @@ const getUserMessages = (req, res, next) => {
     if (data) {
       res.send({
         msg: 'success',
-        data: data,
+        data,
       });
     } else {
       res.send(404);
@@ -83,7 +83,7 @@ const getBotSettings = (req, res, next) => {
     if (data) {
       res.send({
         msg: 'success',
-        data: data,
+        data,
       });
     } else {
       res.send(404);
