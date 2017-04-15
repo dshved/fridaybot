@@ -8,12 +8,12 @@ const mongoose = require('mongoose');
 const User = require('../models/usermessage').UserMessages;
 const Auth = require('../middlewares/auth');
 
-router.get('/', function(req, res) {
+router.get('/', (req, res) => {
   res.redirect('/');
   // res.json({ message: 'Welcome to the cooest API on earth!' });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', (req, res, next) => {
   console.log(req.body);
   var name = req.body.name;
   var password = req.body.password;
@@ -23,7 +23,7 @@ router.post('/', function(req, res, next) {
     req.headers['x-access-token'];
 
   if (token) {
-    jwt.verify(token, 'abcdef', function(err, decoded) {
+    jwt.verify(token, 'abcdef', (err, decoded) => {
       if (err) {
         return next(err);
       } else {
@@ -32,7 +32,7 @@ router.post('/', function(req, res, next) {
       }
     });
   } else {
-    User.findOne({ user_name: name }, function(err, user) {
+    User.findOne({ user_name: name }, (err, user) => {
       if (err) return next(err);
 
       if (!user) {
@@ -65,8 +65,8 @@ router.post('/', function(req, res, next) {
 
 router.use(Auth);
 
-router.get('/users', function(req, res) {
-  User.find({}, function(err, users) {
+router.get('/users', (req, res) => {
+  User.find({}, (err, users) => {
     res.json(users);
   });
 });

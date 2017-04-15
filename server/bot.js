@@ -300,11 +300,11 @@ bot.on('message', data => {
         .replace(/&AMP;/g, '&')
         .replace(/&LT;/g, '<')
         .replace(/&GT;/g, '>');
-      replaceMention(userText, function(message) {
+      replaceMention(userText, message => {
         userText = message;
       });
       setTimeout(
-        function() {
+        () => {
           userText = userText.toUpperCase();
           const newStr = replaceTextEmoji(userText);
           let replaced = false;
@@ -390,11 +390,11 @@ bot.on('message', data => {
         .replace(/&AMP;/g, '&')
         .replace(/&LT;/g, '<')
         .replace(/&GT;/g, '>');
-      replaceMention(userText, function(message) {
+      replaceMention(userText, message => {
         userText = message;
       });
       setTimeout(
-        function() {
+        () => {
           const userTextArray = userText.toUpperCase().split('');
           let sendMessage = '';
           if (userTextArray.length <= 300) {
@@ -432,7 +432,7 @@ bot.on('message', data => {
   if (data.text) {
     if (~data.text.indexOf('СКАЖИ ') == -1) {
       let userText = data.text.substr(6);
-      replaceMention(userText, function(message) {
+      replaceMention(userText, message => {
         userText = message;
       });
       const newStr = replaceTextEmoji(userText);
@@ -444,7 +444,7 @@ bot.on('message', data => {
         userText = newStr.message;
       }
       setTimeout(
-        function() {
+        () => {
           const userTextArray = userText.toUpperCase().split('');
           if (userTextArray.length <= 12) {
             const newLetterArray = [];
@@ -509,7 +509,7 @@ bot.on('message', data => {
   if (data.text) {
     if (~data.text.indexOf('ГОВОРИ ') == -1) {
       let userText = data.text.substr(7);
-      replaceMention(userText, function(message) {
+      replaceMention(userText, message => {
         userText = message;
       });
       const newStr = replaceTextEmoji(userText);
@@ -521,7 +521,7 @@ bot.on('message', data => {
         userText = newStr.message;
       }
       setTimeout(
-        function() {
+        () => {
           const userTextArray = userText.toUpperCase().split('');
           let sendMessage = '';
           if (userTextArray.length <= 10) {
@@ -601,7 +601,7 @@ bot.on('message', data => {
           $sort: { count: -1 },
         },
       ],
-      function(err, res) {
+      (err, res) => {
         let mes = 'Статистика вызова команд:\n';
         for (let i = 0; i < res.length; i++) {
           mes += `${i + 1}. ${res[i]._id} - ${res[i].count}\n`;
@@ -626,7 +626,7 @@ bot.on('message', data => {
           $sort: { ppm: -1 },
         },
       ],
-      function(err, res) {
+      (err, res) => {
         let mes = ':fp: Рейтинг PPM: :fp:\n';
         if (res.length > 10) {
           for (let i = 0; i < 10; i++) {

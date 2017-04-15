@@ -7,7 +7,7 @@ const auth = function(req, res, next) {
     req.headers['x-access-token'];
 
   if (token) {
-    jwt.verify(token, 'abcdef', function(err, decoded) {
+    jwt.verify(token, 'abcdef', (err, decoded) => {
       if (err) {
         return res.json({ success: false, message: 'Failed token' });
       } else {
