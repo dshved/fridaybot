@@ -31,11 +31,11 @@ const saveLog = d => {
 };
 
 const commandsSlackMessage = fs.readFileSync(
-  __dirname + '/./../COMMANDS_SLACK.txt',
+  `${__dirname}/./../COMMANDS_SLACK.txt`,
   'utf-8',
 );
 const changelogSlackMessage = fs.readFileSync(
-  __dirname + '/./../CHANGELOG.md',
+  `${__dirname}/./../CHANGELOG.md`,
   'utf-8',
 );
 
@@ -317,7 +317,7 @@ bot.on('message', data => {
 
           if (userText.length <= 300) {
             let countLetters = userText.length > 16 ? 16 : userText.length;
-            const reg = new RegExp('.{1,' + countLetters + '}', 'g');
+            const reg = new RegExp(`.{1,${countLetters}}`, 'g');
             userText.match(reg).forEach(w => {
               newLetterArray.push(w.split(''));
             });
@@ -346,7 +346,7 @@ bot.on('message', data => {
               sendMessage += ':cpl:';
               for (let i = 0; i < newArray.length; i++) {
                 if (i == countLetters - 1) {
-                  sendMessage += newArray[i] + ':cpr:\n';
+                  sendMessage += `${newArray[i]}:cpr:\n`;
                 } else {
                   sendMessage += newArray[i];
                 }
