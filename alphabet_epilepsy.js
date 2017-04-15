@@ -236,7 +236,7 @@ const alphabet = [
     text: ':quotes_two:',
   },
   {
-    letter: '\'',
+    letter: "'",
     text: ':quotes:',
   },
   {
@@ -422,5 +422,3 @@ const alphabet = [
 ];
 
 module.exports = alphabet;
-
-

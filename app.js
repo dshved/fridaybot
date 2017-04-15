@@ -42,14 +42,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-app.use(session({
-  secret: 'sdfsd3GDJD8sgahsa',
-  saveUninitialized: false,
-  resave: false,
-  store: new MongoStore({ url: config.db.path })
-}));
-
+app.use(
+  session({
+    secret: 'sdfsd3GDJD8sgahsa',
+    saveUninitialized: false,
+    resave: false,
+    store: new MongoStore({ url: config.db.path }),
+  }),
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -57,7 +57,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(router);
 app.use('/login', login);
 app.use('/api', api);
-
 
 app.get('/logout', function(req, res) {
   req.session.destroy();
@@ -70,9 +69,7 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-
 app.use(function(err, req, res, next) {
-
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 

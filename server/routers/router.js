@@ -16,13 +16,16 @@ router.get('/', function(req, res, next) {
 
 router.get('/home', Auth, function(req, res, next) {
   const data = {};
-  BotMessages.find({}).then((messages) => {
+  BotMessages.find({}).then(messages => {
     if (messages) {
       data.messages = messages;
-      BotSettings.findOne().then((settings) => {
+      BotSettings.findOne().then(settings => {
         if (settings) {
           data.settings = settings;
-          res.render('home', {messages: data.messages, settings: data.settings});
+          res.render('home', {
+            messages: data.messages,
+            settings: data.settings,
+          });
         }
       });
     }

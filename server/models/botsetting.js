@@ -34,10 +34,12 @@ const botSettings = new Schema({
   },
   commands: {
     type: Array,
-    defautl: [{
-      command_name: 'есть кто живой?',
-      commant_id: 0,
-    }],
+    defautl: [
+      {
+        command_name: 'есть кто живой?',
+        commant_id: 0,
+      },
+    ],
   },
   user_join: {
     active: {
@@ -59,9 +61,7 @@ const botSettings = new Schema({
       default: 'Пока',
     },
   },
-
 });
-
 
 const BotSettings = mongoose.model('BotSettings', botSettings);
 
