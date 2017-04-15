@@ -29,7 +29,7 @@ require('./server/bot');
 app.set('views', path.join(__dirname, 'server/views'));
 app.set('view engine', 'pug');
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.io = io;
   next();
 });
@@ -58,18 +58,18 @@ app.use(router);
 app.use('/login', login);
 app.use('/api', api);
 
-app.get('/logout', function(req, res) {
+app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
 });
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 

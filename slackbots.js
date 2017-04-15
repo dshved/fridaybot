@@ -54,27 +54,27 @@ class Bot extends EventEmitter {
 
     this.ws.on(
       'open',
-      function(data) {
+      data => {
         this.emit('open', data);
-      }.bind(this),
+      },
     );
 
     this.ws.on(
       'close',
-      function(data) {
+      data => {
         this.emit('close', data);
-      }.bind(this),
+      },
     );
 
     this.ws.on(
       'message',
-      function(data) {
+      data => {
         try {
           this.emit('message', JSON.parse(data));
         } catch (e) {
           console.log(e);
         }
-      }.bind(this),
+      },
     );
   }
 
@@ -119,7 +119,7 @@ class Bot extends EventEmitter {
      * @returns {object}
      */
   getUser(name) {
-    return this.getUsers().then(function(data) {
+    return this.getUsers().then(data => {
       var res = _.find(data.members, { name: name });
 
       console.assert(res, 'user not found');
@@ -133,7 +133,7 @@ class Bot extends EventEmitter {
      * @returns {object}
      */
   getChannel(name) {
-    return this.getChannels().then(function(data) {
+    return this.getChannels().then(data => {
       var res = _.find(data.channels, { name: name });
 
       console.assert(res, 'channel not found');
@@ -147,7 +147,7 @@ class Bot extends EventEmitter {
      * @returns {object}
      */
   getGroup(name) {
-    return this.getGroups().then(function(data) {
+    return this.getGroups().then(data => {
       var res = _.find(data.groups, { name: name });
 
       console.assert(res, 'group not found');
@@ -170,7 +170,7 @@ class Bot extends EventEmitter {
   // }
   getUserById(id) {
     return this.getUsers()
-      .then(function(data) {
+      .then(data => {
         var res = _.find(data.members, { id: id });
 
         console.assert(res, 'user not found');
@@ -185,7 +185,7 @@ class Bot extends EventEmitter {
       * @returns {object}
       */
   getChannelById(id) {
-    return this.getChannels().then(function(data) {
+    return this.getChannels().then(data => {
       var res = _.find(data.channels, { id: id });
 
       console.assert(res, 'channel not found');
@@ -199,7 +199,7 @@ class Bot extends EventEmitter {
       * @returns {object}
      */
   getGroupById(id) {
-    return this.getGroups().then(function(data) {
+    return this.getGroups().then(data => {
       var res = _.find(data.groups, { id: id });
 
       console.assert(res, 'group not found');
@@ -213,9 +213,7 @@ class Bot extends EventEmitter {
      * @returns {string}
      */
   getChannelId(name) {
-    return this.getChannel(name).then(function(channel) {
-      return channel.id;
-    });
+    return this.getChannel(name).then(channel => channel.id);
   }
 
   /**
@@ -224,9 +222,7 @@ class Bot extends EventEmitter {
      * @returns {string}
      */
   getGroupId(name) {
-    return this.getGroup(name).then(function(group) {
-      return group.id;
-    });
+    return this.getGroup(name).then(group => group.id);
   }
 
   /**
@@ -235,9 +231,7 @@ class Bot extends EventEmitter {
      * @returns {string}
      */
   getUserId(name) {
-    return this.getUser(name).then(function(user) {
-      return user.id;
-    });
+    return this.getUser(name).then(user => user.id);
   }
 
   /**
@@ -246,9 +240,7 @@ class Bot extends EventEmitter {
      * @returns {object}
      */
   getUserByEmail(email) {
-    return this.getUsers().then(function(data) {
-      return _.find(data.members, { profile: { email: email } });
-    });
+    return this.getUsers().then(data => _.find(data.members, { profile: { email: email } }));
   }
 
   /**
@@ -259,15 +251,13 @@ class Bot extends EventEmitter {
   getChatId(name) {
     return this.getUser(name)
       .then(
-        function(data) {
+        data => {
           var chatId = _.find(this.ims, { user: data.id });
 
           return (chatId && chatId.id) || this.openIm(data.id);
-        }.bind(this),
+        },
       )
-      .then(function(data) {
-        return typeof data === 'string' ? data : data.channel.id;
-      });
+      .then(data => (typeof data === 'string' ? data : data.channel.id));
   }
 
   /**
@@ -388,11 +378,9 @@ class Bot extends EventEmitter {
 
     return this[method](name)
       .then(
-        function(itemId) {
-          return this.postMessage(itemId, text, params);
-        }.bind(this),
+        itemId => this.postMessage(itemId, text, params),
       )
-      .always(function(data) {
+      .always(data => {
         if (cb) {
           cb(data._value);
         }
@@ -413,7 +401,7 @@ class Bot extends EventEmitter {
       this.getUsers(),
       this.getGroups(),
     ]).then(
-      function(data) {
+      data => {
         var all = [].concat(data[0].channels, data[1].members, data[2].groups);
         var result = _.find(all, { name: name });
 
@@ -426,7 +414,7 @@ class Bot extends EventEmitter {
         } else {
           return this.postMessageToUser(name, text, params, cb);
         }
-      }.bind(this),
+      },
     );
   }
 
@@ -439,7 +427,7 @@ class Bot extends EventEmitter {
   _preprocessParams(params) {
     params = extend(params || {}, { token: this.token });
 
-    Object.keys(params).forEach(function(name) {
+    Object.keys(params).forEach(name => {
       var param = params[name];
 
       if (param && typeof param === 'object') {
@@ -463,8 +451,8 @@ class Bot extends EventEmitter {
       form: this._preprocessParams(params),
     };
 
-    return new Vow.Promise(function(resolve, reject) {
-      request.post(data, function(err, request, body) {
+    return new Vow.Promise((resolve, reject) => {
+      request.post(data, (err, request, body) => {
         if (err) {
           reject(err);
 
