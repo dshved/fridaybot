@@ -1,11 +1,11 @@
 'use strict';
 
-var _ = require('lodash');
-var request = require('request');
-var Vow = require('vow');
-var extend = require('extend');
-var WebSocket = require('ws');
-var EventEmitter = require('events').EventEmitter;
+const _ = require('lodash');
+const request = require('request');
+const Vow = require('vow');
+const extend = require('extend');
+const WebSocket = require('ws');
+const EventEmitter = require('events').EventEmitter;
 
 class Bot extends EventEmitter {
   /**
@@ -120,7 +120,7 @@ class Bot extends EventEmitter {
      */
   getUser(name) {
     return this.getUsers().then(data => {
-      var res = _.find(data.members, { name: name });
+      const res = _.find(data.members, { name: name });
 
       console.assert(res, 'user not found');
       return res;
@@ -134,7 +134,7 @@ class Bot extends EventEmitter {
      */
   getChannel(name) {
     return this.getChannels().then(data => {
-      var res = _.find(data.channels, { name: name });
+      const res = _.find(data.channels, { name: name });
 
       console.assert(res, 'channel not found');
       return res;
@@ -148,7 +148,7 @@ class Bot extends EventEmitter {
      */
   getGroup(name) {
     return this.getGroups().then(data => {
-      var res = _.find(data.groups, { name: name });
+      const res = _.find(data.groups, { name: name });
 
       console.assert(res, 'group not found');
       return res;
@@ -171,7 +171,7 @@ class Bot extends EventEmitter {
   getUserById(id) {
     return this.getUsers()
       .then(data => {
-        var res = _.find(data.members, { id: id });
+        const res = _.find(data.members, { id: id });
 
         console.assert(res, 'user not found');
         return res;
@@ -186,7 +186,7 @@ class Bot extends EventEmitter {
       */
   getChannelById(id) {
     return this.getChannels().then(data => {
-      var res = _.find(data.channels, { id: id });
+      const res = _.find(data.channels, { id: id });
 
       console.assert(res, 'channel not found');
       return res;
@@ -200,7 +200,7 @@ class Bot extends EventEmitter {
      */
   getGroupById(id) {
     return this.getGroups().then(data => {
-      var res = _.find(data.groups, { id: id });
+      const res = _.find(data.groups, { id: id });
 
       console.assert(res, 'group not found');
       return res;
@@ -252,7 +252,7 @@ class Bot extends EventEmitter {
     return this.getUser(name)
       .then(
         data => {
-          var chatId = _.find(this.ims, { user: data.id });
+          const chatId = _.find(this.ims, { user: data.id });
 
           return (chatId && chatId.id) || this.openIm(data.id);
         },
@@ -364,7 +364,7 @@ class Bot extends EventEmitter {
      * @private
      */
   _post(type, name, text, params, cb) {
-    var method = {
+    const method = {
       group: 'getGroupId',
       channel: 'getChannelId',
       user: 'getChatId',
@@ -402,8 +402,8 @@ class Bot extends EventEmitter {
       this.getGroups(),
     ]).then(
       data => {
-        var all = [].concat(data[0].channels, data[1].members, data[2].groups);
-        var result = _.find(all, { name: name });
+        const all = [].concat(data[0].channels, data[1].members, data[2].groups);
+        const result = _.find(all, { name: name });
 
         console.assert(result, 'wrong name');
 
@@ -428,7 +428,7 @@ class Bot extends EventEmitter {
     params = extend(params || {}, { token: this.token });
 
     Object.keys(params).forEach(name => {
-      var param = params[name];
+      const param = params[name];
 
       if (param && typeof param === 'object') {
         params[name] = JSON.stringify(param);
@@ -446,7 +446,7 @@ class Bot extends EventEmitter {
      * @private
      */
   _api(methodName, params) {
-    var data = {
+    const data = {
       url: 'https://slack.com/api/' + methodName,
       form: this._preprocessParams(params),
     };
