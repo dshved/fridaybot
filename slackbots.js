@@ -447,7 +447,7 @@ class Bot extends EventEmitter {
      */
   _api(methodName, params) {
     const data = {
-      url: 'https://slack.com/api/' + methodName,
+      url: `https://slack.com/api/${methodName}`,
       form: this._preprocessParams(params),
     };
 
