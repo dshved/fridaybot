@@ -317,7 +317,7 @@ bot.on('message', data => {
 
           if (userText.length <= 300) {
             let countLetters = userText.length > 16 ? 16 : userText.length;
-            var reg = new RegExp('.{1,' + countLetters + '}', 'g');
+            const reg = new RegExp('.{1,' + countLetters + '}', 'g');
             userText.match(reg).forEach(w => {
               newLetterArray.push(w.split(''));
             });

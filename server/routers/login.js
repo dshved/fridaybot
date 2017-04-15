@@ -15,9 +15,9 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res, next) => {
   console.log(req.body);
-  var name = req.body.name;
-  var password = req.body.password;
-  var token = req.session.token ||
+  const name = req.body.name;
+  const password = req.body.password;
+  let token = req.session.token ||
     req.body.token ||
     req.query.token ||
     req.headers['x-access-token'];

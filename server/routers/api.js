@@ -112,7 +112,7 @@ router.get('/', (req, res) => {
 });
 
 const auth = function(req, res, next) {
-  var token = req.session.token ||
+  const token = req.session.token ||
     req.body.token ||
     req.query.token ||
     req.headers['x-access-token'];
