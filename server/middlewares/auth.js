@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 
 const auth = function(req, res, next) {
-  const token = req.session.token ||
+  const token =
+    req.session.token ||
     req.body.token ||
     req.query.token ||
     req.headers['x-access-token'];

@@ -49,7 +49,7 @@ const editBotMessage = (req, res, next) => {
       } else {
         console.log(err);
       }
-    },
+    }
   );
 };
 
@@ -103,7 +103,7 @@ const editBotSettings = (req, res, next) => {
       } else {
         console.log(err);
       }
-    },
+    }
   );
 };
 
@@ -112,7 +112,8 @@ router.get('/', (req, res) => {
 });
 
 const auth = function(req, res, next) {
-  const token = req.session.token ||
+  const token =
+    req.session.token ||
     req.body.token ||
     req.query.token ||
     req.headers['x-access-token'];

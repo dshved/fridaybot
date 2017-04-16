@@ -15,7 +15,8 @@ router.post('/', (req, res, next) => {
   console.log(req.body);
   const name = req.body.name;
   const password = req.body.password;
-  let token = req.session.token ||
+  let token =
+    req.session.token ||
     req.body.token ||
     req.query.token ||
     req.headers['x-access-token'];

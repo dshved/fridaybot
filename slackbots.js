@@ -52,30 +52,21 @@ class Bot extends EventEmitter {
   connect() {
     this.ws = new WebSocket(this.wsUrl);
 
-    this.ws.on(
-      'open',
-      data => {
-        this.emit('open', data);
-      },
-    );
+    this.ws.on('open', data => {
+      this.emit('open', data);
+    });
 
-    this.ws.on(
-      'close',
-      data => {
-        this.emit('close', data);
-      },
-    );
+    this.ws.on('close', data => {
+      this.emit('close', data);
+    });
 
-    this.ws.on(
-      'message',
-      data => {
-        try {
-          this.emit('message', JSON.parse(data));
-        } catch (e) {
-          console.log(e);
-        }
-      },
-    );
+    this.ws.on('message', data => {
+      try {
+        this.emit('message', JSON.parse(data));
+      } catch (e) {
+        console.log(e);
+      }
+    });
   }
 
   /**
@@ -240,7 +231,9 @@ class Bot extends EventEmitter {
      * @returns {object}
      */
   getUserByEmail(email) {
-    return this.getUsers().then(data => _.find(data.members, { profile: { email } }));
+    return this.getUsers().then(data =>
+      _.find(data.members, { profile: { email } })
+    );
   }
 
   /**
@@ -250,13 +243,11 @@ class Bot extends EventEmitter {
      */
   getChatId(name) {
     return this.getUser(name)
-      .then(
-        data => {
-          const chatId = _.find(this.ims, { user: data.id });
+      .then(data => {
+        const chatId = _.find(this.ims, { user: data.id });
 
-          return (chatId && chatId.id) || this.openIm(data.id);
-        },
-      )
+        return (chatId && chatId.id) || this.openIm(data.id);
+      })
       .then(data => (typeof data === 'string' ? data : data.channel.id));
   }
 
@@ -283,7 +274,7 @@ class Bot extends EventEmitter {
         channel: id,
         username: this.name,
       },
-      params || {},
+      params || {}
     );
 
     return this._api('chat.postMessage', params);
@@ -305,7 +296,7 @@ class Bot extends EventEmitter {
         username: this.name,
         text,
       },
-      params || {},
+      params || {}
     );
 
     return this._api('chat.update', params);
@@ -325,7 +316,7 @@ class Bot extends EventEmitter {
       name,
       text,
       params,
-      cb,
+      cb
     );
   }
 
@@ -377,9 +368,7 @@ class Bot extends EventEmitter {
     }
 
     return this[method](name)
-      .then(
-        itemId => this.postMessage(itemId, text, params),
-      )
+      .then(itemId => this.postMessage(itemId, text, params))
       .always(data => {
         if (cb) {
           cb(data._value);
@@ -400,22 +389,20 @@ class Bot extends EventEmitter {
       this.getChannels(),
       this.getUsers(),
       this.getGroups(),
-    ]).then(
-      data => {
-        const all = [].concat(data[0].channels, data[1].members, data[2].groups);
-        const result = _.find(all, { name });
+    ]).then(data => {
+      const all = [].concat(data[0].channels, data[1].members, data[2].groups);
+      const result = _.find(all, { name });
 
-        console.assert(result, 'wrong name');
+      console.assert(result, 'wrong name');
 
-        if (result['is_channel']) {
-          return this.postMessageToChannel(name, text, params, cb);
-        } else if (result['is_group']) {
-          return this.postMessageToGroup(name, text, params, cb);
-        } else {
-          return this.postMessageToUser(name, text, params, cb);
-        }
-      },
-    );
+      if (result['is_channel']) {
+        return this.postMessageToChannel(name, text, params, cb);
+      } else if (result['is_group']) {
+        return this.postMessageToGroup(name, text, params, cb);
+      } else {
+        return this.postMessageToUser(name, text, params, cb);
+      }
+    });
   }
 
   /**

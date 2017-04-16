@@ -47,7 +47,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     store: new MongoStore({ url: config.db.path }),
-  }),
+  })
 );
 
 app.use(bodyParser.json());
