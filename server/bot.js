@@ -132,7 +132,6 @@ const replaceTextEmoji = function(str) {
   }
 };
 
-let generalCannelId;
 
 bot.on('start', () => {
   bot.getChannel('general').then(res => {
@@ -196,15 +195,19 @@ bot.on('start', () => {
 });
 
 bot.on('message', data => {
-  // console.log(data);
   const sendToWhom = (d, m) => {
-    if (d.channel === botParams.channelId) {
-      bot.postMessageToChannel(botParams.channelName, m, messageParams);
+    if (d.channel[0] === 'C') {
+      bot.getChannelById(d.channel).then(res => {
+        if (res) {
+          const channelName = res.name;
+          bot.postMessageToChannel(channelName, m, messageParams);
+        }
+      });
     } else {
       bot.getUserById(d.user).then(res => {
         if (res) {
-          botParams.botId = res.id;
-          bot.postMessageToUser(res.name, m, messageParams);
+          const userName = res.name;
+          bot.postMessageToUser(userName, m, messageParams);
         }
       });
     }
