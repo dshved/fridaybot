@@ -32,43 +32,40 @@ const saveLog = d => {
 
 const commandsSlackMessage = fs.readFileSync(
   `${__dirname}/./../COMMANDS_SLACK.txt`,
-  'utf-8',
+  'utf-8'
 );
 const changelogSlackMessage = fs.readFileSync(
   `${__dirname}/./../CHANGELOG.md`,
-  'utf-8',
+  'utf-8'
 );
 
 let bashArray = [];
 
-setInterval(
-  () => {
-    bashArray = [];
-    request(
-      {
-        url: 'http://bash.im/random',
-        encoding: null,
-      },
-      (err, res, body) => {
-        const $ = cheerio.load(iconv.decode(body, 'cp1251'), {
-          decodeEntities: false,
-        });
+setInterval(() => {
+  bashArray = [];
+  request(
+    {
+      url: 'http://bash.im/random',
+      encoding: null,
+    },
+    (err, res, body) => {
+      const $ = cheerio.load(iconv.decode(body, 'cp1251'), {
+        decodeEntities: false,
+      });
 
-        const quote = $('#body > .quote > .text');
+      const quote = $('#body > .quote > .text');
 
-        quote.each((i, post) => {
-          bashArray[i] = $(post)
-            .html()
-            .replace(/<br>/g, '\n')
-            .replace(/&quot;/g, '')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>');
-        });
-      },
-    );
-  },
-  180000,
-);
+      quote.each((i, post) => {
+        bashArray[i] = $(post)
+          .html()
+          .replace(/<br>/g, '\n')
+          .replace(/&quot;/g, '')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>');
+      });
+    }
+  );
+}, 180000);
 
 const replaseEmoji = (value, message) => {
   message = value === 'REACT' || value === 'РЕАКТ'
@@ -169,7 +166,7 @@ bot.on('start', () => {
           if (data) {
             BotSettings.update(
               { channel_name: result.channel_name },
-              { channel_id: data.id },
+              { channel_id: data.id }
             ).then();
             botParams.channelId = result.channel_id;
           }
@@ -185,7 +182,7 @@ bot.on('start', () => {
             if (data) {
               BotSettings.update(
                 { channel_name: r.channel_name },
-                { channel_id: data.id },
+                { channel_id: data.id }
               ).then();
               botParams.channelId = r.channel_id;
               botParams.parrotCount = r.parrot_counts;
@@ -224,7 +221,7 @@ bot.on('message', data => {
 
       BotSettings.update(
         { name: messageParams.username },
-        { parrot_counts: botParams.parrotCount },
+        { parrot_counts: botParams.parrotCount }
       ).then();
       global.io.emit('parrot count', botParams.parrotCount);
     }
@@ -232,13 +229,13 @@ bot.on('message', data => {
 
   if (data.text) {
     if (~data.text.indexOf('rdt') == -1) {
-      let redditUrl = 'https://www.reddit.com/r/javascript/top/.json?sort=top&t=week';
+      let redditUrl =
+        'https://www.reddit.com/r/javascript/top/.json?sort=top&t=week';
       request({ url: redditUrl }, (err, res, body) => {
         let json = JSON.parse(body);
         let reddits = json.data.children;
-        let randomReddit = Math.floor(
-          Math.random() * (reddits.length - 1 + 1),
-        ) + 1;
+        let randomReddit =
+          Math.floor(Math.random() * (reddits.length - 1 + 1)) + 1;
         let currentReddit = reddits[randomReddit].data;
         let p = {};
         p.username = '/r/javascript';
@@ -271,7 +268,7 @@ bot.on('message', data => {
         bot.postMessageToChannel(
           botParams.channelName,
           'Да начнется холивар',
-          p,
+          p
         );
       });
     }
@@ -303,83 +300,80 @@ bot.on('message', data => {
       replaceMention(userText, message => {
         userText = message;
       });
-      setTimeout(
-        () => {
-          userText = userText.toUpperCase();
-          const newStr = replaceTextEmoji(userText);
-          let replaced = false;
-          let replacedEmoji;
-          if (newStr.isExec) {
-            replaced = true;
-            replacedEmoji = newStr.emoji;
-            userText = newStr.message;
+      setTimeout(() => {
+        userText = userText.toUpperCase();
+        const newStr = replaceTextEmoji(userText);
+        let replaced = false;
+        let replacedEmoji;
+        if (newStr.isExec) {
+          replaced = true;
+          replacedEmoji = newStr.emoji;
+          userText = newStr.message;
+        }
+
+        if (userText.length <= 300) {
+          let countLetters = userText.length > 16 ? 16 : userText.length;
+          const reg = new RegExp(`.{1,${countLetters}}`, 'g');
+          userText.match(reg).forEach(w => {
+            newLetterArray.push(w.split(''));
+          });
+          sendMessage += ':cptl:';
+          for (let i = 0; i < countLetters; i++) {
+            sendMessage += ':cpt:';
           }
-
-          if (userText.length <= 300) {
-            let countLetters = userText.length > 16 ? 16 : userText.length;
-            const reg = new RegExp(`.{1,${countLetters}}`, 'g');
-            userText.match(reg).forEach(w => {
-              newLetterArray.push(w.split(''));
-            });
-            sendMessage += ':cptl:';
-            for (let i = 0; i < countLetters; i++) {
-              sendMessage += ':cpt:';
-            }
-            sendMessage += ':cptr:\n';
-            newLetterArray.forEach(item => {
-              const newArray = [];
-              item.forEach(itm => {
-                function findLetter(alphabet) {
-                  return alphabet.letter === itm;
-                }
-                if (!!aEpilepsy.find(findLetter)) {
-                  newArray.push(aEpilepsy.find(findLetter).text);
-                }
-              });
-
-              if (newArray.length < countLetters) {
-                let contSpace = countLetters - newArray.length;
-                for (let i = 0; i < contSpace; i++) {
-                  newArray.push(':sp:');
-                }
+          sendMessage += ':cptr:\n';
+          newLetterArray.forEach(item => {
+            const newArray = [];
+            item.forEach(itm => {
+              function findLetter(alphabet) {
+                return alphabet.letter === itm;
               }
-              sendMessage += ':cpl:';
-              for (let i = 0; i < newArray.length; i++) {
-                if (i == countLetters - 1) {
-                  sendMessage += `${newArray[i]}:cpr:\n`;
-                } else {
-                  sendMessage += newArray[i];
-                }
+              if (!!aEpilepsy.find(findLetter)) {
+                newArray.push(aEpilepsy.find(findLetter).text);
               }
             });
-            sendMessage += ':cpbl:';
-            for (let i = 0; i < countLetters; i++) {
-              sendMessage += ':cpb:';
-            }
-            sendMessage += ':cpbr:\n';
 
-            let newMessage = replaseEmoji(userText, sendMessage);
-            if (replaced) {
-              newMessage = newMessage.replace(
-                /:cpt:|:cpb:|:cpl:|:cpr:|:cptl:|:cptr:|:cpbl:|:cpbr:/g,
-                replacedEmoji,
-              );
+            if (newArray.length < countLetters) {
+              let contSpace = countLetters - newArray.length;
+              for (let i = 0; i < contSpace; i++) {
+                newArray.push(':sp:');
+              }
             }
-            bot.postMessageToChannel(
-              botParams.channelName,
-              newMessage,
-              messageParams,
-            );
-          } else {
-            bot.postMessageToChannel(
-              botParams.channelName,
-              `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 300 символов!`,
-              messageParams,
+            sendMessage += ':cpl:';
+            for (let i = 0; i < newArray.length; i++) {
+              if (i == countLetters - 1) {
+                sendMessage += `${newArray[i]}:cpr:\n`;
+              } else {
+                sendMessage += newArray[i];
+              }
+            }
+          });
+          sendMessage += ':cpbl:';
+          for (let i = 0; i < countLetters; i++) {
+            sendMessage += ':cpb:';
+          }
+          sendMessage += ':cpbr:\n';
+
+          let newMessage = replaseEmoji(userText, sendMessage);
+          if (replaced) {
+            newMessage = newMessage.replace(
+              /:cpt:|:cpb:|:cpl:|:cpr:|:cptl:|:cptr:|:cpbl:|:cpbr:/g,
+              replacedEmoji
             );
           }
-        },
-        1000,
-      );
+          bot.postMessageToChannel(
+            botParams.channelName,
+            newMessage,
+            messageParams
+          );
+        } else {
+          bot.postMessageToChannel(
+            botParams.channelName,
+            `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 300 символов!`,
+            messageParams
+          );
+        }
+      }, 1000);
     }
   }
 
@@ -393,39 +387,36 @@ bot.on('message', data => {
       replaceMention(userText, message => {
         userText = message;
       });
-      setTimeout(
-        () => {
-          const userTextArray = userText.toUpperCase().split('');
-          let sendMessage = '';
-          if (userTextArray.length <= 300) {
-            userTextArray.forEach(item => {
-              function findLetter(alphabet) {
-                return alphabet.letter === item;
-              }
-              if (!!aEpilepsy.find(findLetter)) {
-                sendMessage += aEpilepsy.find(findLetter).text;
-              }
-            });
-            bot.postMessageToChannel(
-              botParams.channelName,
-              sendMessage,
-              messageParams,
-            );
-            sendMessage = '';
+      setTimeout(() => {
+        const userTextArray = userText.toUpperCase().split('');
+        let sendMessage = '';
+        if (userTextArray.length <= 300) {
+          userTextArray.forEach(item => {
+            function findLetter(alphabet) {
+              return alphabet.letter === item;
+            }
+            if (!!aEpilepsy.find(findLetter)) {
+              sendMessage += aEpilepsy.find(findLetter).text;
+            }
+          });
+          bot.postMessageToChannel(
+            botParams.channelName,
+            sendMessage,
+            messageParams
+          );
+          sendMessage = '';
 
-            const newData = data;
-            newData.text = 'ТЕКСТ';
-            saveLog(newData);
-          } else {
-            bot.postMessageToChannel(
-              botParams.channelName,
-              `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 300 символов!`,
-              messageParams,
-            );
-          }
-        },
-        1000,
-      );
+          const newData = data;
+          newData.text = 'ТЕКСТ';
+          saveLog(newData);
+        } else {
+          bot.postMessageToChannel(
+            botParams.channelName,
+            `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 300 символов!`,
+            messageParams
+          );
+        }
+      }, 1000);
     }
   }
 
@@ -443,66 +434,63 @@ bot.on('message', data => {
         replacedEmoji = newStr.emoji;
         userText = newStr.message;
       }
-      setTimeout(
-        () => {
-          const userTextArray = userText.toUpperCase().split('');
-          if (userTextArray.length <= 12) {
-            const newLetterArray = [];
-            const countLetter = 3;
-            const count = Math.ceil(userTextArray.length / countLetter);
-            for (let i = 0; i < count; i++) {
-              newLetterArray.push(
-                userTextArray.slice(i * countLetter, (i + 1) * countLetter),
-              );
-            }
-            let sendMessage = '';
-            newLetterArray.forEach(item => {
-              const newArray = [];
-              item.forEach(itm => {
-                function findLetter(alphabet) {
-                  return alphabet.letter === itm;
-                }
-                if (!!aParrots.find(findLetter)) {
-                  newArray.push(aParrots.find(findLetter).array);
-                }
-              });
-              const userSays = newArray;
-
-              const lineCount = 6;
-
-              for (let i = 0; i < lineCount; i++) {
-                let line = '';
-                for (let j = 0; j < userSays.length; j++) {
-                  line += userSays[j][i];
-                }
-                line += '\n';
-                sendMessage += line;
-              }
-            });
-            let newMessage = replaseEmoji(userText, sendMessage);
-            if (replaced) {
-              newMessage = newMessage.replace(/:fp:/g, replacedEmoji);
-            }
-            bot.postMessageToChannel(
-              botParams.channelName,
-              newMessage,
-              messageParams,
-            );
-            sendMessage = '';
-
-            const newData = data;
-            newData.text = 'СКАЖИ';
-            saveLog(newData);
-          } else {
-            bot.postMessageToChannel(
-              botParams.channelName,
-              `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 12 символов!`,
-              messageParams,
+      setTimeout(() => {
+        const userTextArray = userText.toUpperCase().split('');
+        if (userTextArray.length <= 12) {
+          const newLetterArray = [];
+          const countLetter = 3;
+          const count = Math.ceil(userTextArray.length / countLetter);
+          for (let i = 0; i < count; i++) {
+            newLetterArray.push(
+              userTextArray.slice(i * countLetter, (i + 1) * countLetter)
             );
           }
-        },
-        1000,
-      );
+          let sendMessage = '';
+          newLetterArray.forEach(item => {
+            const newArray = [];
+            item.forEach(itm => {
+              function findLetter(alphabet) {
+                return alphabet.letter === itm;
+              }
+              if (!!aParrots.find(findLetter)) {
+                newArray.push(aParrots.find(findLetter).array);
+              }
+            });
+            const userSays = newArray;
+
+            const lineCount = 6;
+
+            for (let i = 0; i < lineCount; i++) {
+              let line = '';
+              for (let j = 0; j < userSays.length; j++) {
+                line += userSays[j][i];
+              }
+              line += '\n';
+              sendMessage += line;
+            }
+          });
+          let newMessage = replaseEmoji(userText, sendMessage);
+          if (replaced) {
+            newMessage = newMessage.replace(/:fp:/g, replacedEmoji);
+          }
+          bot.postMessageToChannel(
+            botParams.channelName,
+            newMessage,
+            messageParams
+          );
+          sendMessage = '';
+
+          const newData = data;
+          newData.text = 'СКАЖИ';
+          saveLog(newData);
+        } else {
+          bot.postMessageToChannel(
+            botParams.channelName,
+            `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 12 символов!`,
+            messageParams
+          );
+        }
+      }, 1000);
     }
   }
 
@@ -520,43 +508,40 @@ bot.on('message', data => {
         replacedEmoji = newStr.emoji;
         userText = newStr.message;
       }
-      setTimeout(
-        () => {
-          const userTextArray = userText.toUpperCase().split('');
-          let sendMessage = '';
-          if (userTextArray.length <= 10) {
-            userTextArray.forEach(item => {
-              function findLetter(alphabet) {
-                return alphabet.letter === item;
-              }
-              if (!!aParrots.find(findLetter)) {
-                sendMessage += aParrots.find(findLetter).text;
-              }
-            });
-            let newMessage = replaseEmoji(userText, sendMessage);
-            if (replaced) {
-              newMessage = newMessage.replace(/:fp:/g, replacedEmoji);
+      setTimeout(() => {
+        const userTextArray = userText.toUpperCase().split('');
+        let sendMessage = '';
+        if (userTextArray.length <= 10) {
+          userTextArray.forEach(item => {
+            function findLetter(alphabet) {
+              return alphabet.letter === item;
             }
-            bot.postMessageToChannel(
-              botParams.channelName,
-              newMessage,
-              messageParams,
-            );
-            sendMessage = '';
-
-            const newData = data;
-            newData.text = 'ГОВОРИ';
-            saveLog(newData);
-          } else {
-            bot.postMessageToChannel(
-              botParams.channelName,
-              `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 10 символов!`,
-              messageParams,
-            );
+            if (!!aParrots.find(findLetter)) {
+              sendMessage += aParrots.find(findLetter).text;
+            }
+          });
+          let newMessage = replaseEmoji(userText, sendMessage);
+          if (replaced) {
+            newMessage = newMessage.replace(/:fp:/g, replacedEmoji);
           }
-        },
-        1000,
-      );
+          bot.postMessageToChannel(
+            botParams.channelName,
+            newMessage,
+            messageParams
+          );
+          sendMessage = '';
+
+          const newData = data;
+          newData.text = 'ГОВОРИ';
+          saveLog(newData);
+        } else {
+          bot.postMessageToChannel(
+            botParams.channelName,
+            `<@${data.user}>, ты просишь слишком много... Я могу сказать не больше 10 символов!`,
+            messageParams
+          );
+        }
+      }, 1000);
     }
   }
 
@@ -564,7 +549,7 @@ bot.on('message', data => {
     bot.postMessageToChannel(
       botParams.channelName,
       changelogSlackMessage,
-      messageParams,
+      messageParams
     );
     saveLog(data);
   }
@@ -574,7 +559,7 @@ bot.on('message', data => {
     bot.postMessageToChannel(
       botParams.channelName,
       bashArray[randomBashId],
-      messageParams,
+      messageParams
     );
     saveLog(data);
   }
@@ -583,7 +568,7 @@ bot.on('message', data => {
     bot.postMessageToChannel(
       botParams.channelName,
       commandsSlackMessage,
-      messageParams,
+      messageParams
     );
     saveLog(data);
   }
@@ -608,7 +593,7 @@ bot.on('message', data => {
         }
         bot.postMessageToChannel(botParams.channelName, mes, messageParams);
         mes = '';
-      },
+      }
     );
   }
   if (data.text === 'PPM') {
@@ -643,7 +628,7 @@ bot.on('message', data => {
           bot.postMessageToChannel(botParams.channelName, mes, messageParams);
           mes = '';
         }
-      },
+      }
     );
   }
 
@@ -661,7 +646,7 @@ bot.on('message', data => {
         bot.postMessageToChannel(
           botParams.channelName,
           'Что-то пошло не так... Попробуйте еще раз',
-          messageParams,
+          messageParams
         );
       }
     });
@@ -678,7 +663,7 @@ bot.on('message', data => {
         bot.postMessageToChannel(
           botParams.channelName,
           `Всего отправлено: ${r.parrot_counts} шт.`,
-          messageParams,
+          messageParams
         );
         saveLog(data);
       }
@@ -779,7 +764,7 @@ bot.on('message', data => {
       bot.postMessageToChannel(
         botParams.channelName,
         leaveMessage,
-        messageParams,
+        messageParams
       );
     }
   }
@@ -794,7 +779,7 @@ bot.on('message', data => {
       bot.postMessageToChannel(
         botParams.channelName,
         joinMessage,
-        messageParams,
+        messageParams
       );
     }
   }
@@ -809,7 +794,7 @@ bot.on('message', data => {
         bot.postMessageToChannel(
           botParams.channelName,
           result.bot_message,
-          messageParams,
+          messageParams
         );
         saveLog(data);
       }
@@ -832,7 +817,7 @@ bot.on('message', data => {
 
         UserMessages.findOneAndUpdate(
           { user_id: data.user },
-          { count_parrots: newCountParrots, count_messages: newCountMessages },
+          { count_parrots: newCountParrots, count_messages: newCountMessages }
         ).then();
       }
     });
