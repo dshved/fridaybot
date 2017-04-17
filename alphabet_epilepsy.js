@@ -133,7 +133,7 @@ const alphabet = [
   },
   {
     letter: ' ',
-    text: '   ',
+    text: ':sp:',
   },
   {
     letter: '1',
@@ -177,7 +177,7 @@ const alphabet = [
   },
   {
     letter: '/',
-    text: '/',
+    text: ':slash:',
   },
   {
     letter: '\n',
@@ -185,7 +185,7 @@ const alphabet = [
   },
   {
     letter: '\\',
-    text: '',
+    text: ':slash_back:',
   },
   {
     letter: '-',
@@ -193,7 +193,7 @@ const alphabet = [
   },
   {
     letter: '.',
-    text: '.',
+    text: ':dot:',
   },
   {
     letter: '@',
@@ -205,7 +205,11 @@ const alphabet = [
   },
   {
     letter: ':',
-    text: ':',
+    text: ':colon:',
+  },
+  {
+    letter: ';',
+    text: ':semi_colon:',
   },
   {
     letter: '*',
@@ -220,20 +224,88 @@ const alphabet = [
     text: ':equally:',
   },
   {
-    letter: '"',
-    text: '"',
+    letter: ')',
+    text: ':closing_bracket:',
+  },
+  {
+    letter: '(',
+    text: ':opening_bracket:',
   },
   {
     letter: '"',
-    text: '"',
+    text: ':quotes_two:',
+  },
+  {
+    letter: "'",
+    text: ':quotes:',
+  },
+  {
+    letter: '<',
+    text: ':less_sign:',
+  },
+  {
+    letter: '>',
+    text: ':more_sign:',
+  },
+  {
+    letter: '^',
+    text: ':caret:',
+  },
+  {
+    letter: '&',
+    text: ':ampersand:',
+  },
+  {
+    letter: '$',
+    text: ':dollars:',
+  },
+  {
+    letter: '%',
+    text: ':procent:',
+  },
+  {
+    letter: '|',
+    text: ':line:',
+  },
+  {
+    letter: '`',
+    text: ':coma_up:',
+  },
+  {
+    letter: '_',
+    text: ':underscore:',
+  },
+  {
+    letter: '~',
+    text: ':tilda:',
+  },
+  {
+    letter: '"',
+    text: ':quotes_two:',
   },
   {
     letter: '№',
     text: ':numbers:',
   },
   {
+    letter: '{',
+    text: ':brace_left:',
+  },
+  {
+    letter: '}',
+    text: ':brace_right:',
+  },
+  {
+    letter: '[',
+    text: ':parenthesis_left:',
+  },
+  {
+    letter: ']',
+    text: ':parenthesis_right:',
+  },
+  {
     letter: ',',
-    text: ',',
+    text: ':coma:',
   },
   {
     letter: '+',
