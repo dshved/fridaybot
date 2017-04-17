@@ -134,10 +134,6 @@ const replaceTextEmoji = function(str) {
 
 
 bot.on('start', () => {
-  bot.getChannel('general').then(res => {
-    generalCannelId = res.id;
-  });
-
   bot.getUser(config.bot.name).then(res => {
     if (res) {
       botParams.botId = res.id;
@@ -194,24 +190,39 @@ bot.on('start', () => {
   });
 });
 
-bot.on('message', data => {
-  const sendToWhom = (d, m) => {
-    if (d.channel[0] === 'C') {
-      bot.getChannelById(d.channel).then(res => {
-        if (res) {
-          const channelName = res.name;
-          bot.postMessageToChannel(channelName, m, messageParams);
-        }
-      });
-    } else {
-      bot.getUserById(d.user).then(res => {
-        if (res) {
-          const userName = res.name;
-          bot.postMessageToUser(userName, m, messageParams);
-        }
-      });
+const sendToWhom = (d, m) => {
+  if (d.channel[0] === 'C') {
+    bot.getChannelById(d.channel).then(res => {
+      if (res) {
+        const channelName = res.name;
+        bot.postMessageToChannel(channelName, m, messageParams);
+      }
+    });
+  } else {
+    bot.getUserById(d.user).then(res => {
+      if (res) {
+        const userName = res.name;
+        bot.postMessageToUser(userName, m, messageParams);
+      }
+    });
+  }
+};
+
+
+
+global.io.on('connection', function(socket) {
+  socket.on('post', function(data) {
+    if (data) {
+      sendToWhom(data, data.message);
     }
-  };
+  });
+});
+
+
+
+bot.on('message', data => {
+  global.io.emit('data', data);
+
   let countParrots = 0;
   if (data.text) {
     if (data.channel === botParams.channelId) {

@@ -25,6 +25,7 @@ socket.on('parrot count', function(data) {
 
 
 
+
 $(document).ready(function() {
 
   $('#login').submit(function(e) {
