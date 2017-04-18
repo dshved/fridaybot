@@ -222,7 +222,7 @@ global.io.on('connection', function(socket) {
 
 bot.on('message', data => {
   global.io.emit('data', data);
-
+  // console.log(data);
   let countParrots = 0;
   if (data.text) {
     if (data.channel === botParams.channelId) {
@@ -240,7 +240,51 @@ bot.on('message', data => {
       global.io.emit('parrot count', botParams.parrotCount);
     }
   }
-
+  if (data.text) {
+    if (~data.text.indexOf('hot') == -1) {
+      let redditUrl = 'https://www.reddit.com/r/all/top/.json?sort=top&t=day';
+      request({ url: redditUrl }, (err, res, body) => {
+        let json = JSON.parse(body);
+        let reddits = json.data.children;
+        let randomReddit =
+          Math.floor(Math.random() * (reddits.length - 1 + 1)) + 1;
+        let currentReddit = reddits[randomReddit].data;
+        let p = {};
+        p.username = '/r/all';
+        p.icon_emoji = ':reddit:';
+        p.attachments = [
+          {
+            fallback: currentReddit.title,
+            color: '#36a64f',
+            // "pretext": "Optional text that appears above the attachment block",
+            author_name: currentReddit.author,
+            // "author_link": "http://flickr.com/bobby/",
+            // "author_icon": "http://flickr.com/icons/bobby.jpg",
+            title: currentReddit.title,
+            title_link: currentReddit.url,
+            // "text": "Optional text that appears within the attachment",
+            image_url: currentReddit.url,
+            thumb_url: currentReddit.thumbnail,
+            fields: [
+              {
+                title: 'subreddit',
+                value: currentReddit.subreddit_name_prefixed,
+                // short: false,
+              },
+            ],
+            footer: 'Made in Friday',
+            footer_icon: 'http://cultofthepartyparrot.com/parrots/hd/parrot.gif',
+            ts: currentReddit.created,
+          },
+        ];
+        bot.postMessageToChannel(
+          botParams.channelName,
+          '',
+          p
+        );
+      });
+    }
+  }
   if (data.text) {
     if (~data.text.indexOf('rdt') == -1) {
       let redditUrl =
