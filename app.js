@@ -5,7 +5,6 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
@@ -29,7 +28,7 @@ require('./server/bot');
 app.set('views', path.join(__dirname, 'server/views'));
 app.set('view engine', 'pug');
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.io = io;
   next();
 });
@@ -42,14 +41,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-app.use(session({
-  secret: 'sdfsd3GDJD8sgahsa',
-  saveUninitialized: false,
-  resave: false,
-  store: new MongoStore({ url: config.db.path })
-}));
-
+app.use(
+  session({
+    secret: 'sdfsd3GDJD8sgahsa',
+    saveUninitialized: false,
+    resave: false,
+    store: new MongoStore({ url: config.db.path }),
+  })
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -58,21 +57,18 @@ app.use(router);
 app.use('/login', login);
 app.use('/api', api);
 
-
-app.get('/logout', function(req, res) {
+app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
 });
 
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+app.use((req, res, next) => {
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
-
-app.use(function(err, req, res, next) {
-
+app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
@@ -80,4 +76,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = { app: app, server: server };
+module.exports = { app, server };

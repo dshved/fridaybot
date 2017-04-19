@@ -13,29 +13,28 @@ const saveLog = (d) => {
 };
 
 
-const execResponse = function (data, text, expr, startFrom, func, callback) {
+const execResponse = (data, text, expr, startFrom, func, callback) => {
   if (startFrom && text.startsWith(expr)) {
-    let newLog = data;
+    const newLog = data;
     newLog.text = expr;
     saveLog(newLog);
     const userText = text.substr(expr.length);
     func(userText, callback);
   } else if (!startFrom && text === expr) {
-    let newLog = data;
+    const newLog = data;
     newLog.text = expr;
     saveLog(newLog);
     func(text, callback);
   }
 };
 
-const userMessageRes = function (data, callback) {
-
+const userMessageRes = (data, callback) => {
   const messageText = data.text.toUpperCase();
-  msgs.forEach(function (msg) {
+  msgs.forEach((msg) => {
     execResponse(data, messageText, msg.msg, msg.startFrom, msg.callback,
-      function (data, error) {
-        callback(data, error);
-    });
+      (d, error) => {
+        callback(d, error);
+      });
   });
 };
 

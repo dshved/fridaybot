@@ -3,6 +3,11 @@
 const BotSettings = require('./../../models/botsetting').BotSettings;
 const UserMessages = require('./../../models/usermessage').UserMessages;
 const Log = require('./../../models/log').Log;
+const fs = require('fs');
+
+const commandsURL = 'https://github.com/dshved/fridaybot/blob/master/COMMANDS.md';
+const changelogURL = 'https://github.com/dshved/fridaybot/blob/master/CHANGELOG.md';
+
 
 const messagesRus = (num) => {
   num = Math.abs(num);
@@ -99,7 +104,7 @@ function getLog(text, callback) {
     }, {
       $sort: { count: -1 },
     }, ],
-    function(err, res) {
+    (err, res) => {
       let mes = 'Статистика вызова команд:\n';
       for (let i = 0; i < res.length; i++) {
         mes += `${i + 1}. ${res[i]._id} - ${res[i].count}\n`;
@@ -111,17 +116,69 @@ function getLog(text, callback) {
   );
 }
 
+function getPPM(text, callback) {
+  UserMessages.aggregate(
+    [{
+      $project: {
+        user_name: 1,
+        ppm: {
+          $divide: ['$count_parrots', '$count_messages'],
+        },
+      },
+    }, {
+      $sort: { ppm: -1 },
+    }, ],
+    (err, res) => {
+      let mes = ':fp: Рейтинг PPM: :fp:\n';
+      if (res.length > 10) {
+        for (let i = 0; i < 10; i++) {
+          const ppm = Math.round(res[i].ppm * 100) / 100;
+          mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
+        }
+        callback(mes, {});
+        // bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+        mes = '';
+      } else {
+        for (let i = 0; i < res.length; i++) {
+          const ppm = Math.round(res[i].ppm * 100) / 100;
+          mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
+        }
+        callback(mes, {});
+        // bot.postMessageToChannel(botParams.channelName, mes, messageParams);
+        mes = '';
+      }
+    }
+  );
+}
+
+function getCommands(text, callback) {
+  callback(commandsURL, {});
+}
+
+function getChangelog(text, callback) {
+  callback(changelogURL, {});
+}
+
 module.exports = {
-  parrotCount: function(text, callback) {
+  parrotCount: (text, callback) => {
     getParrotCount(text, callback);
   },
-  userCount: function(text, callback) {
+  userCount: (text, callback) => {
     getUserCount(text, callback);
   },
-  elite: function(text, callback) {
+  elite: (text, callback) => {
     getElite(text, callback);
   },
-  log: function(text, callback) {
+  log: (text, callback) => {
     getLog(text, callback);
+  },
+  ppm: (text, callback) => {
+    getPPM(text, callback);
+  },
+  commands: (text, callback) => {
+    getCommands(text, callback);
+  },
+  changelog: (text, callback) => {
+    getChangelog(text, callback);
   },
 };
