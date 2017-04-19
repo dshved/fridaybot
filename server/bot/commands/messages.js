@@ -1,40 +1,76 @@
 'use strict';
 
 const messages = [
-  { msg: 'СКАЖИ', startFrom: true, callback: require('./say').inRow },
-  { msg: 'ГОВОРИ', startFrom: true, callback: require('./say').inColumn },
-
-  { msg: 'ТЕКСТ ', startFrom: true, callback: require('./say').emojiText },
-  { msg: 'РАМКА ', startFrom: true, callback: require('./say').borderText },
-
-  { msg: 'СКОЛЬКО ПОПУГАЕВ?', startFrom: false, callback: require('./statistic').parrotCount },
-  { msg: 'СКОЛЬКО ПОПУГАЕВ', startFrom: false, callback: require('./statistic').parrotCount },
-  { msg: 'СКОЛЬКО?', startFrom: false, callback: require('./statistic').parrotCount },
-  { msg: 'СКОЛЬКО', startFrom: false, callback: require('./statistic').parrotCount },
-
-  { msg: 'ЕСТЬ КТО ЖИВОЙ?', startFrom: false, callback: require('./statistic').userCount },
-  { msg: 'ЕСТЬ КТО ЖИВОЙ', startFrom: false, callback: require('./statistic').userCount },
-  { msg: 'ЕСТЬ КТО', startFrom: false, callback: require('./statistic').userCount },
-  { msg: 'ЕСТЬ КТО?', startFrom: false, callback: require('./statistic').userCount },
-  { msg: 'КТО ЖИВОЙ?', startFrom: false, callback: require('./statistic').userCount },
-  { msg: 'КТО ЖИВОЙ', startFrom: false, callback: require('./statistic').userCount },
-
-
-  { msg: 'LOG', startFrom: false, callback: require('./statistic').log },
-
-  { msg: 'PPM', startFrom: false, callback: require('./statistic').ppm },
-
-  { msg: 'COMMANDS', startFrom: false, callback: require('./statistic').commands },
-
-  { msg: 'CHANGELOG', startFrom: false, callback: require('./statistic').changelog },
-
+  {
+    messages: ['СКАЖИ'],
+    startFrom: true,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./say').inRow,
+  }, {
+    messages: ['ГОВОРИ'],
+    startFrom: true,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./say').inColumn,
+  }, {
+    messages: ['ТЕКСТ '],
+    startFrom: true,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./say').emojiText,
+  }, {
+    messages: ['РАМКА '],
+    startFrom: true,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./say').borderText,
+  }, {
+    messages: ['СКОЛЬКО ПОПУГАЕВ?', 'СКОЛЬКО ПОПУГАЕВ', 'СКОЛЬКО?', 'СКОЛЬКО'],
+    startFrom: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').parrotCount,
+  }, {
+    messages: ['ЕСТЬ КТО ЖИВОЙ?', 'ЕСТЬ КТО ЖИВОЙ', 'ЕСТЬ КТО', 'ЕСТЬ КТО?', 'КТО ЖИВОЙ?', 'КТО ЖИВОЙ'],
+    startFrom: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').userCount,
+  }, {
+    messages: ['LOG'],
+    startFrom: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').log,
+  }, {
+    messages: ['PPM'],
+    startFrom: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').ppm,
+  }, {
+    messages: ['COMMANDS'],
+    startFrom: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').commands,
+  }, {
+    messages: ['CHANGELOG'],
+    startFrom: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').changelog,
+  },
   // { msg: 'БАШ',  startFrom: false, callback: require('./bash').bash },
-
-
-
-  { msg: 'ИЛИТА', startFrom: false, callback: require('./statistic').elite },
-  { msg: 'КТО ИЛИТА', startFrom: false, callback: require('./statistic').elite },
-  { msg: 'КТО ИЛИТА?', startFrom: false, callback: require('./statistic').elite },
+  {
+    messages: ['ИЛИТА', 'КТО ИЛИТА', 'КТО ИЛИТА?'],
+    startFrom: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').elite,
+  },
+  {
+    messages: ['HOT'],
+    startFrom: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./reddit').redditHot,
+  },
+  {
+    messages: ['RDT'],
+    startFrom: false,
+    channels: ['test', 'direct',],
+    callback: require('./reddit').redditJs,
+  },
 
 ];
 

@@ -61,6 +61,7 @@ setInterval(() => {
 }, 180000);
 
 
+
 bot.on('start', () => {
   bot.getUser(config.bot.name).then(res => {
     if (res) {
@@ -118,19 +119,27 @@ bot.on('start', () => {
   });
 });
 
-const sendToWhom = (d, m) => {
-  if (d.channel[0] === 'C') {
-    bot.getChannelById(d.channel).then(res => {
+const sendToWhom = (data, message, attachment) => {
+  if (data.channel[0] === 'C') {
+    bot.getChannelById(data.channel).then(res => {
       if (res) {
         const channelName = res.name;
-        bot.postMessageToChannel(channelName, m, messageParams);
+        if (attachment) {
+          bot.postMessageToChannel(channelName, message, attachment);
+        } else {
+          bot.postMessageToChannel(channelName, message, messageParams);
+        }
       }
     });
   } else {
-    bot.getUserById(d.user).then(res => {
+    bot.getUserById(data.user).then(res => {
       if (res) {
         const userName = res.name;
-        bot.postMessageToUser(userName, m, messageParams);
+        if (attachment) {
+          bot.postMessageToUser(userName, message, attachment);
+        } else {
+          bot.postMessageToUser(userName, message, messageParams);
+        }
       }
     });
   }
@@ -167,97 +176,6 @@ bot.on('message', (data) => {
     }
   }
 
-  if (data.text) {
-    if (~data.text.indexOf('hot') == -1) {
-      const redditUrl = 'https://www.reddit.com/r/all/top/.json?sort=top&t=day';
-      request({ url: redditUrl }, (err, res, body) => {
-        const json = JSON.parse(body);
-        const reddits = json.data.children;
-        const randomReddit =
-          Math.floor(Math.random() * (reddits.length - 1 + 1)) + 1;
-        const currentReddit = reddits[randomReddit].data;
-        const p = {};
-        p.username = '/r/all';
-        p.icon_emoji = ':reddit:';
-        p.attachments = [
-          {
-            fallback: currentReddit.title,
-            color: '#36a64f',
-            // "pretext": "Optional text that appears above the attachment block",
-            author_name: currentReddit.author,
-            // "author_link": "http://flickr.com/bobby/",
-            // "author_icon": "http://flickr.com/icons/bobby.jpg",
-            title: currentReddit.title,
-            title_link: currentReddit.url,
-            // "text": "Optional text that appears within the attachment",
-            image_url: currentReddit.url,
-            thumb_url: currentReddit.thumbnail,
-            fields: [
-              {
-                title: 'subreddit',
-                value: currentReddit.subreddit_name_prefixed,
-                // short: false,
-              },
-            ],
-            footer: 'Made in Friday',
-            footer_icon: 'http://cultofthepartyparrot.com/parrots/hd/parrot.gif',
-            ts: currentReddit.created,
-          },
-        ];
-        bot.postMessageToChannel(
-          botParams.channelName,
-          '',
-          p
-        );
-      });
-    }
-  }
-  if (data.text) {
-    if (~data.text.indexOf('rdt') == -1) {
-      const redditUrl =
-        'https://www.reddit.com/r/javascript/top/.json?sort=top&t=week';
-      request({ url: redditUrl }, (err, res, body) => {
-        const json = JSON.parse(body);
-        const reddits = json.data.children;
-        const randomReddit =
-          Math.floor(Math.random() * (reddits.length - 1 + 1)) + 1;
-        const currentReddit = reddits[randomReddit].data;
-        const p = {};
-        p.username = '/r/javascript';
-        p.icon_emoji = ':reddit:';
-        p.attachments = [
-          {
-            fallback: currentReddit.title,
-            color: '#36a64f',
-            // "pretext": "Optional text that appears above the attachment block",
-            author_name: currentReddit.author,
-            // "author_link": "http://flickr.com/bobby/",
-            // "author_icon": "http://flickr.com/icons/bobby.jpg",
-            title: currentReddit.title,
-            title_link: currentReddit.url,
-            // "text": "Optional text that appears within the attachment",
-            // "image_url": "http://lorempixel.com/300/300",
-            // "thumb_url": "http://lorempixel.com/128/128",
-            fields: [
-              {
-                title: 'score',
-                value: currentReddit.score,
-                short: false,
-              },
-            ],
-            footer: 'Made in Friday',
-            footer_icon: 'http://cultofthepartyparrot.com/parrots/hd/parrot.gif',
-            ts: currentReddit.created,
-          },
-        ];
-        bot.postMessageToChannel(
-          botParams.channelName,
-          'Да начнется холивар',
-          p
-        );
-      });
-    }
-  }
 
   if (data.text) {
     if (~data.text.indexOf('повтори ') == -1) {
@@ -268,16 +186,33 @@ bot.on('message', (data) => {
 
 
   if (data.text) {
-    botResponse.userMessageRes(data, (text, error) =>{
-      if (!error.message) {
-        sendToWhom(data, text);
-        // bot.postMessageToChannel(botParams.channelName, text, messageParams);
-      } else {
-        sendToWhom(data, `<@${data.user}> ${error.message}`);
-        // bot.postMessageToChannel(botParams.channelName, `<@${data.user}> `+error.message, messageParams);
-      }
-    });
+    let channel;
+    if (data.channel[0] === 'C') {
+      bot.getChannelById(data.channel).then(res => {
+        if (res) {
+          channel = res.name;
+        }
+      });
+    } else {
+      channel = 'direct';
+    }
+    setTimeout(() => {
+      botResponse.userMessageRes(data, channel, (text, error, attachment) => {
+        if (!error.message) {
+          if (attachment) {
+            sendToWhom(data, text, attachment);
+            // bot.postMessageToChannel(botParams.channelName, text, messageParams);
+          } else {
+            sendToWhom(data, text);
+          }
+        } else {
+          sendToWhom(data, `<@${data.user}> ${error.message}`);
+          // bot.postMessageToChannel(botParams.channelName, `<@${data.user}> `+error.message, messageParams);
+        }
+      });
+    }, 500);
   }
+
 
   if (data.text) {
     data.text = data.text.toUpperCase();
@@ -294,36 +229,47 @@ bot.on('message', (data) => {
     saveLog(data);
   }
 
-
-  if (
-    data.subtype === 'channel_leave' && data.channel === botParams.channelId
-  ) {
-    if (botParams.leaveActive) {
-      const leaveMessage = botParams.leaveMessage
-        .replace(/first_name/g, data.user_profile.first_name)
-        .replace(/real_name/g, data.user_profile.real_name)
-        .replace(/name/g, `<@${data.user_profile.name}>`);
-      bot.postMessageToChannel(
-        botParams.channelName,
-        leaveMessage,
-        messageParams
-      );
-    }
+  if (data.text === 'ПАРОЛЬ') {
+    console.log(data.user);
   }
 
+  if (data.subtype === 'channel_leave' && data.channel === botParams.channelId) {
+    BotSettings.findOne().then(result => {
+      if (result) {
+        if (result.user_leave.active) {
+          const leaveMessage = result.user_leave.message
+            .replace(/first_name/g, data.user_profile.first_name)
+            .replace(/real_name/g, data.user_profile.real_name)
+            .replace(/name/g, `<@${data.user_profile.name}>`);
+          bot.postMessageToChannel(
+            botParams.channelName,
+            leaveMessage,
+            messageParams
+          );
+        }
+      }
+    });
+  }
+
+
   if (data.subtype === 'channel_join' && data.channel === botParams.channelId) {
-    if (botParams.joinActive) {
-      const joinMessage = botParams.joinMessage
-        .replace(/first_name/g, data.user_profile.first_name)
-        .replace(/real_name/g, data.user_profile.real_name)
-        .replace(/user_name/g, `<@${data.user_profile.name}>`)
-        .replace(/channel_name/g, `<#${botParams.channelId}>`);
-      bot.postMessageToChannel(
-        botParams.channelName,
-        joinMessage,
-        messageParams
-      );
-    }
+    BotSettings.findOne().then(result => {
+      if (result) {
+        if (result.user_join.active) {
+          const joinMessage = result.user_join.message
+            .replace(/first_name/g, data.user_profile.first_name)
+            .replace(/real_name/g, data.user_profile.real_name)
+            .replace(/user_name/g, `<@${data.user_profile.name}>`)
+            .replace(/channel_name/g, `<#${botParams.channelId}>`);
+          bot.postMessageToChannel(
+            botParams.channelName,
+            joinMessage,
+            messageParams
+          );
+        }
+      }
+    });
+
   }
 
   if (

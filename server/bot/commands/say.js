@@ -42,7 +42,6 @@ const replaceMention = (str, resolve) => {
   }
 };
 
-
 const replaceTextEmoji = (str) => {
   // const myRegexpEmoji = /^:\w+:/g;
   const myRegexpEmoji = /^(:\w+:)|(:\w+.*.\w+:)/g;
@@ -59,7 +58,6 @@ const replaceTextEmoji = (str) => {
     return myObj;
   }
 };
-
 
 const sayText = (text, split, maxW, callback) => {
   let newLetterArray = [];
