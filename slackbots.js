@@ -74,9 +74,9 @@ class Bot extends EventEmitter {
      * @returns {vow.Promise}
      */
   getChannels() {
-    // if (this.channels) {
-    //     return Vow.fulfill({ channels: this.channels });
-    // }
+    if (this.channels) {
+        return Vow.fulfill({ channels: this.channels });
+    }
     return this._api('channels.list');
   }
 
@@ -97,9 +97,9 @@ class Bot extends EventEmitter {
      * @returns {vow.Promise}
      */
   getGroups() {
-    // if (this.groups) {
-    //     return Vow.fulfill({ groups: this.groups });
-    // }
+    if (this.groups) {
+        return Vow.fulfill({ groups: this.groups });
+    }
 
     return this._api('groups.list');
   }

@@ -17,16 +17,17 @@ p Задайте настроки для вашего бота
       input.input.settings__input(disabled type="text" name="bot_name" id="bot_name" value=settings.icon.emoji)
   .settings__item
     .settings__item-col
-      label(for="user_join") Привественное сообщение
-      input.input.settings__checkbox(type="checkbox" checked=settings.user_join.active)
+      label(for="join_active") Привественное сообщение
+      input.input.settings__checkbox#join_active(type="checkbox" checked=settings.user_join.active)
     .settings__item-col
-      textarea(disabled name="user_join" id="user_join").textarea.settings__textarea= settings.user_join.message
+      textarea( name="user_join" id="user_join").textarea.settings__textarea= settings.user_join.message
   .settings__item
     .settings__item-col
-      label(for="user_leave") Прощальное сообщение
-      input.input.settings__checkbox(type="checkbox" checked=settings.user_leave.active)
+      label(for="leave_active") Прощальное сообщение
+      input.input.settings__checkbox#leave_active(type="checkbox" checked=settings.user_leave.active)
     .settings__item-col
-      textarea(disabled name="user_leave" id="user_leave").textarea.settings__textarea= settings.user_leave.message
+      textarea( name="user_leave" id="user_leave").textarea.settings__textarea= settings.user_leave.message
   .settings__save
-    button.button.button_primary Сохранить
+    .settings__message
+    button.button.button_primary(data-bot-id=settings._id) Сохранить
 

@@ -25,6 +25,7 @@ socket.on('parrot count', function(data) {
 
 
 
+
 $(document).ready(function() {
 
   $('#login').submit(function(e) {
@@ -129,7 +130,7 @@ $(document).ready(function() {
     }
   });
 
-  $('.messages__add').on('click', function(e) {
+  $('.messages__add button').on('click', function(e) {
     e.preventDefault();
     const $this = $(this);
     const modalDialog = $('.modal');
@@ -161,7 +162,7 @@ $(document).ready(function() {
     }
   });
 
-  const addNewMessage = function (data) {
+  const addNewMessage = function(data) {
     const template = `
       <div class="messages__item">
         <div class="messages__item-input">
@@ -184,7 +185,7 @@ $(document).ready(function() {
           </a>
         </div>
       </div>`;
-      $('.messages__list').append(template);
+    $('.messages__list').append(template);
   };
 
   $('#save_message').submit(function(e) {
@@ -221,5 +222,46 @@ $(document).ready(function() {
     }
   });
 
+  $('.settings__save button').on('click', function(e) {
+    e.preventDefault();
+    const $this = $(this);
+    const botId = $this.data('bot-id');
 
+    const userJoinActive = $('#join_active').is(':checked');
+    const userJoinText = $('#user_join').val();
+
+    const userLeaveActive = $('#leave_active').is(':checked');
+    const userLeaveText = $('#user_leave').val();
+
+    const message = {
+      id: botId,
+      params: {
+        user_join: {
+          active: userJoinActive,
+          message: userJoinText,
+        },
+        user_leave: {
+          active: userLeaveActive,
+          message: userLeaveText,
+        },
+      },
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: '/api/editBotSettings',
+      data: JSON.stringify(message),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      success: function(data) {
+        $('.settings__message').text('Сохранено');
+        $('.settings__message').fadeOut(2000, function() {
+          $('.settings__message').remove();
+        });
+      },
+      failure: function(errMsg) {
+        console.log(errMsg);
+      },
+    });
+  });
 });

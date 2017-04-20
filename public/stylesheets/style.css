@@ -15,7 +15,7 @@ body {
 body {
   color: #555459;
   background-color: #F9F9F9;
-  
+
   font-family: Helvetica, Arial, sans-serif;
 }
 
@@ -63,7 +63,7 @@ body {
 }
 
 .textarea {
-  height: 150px;
+  height: 250px;
   background: #FFFFFF;
   border: 1px solid #C9CCCF;
   border-radius: 5px;
@@ -313,7 +313,7 @@ a.ui-button:active,
 
 .settings__textarea {
   width: 100%;
-  height: 100px;
+  height: 200px;
 }
 
 .commands__list {
@@ -349,8 +349,18 @@ a.ui-button:active,
 .commands__desc {
   width: 60%;
 }
+.settings__save {
+  position: relative;
+}
+.settings__message {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  top: 5px;
 
-@media screen and (max-width: 768px) {
+}
+@media screen and (max-width: 1300px) {
   .ui-tabs .ui-tabs-panel {
     padding: 10px;
   }
