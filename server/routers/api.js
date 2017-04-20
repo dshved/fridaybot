@@ -101,7 +101,7 @@ const editBotSettings = (req, res, next) => {
           msg: 'success',
         });
       } else {
-        console.log(err);
+        res.send(404);
       }
     }
   );
