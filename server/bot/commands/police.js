@@ -21,8 +21,7 @@ function getPolice(text, callback, msg) {
   if (reg.test(text)) {
     if (matchUser) {
       const randomResponse = Math.floor(Math.random() * (customResponse.length - 1));
-      console.log(randomResponse);
-      const message = `Господин полицейский к Вашим услугам.\nСпасибо за обращение.\n<${matchUser[0]}>, ${customResponse[randomResponse]}`;
+      const message = `Господин полицейский к Вашим услугам.\nСпасибо за обращение.\n<${matchUser[0]}>, на вас поступила жалоба, ${customResponse[randomResponse]}`;
       callback(message, {}, attachment);
     } else {
       callback('Господин полицейский всегда на страже закона.\nЕсли у вас жалоба на конкретного человека, то повторите команду и укажите его @username', {}, attachment);
