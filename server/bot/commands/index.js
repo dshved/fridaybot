@@ -13,14 +13,21 @@ const saveLog = (d) => {
 };
 
 
-const execResponse = (data, channel, text, expr, startFrom, channels, func, callback) => {
+const execResponse = (data, channel, text, expr, startFrom, entrance, channels, func, callback) => {
   const access = channels.find(cl => cl === channel);
 
   expr.forEach((msg) => {
     const attachment = {};
     attachment.username = 'милиция';
     attachment.icon_emoji = ':warneng:';
-    if (startFrom && text.startsWith(msg)) {
+    if (entrance) {
+      if (access) {
+        func(text, callback, msg);
+      } else {
+        callback('Вы превышаете полномочия!', {},attachment);
+      }
+
+    } else if (startFrom && text.startsWith(msg)) {
       if (access) {
         const newLog = data;
         newLog.text = msg;
@@ -55,6 +62,7 @@ const userMessageRes = (data, channel, callback) => {
       messageText,
       msg.messages,
       msg.startFrom,
+      msg.entrance,
       msg.channels,
       msg.callback,
       (d, error, attachment) => {

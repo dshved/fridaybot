@@ -185,7 +185,7 @@ bot.on('message', (data) => {
   }
 
 
-  if (data.text) {
+  if (data.text && data.subtype !== 'bot_message') {
     let channel;
     if (data.channel[0] === 'C') {
       bot.getChannelById(data.channel).then(res => {
