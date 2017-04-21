@@ -14,11 +14,11 @@ function getPolice(text, callback, msg) {
   const attachment = {};
   attachment.username = 'милиция';
   attachment.icon_emoji = ':warneng:';
-  const reg = new RegExp(msg);
+  // const reg = new RegExp(msg);
   const myRegexpUser = /@\w+/g;
   const matchUser = text.match(myRegexpUser);
 
-  if (reg.test(text)) {
+  if (text.startsWith(msg)) {
     if (matchUser) {
       let users = '';
       for (let i = 0; i < matchUser.length; i++) {
