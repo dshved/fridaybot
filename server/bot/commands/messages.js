@@ -85,7 +85,7 @@ const messages = [
     callback: require('./reddit').redditJs,
   },
   {
-    messages: ['МИЛИЦИ', 'ПОЛИЦИ', 'ГОСПОДИН ПОЛИЦЕЙСКИЙ'],
+    messages: ['МИЛИЦИ', 'ПОЛИЦИ', 'ГОСПОДИН ПОЛИЦЕЙСКИЙ', 'ОМОН', 'КОП'],
     startFrom: false,
     entrance: true,
     channels: ['test', 'friday', 'direct'],
