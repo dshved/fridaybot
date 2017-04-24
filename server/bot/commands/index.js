@@ -17,18 +17,10 @@ const execResponse = (data, channel, text, expr, startFrom, entrance, channels, 
   const access = channels.find(cl => cl === channel);
 
   expr.forEach((msg) => {
-    const attachment = {};
-    attachment.username = 'милиция';
-    attachment.icon_emoji = ':warneng:';
-    if (entrance) {
-      if (access) {
+    if (access) {
+      if (entrance) {
         func(text, callback, msg);
-      } else {
-        callback('Вы превышаете полномочия!', {},attachment);
-      }
-
-    } else if (startFrom && text.startsWith(msg)) {
-      if (access) {
+      } else if (startFrom && text.startsWith(msg)) {
         const newLog = data;
         newLog.text = msg;
         saveLog(newLog);
@@ -36,17 +28,11 @@ const execResponse = (data, channel, text, expr, startFrom, entrance, channels, 
         if (userText) {
           func(userText, callback);
         }
-      } else {
-        callback('Вы превышаете полномочия!', {},attachment);
-      }
-    } else if (!startFrom && text === msg) {
-      if (access) {
+      } else if (!startFrom && text === msg) {
         const newLog = data;
         newLog.text = msg;
         saveLog(newLog);
         func(text, callback);
-      } else {
-        callback('Вы превышаете полномочия!', {},attachment);
       }
     }
   });

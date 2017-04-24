@@ -21,6 +21,7 @@ const messageParams = {};
 
 const botParams = {};
 
+let channelsList = [];
 
 const saveLog = (d) => {
   const newCommand = new Log({
@@ -59,8 +60,6 @@ setInterval(() => {
     }
   );
 }, 180000);
-
-
 
 bot.on('start', () => {
   bot.getUser(config.bot.name).then(res => {
@@ -117,31 +116,29 @@ bot.on('start', () => {
       });
     }
   });
+
+  bot.getChannels().then(res => {
+    res.channels.forEach(item => {
+      channelsList.push({ id: item.id, name: item.name });
+    });
+  });
 });
 
+
+const channelName = data => {
+  const channel = channelsList.find(c => data.channel === c.id);
+  if (channel) {
+    return channel.name;
+  }
+  return 'direct';
+};
+
+
 const sendToWhom = (data, message, attachment) => {
-  if (data.channel[0] === 'C') {
-    bot.getChannelById(data.channel).then(res => {
-      if (res) {
-        const channelName = res.name;
-        if (attachment) {
-          bot.postMessageToChannel(channelName, message, attachment);
-        } else {
-          bot.postMessageToChannel(channelName, message, messageParams);
-        }
-      }
-    });
+  if (attachment) {
+    bot.postMessage(data.channel, message, attachment);
   } else {
-    bot.getUserById(data.user).then(res => {
-      if (res) {
-        const userName = res.name;
-        if (attachment) {
-          bot.postMessageToUser(userName, message, attachment);
-        } else {
-          bot.postMessageToUser(userName, message, messageParams);
-        }
-      }
-    });
+    bot.postMessage(data.channel, message, messageParams);
   }
 };
 
@@ -186,31 +183,21 @@ bot.on('message', (data) => {
 
 
   if (data.text && data.subtype !== 'bot_message') {
-    let channel;
-    if (data.channel[0] === 'C') {
-      bot.getChannelById(data.channel).then(res => {
-        if (res) {
-          channel = res.name;
-        }
-      });
-    } else {
-      channel = 'direct';
-    }
-    setTimeout(() => {
-      botResponse.userMessageRes(data, channel, (text, error, attachment) => {
-        if (!error.message) {
-          if (attachment) {
-            sendToWhom(data, text, attachment);
-            // bot.postMessageToChannel(botParams.channelName, text, messageParams);
-          } else {
-            sendToWhom(data, text);
-          }
+    const channel = channelName(data);
+
+    botResponse.userMessageRes(data, channel, (text, error, attachment) => {
+      if (!error.message) {
+        if (attachment) {
+          sendToWhom(data, text, attachment);
+          // bot.postMessageToChannel(botParams.channelName, text, messageParams);
         } else {
-          sendToWhom(data, `<@${data.user}> ${error.message}`);
-          // bot.postMessageToChannel(botParams.channelName, `<@${data.user}> `+error.message, messageParams);
+          sendToWhom(data, text);
         }
-      });
-    }, 500);
+      } else {
+        sendToWhom(data, `<@${data.user}> ${error.message}`);
+        // bot.postMessageToChannel(botParams.channelName, `<@${data.user}> `+error.message, messageParams);
+      }
+    });
   }
 
 

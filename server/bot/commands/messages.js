@@ -74,7 +74,7 @@ const messages = [
     messages: ['HOT'],
     startFrom: false,
     entrance: false,
-    channels: ['test', 'friday', 'direct'],
+    channels: ['test', 'friday', 'direct', 'general'],
     callback: require('./reddit').redditHot,
   },
   {
