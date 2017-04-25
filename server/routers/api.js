@@ -107,6 +107,11 @@ const editBotSettings = (req, res, next) => {
   );
 };
 
+const testSlackCommand = (req, res, next) => {
+  console.log(req.body);
+  res.send(req.body);
+};
+
 router.get('/', (req, res) => {
   res.send('hello');
 });
@@ -134,6 +139,8 @@ const auth = function(req, res, next) {
     });
   }
 };
+
+router.post('/slack/test', testSlackCommand);
 
 router.use(auth);
 
