@@ -109,7 +109,11 @@ const editBotSettings = (req, res, next) => {
 
 const testSlackCommand = (req, res, next) => {
   console.log(req.body);
-  res.send(req.body);
+  const testObj = {
+    response_type: 'in_channel',
+    text: 'gdfgd',
+  };
+  res.send(testObj);
 };
 
 router.get('/', (req, res) => {
