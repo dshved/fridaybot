@@ -63,7 +63,7 @@ const sayText = (text, split, maxW, callback) => {
   let newLetterArray = [];
   let newArray = [];
   let sendMessage = '';
-  text = text.substr(1, text.length);
+  text = text.substr(0, text.length);
   replaceMention(text, function(message) {
     text = message;
   });

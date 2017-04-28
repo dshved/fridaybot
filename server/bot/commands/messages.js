@@ -2,13 +2,13 @@
 
 const messages = [
   {
-    messages: ['СКАЖИ'],
+    messages: ['СКАЖИ '],
     startFrom: true,
     entrance: false,
     channels: ['test', 'friday', 'direct'],
     callback: require('./say').inRow,
   }, {
-    messages: ['ГОВОРИ'],
+    messages: ['ГОВОРИ '],
     startFrom: true,
     entrance: false,
     channels: ['test', 'friday', 'direct'],
@@ -74,7 +74,7 @@ const messages = [
     messages: ['HOT'],
     startFrom: false,
     entrance: false,
-    channels: ['test', 'friday', 'direct'],
+    channels: ['test', 'friday', 'direct', 'general'],
     callback: require('./reddit').redditHot,
   },
   {
@@ -85,7 +85,7 @@ const messages = [
     callback: require('./reddit').redditJs,
   },
   {
-    messages: ['МИЛИЦИ', 'ПОЛИЦИ', 'ГОСПОДИН ПОЛИЦЕЙСКИЙ', 'ОМОН', 'КОП'],
+    messages: ['МИЛИЦИЯ','МИЛИЦИЮ ВЫЗОВУ', 'ПОЛИЦИЯ', 'ГОСПОДИН ПОЛИЦЕЙСКИЙ', 'ОМОН'],
     startFrom: false,
     entrance: true,
     channels: ['test', 'friday', 'direct'],
