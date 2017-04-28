@@ -2,13 +2,13 @@
 
 const messages = [
   {
-    messages: ['СКАЖИ'],
+    messages: ['СКАЖИ '],
     startFrom: true,
     entrance: false,
     channels: ['test', 'friday', 'direct'],
     callback: require('./say').inRow,
   }, {
-    messages: ['ГОВОРИ'],
+    messages: ['ГОВОРИ '],
     startFrom: true,
     entrance: false,
     channels: ['test', 'friday', 'direct'],
