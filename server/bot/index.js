@@ -302,6 +302,9 @@ bot.on('message', (data) => {
 
 bot.on('close', e => {
   console.log('websocket closing', e);
+  bot.on('start', () => {
+    console.log('start');
+  });
 });
 
 bot.on('error', e => {
