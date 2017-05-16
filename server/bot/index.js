@@ -218,19 +218,19 @@ bot.on('message', (data) => {
 
   if (data.text) {
     if (~data.text.indexOf('UPTIME') == -1) {
-      const getTimeFormat = (sec) => {
-        function pad(s) {
-          return (s < 10 ? '0' : '') + s;
+      var millisecToTimeStruct = function(millisec) {
+        var days, hours, minutes, seconds;
+        if (isNaN(millisec)) {
+          return {};
         }
-        const hours = Math.floor(sec / (60 * 60));
-        const minutes = Math.floor(sec % (60 * 60) / 60);
-        const seconds = Math.floor(sec % 60);
-
-        return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        days = millisec / (60 * 60 * 24);
+        hours = (days - ~~days) * 24;
+        minutes = (hours - ~~hours) * 60;
+        seconds = (minutes - ~~minutes) * 60;
+        return `${~~days}:${~~hours}:${~~minutes}:${~~seconds }`;
       };
-
       const uptime = process.uptime();
-      sendToWhom(data, getTimeFormat(uptime));
+      sendToWhom(data, millisecToTimeStruct(uptime));
     }
   }
 
