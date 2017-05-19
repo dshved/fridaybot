@@ -81,11 +81,11 @@ const messages = [
     messages: ['RDT'],
     startFrom: false,
     entrance: false,
-    channels: ['test', 'direct'],
+    channels: ['test', 'direct', 'friday'],
     callback: require('./reddit').redditJs,
   },
   {
-    messages: ['МИЛИЦИЯ','МИЛИЦИЮ ВЫЗОВУ', 'ПОЛИЦИЯ', 'ГОСПОДИН ПОЛИЦЕЙСКИЙ', 'ОМОН'],
+    messages: ['МИЛИЦИЯ', 'МИЛИЦИЮ ВЫЗОВУ', 'ПОЛИЦИЯ', 'ГОСПОДИН ПОЛИЦЕЙСКИЙ', 'ОМОН'],
     startFrom: false,
     entrance: true,
     channels: ['test', 'friday', 'direct'],
