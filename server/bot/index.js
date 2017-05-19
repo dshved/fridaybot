@@ -181,6 +181,14 @@ bot.on('message', (data) => {
     }
   }
 
+  if (data.text) {
+    if (~data.text.indexOf('маска ') == -1) {
+      const userText = data.text.substr(6);
+      const say = require('./commands/sayHow').parseMessage;
+      let {message, attachment} = say(userText);
+      bot.postMessageToChannel(botParams.channelName, message, attachment);
+    }
+  }
 
   if (data.text && data.subtype !== 'bot_message') {
     const channel = channelName(data);
