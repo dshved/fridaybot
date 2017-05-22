@@ -193,17 +193,21 @@ bot.on('message', (data) => {
   if (data.text && data.subtype !== 'bot_message') {
     const channel = channelName(data);
 
-    botResponse.userMessageRes(data, channel, (text, error, attachment) => {
-      if (!error.message) {
-        if (attachment) {
-          sendToWhom(data, text, attachment);
-          // bot.postMessageToChannel(botParams.channelName, text, messageParams);
-        } else {
-          sendToWhom(data, text);
-        }
-      } else {
-        sendToWhom(data, `<@${data.user}> ${error.message}`);
-        // bot.postMessageToChannel(botParams.channelName, `<@${data.user}> `+error.message, messageParams);
+    UserMessages.findOne({ user_id: data.user }).then(result => {
+      if (result) {
+        botResponse.userMessageRes(data, channel, (text, error, attachment) => {
+          if (!error.message) {
+            if (attachment) {
+              sendToWhom(data, text, attachment);
+              // bot.postMessageToChannel(botParams.channelName, text, messageParams);
+            } else {
+              sendToWhom(data, text);
+            }
+          } else {
+            sendToWhom(data, `<@${data.user}> ${error.message}`);
+            // bot.postMessageToChannel(botParams.channelName, `<@${data.user}> `+error.message, messageParams);
+          }
+        });
       }
     });
   }
