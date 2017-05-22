@@ -262,6 +262,14 @@ bot.on('message', (data) => {
           );
         }
       }
+      UserMessages.remove({ user_id: data.user }, (err, result) => {
+        if (!err) {
+          console.log('Пользователь удален');
+        } else {
+          console.log(err);
+        }
+      });
+
     });
   }
 
@@ -289,7 +297,8 @@ bot.on('message', (data) => {
   if (
     data.type === 'message' &&
     data.channel === botParams.channelId &&
-    data.subtype !== 'bot_message'
+    data.subtype !== 'bot_message' &&
+    data.subtype !== 'channel_leave'
   ) {
     BotMessages.findOne({ user_message: data.text }).then(result => {
       if (result) {
