@@ -265,6 +265,37 @@ $(document).ready(function() {
     });
   });
 
+  var inputs = document.querySelectorAll('.inputfile');
+  Array.prototype.forEach.call(inputs, function(input) {
+    var label = input.nextElementSibling,
+      labelVal = label.innerHTML;
+
+    input.addEventListener('change', function(e) {
+      var fileName = '';
+      if (this.files && this.files.length > 1)
+        fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
+      else
+        fileName = e.target.value.split('\\').pop();
+
+      if (fileName)
+        label.querySelector('span').innerHTML = fileName;
+      else
+        label.innerHTML = labelVal;
+    });
+  });
+
+  const addNewSticker = function(data) {
+    const template = `
+        <div class="stickers__item">
+          <div class="stickers__image">
+            <img src="${data.image_url}" alt="${data.emoji}">
+          </div>
+          <div class="stickers__emoji">${data.emoji}</div>
+        </div>`;
+    $('.stickers__list').append(template);
+  };
+
+
   var form = document.forms.namedItem("addSticker");
   form.addEventListener('submit', function(ev) {
 
@@ -276,6 +307,9 @@ $(document).ready(function() {
     oReq.onload = function(oEvent) {
       if (oReq.status == 200) {
         document.getElementById("save_emoji").reset();
+        $('.filename').text('');
+        const json = JSON.parse(oReq.response);
+        addNewMessage(json);
       } else {
         console.log(oReq.status);
       }

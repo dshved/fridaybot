@@ -471,6 +471,78 @@ a.ui-button:active,
 .modal__textarea {
   font-size: 18px;
 }
-.stickers__emoji {
-  text-transform: uppercase;
+.stickers__form {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  flex-flow: row wrap;
+  margin-bottom: 20px;
 }
+
+.stickers__emoji {
+  text-align: center;
+  text-transform: uppercase;
+  padding: 5px;
+  font-size: 14px;
+  overflow: hidden;
+  width: 100%;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+.stickers__input {
+  padding: 10px;
+    font-size: 18px;
+    width: 50%;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.stickers__item {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+.stickers__list {
+    display: flex;
+    flex-flow: row wrap;
+}
+.stickers__image {
+  margin: 0 auto;
+}
+.stickers__image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.inputfile + label {
+    display: block;
+    cursor: pointer;
+}
+
+.inputfile + label > i {
+    font-size: 16px;
+    display: inline-block;
+    padding: 10px 25px;
+    border: 1px solid #C9CCCF;
+    border-radius: 5px;
+    margin-right: 20px;
+    margin-left: 10px;
+    color: #666666;
+    font-style: normal;
+}
+.inputfile + label * {
+    pointer-events: none;
+}
+

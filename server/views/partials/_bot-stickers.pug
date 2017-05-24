@@ -1,7 +1,17 @@
 p Стикеры
 .stickers
   form.stickers__form(action="#" id="save_emoji" enctype="multipart/form-data" method="post" name="addSticker")
-    label(for="emoji") Emoji
-    input(type="text" name="emoji" id="emoji").input.stickers__emoji
-    input(type="file" name="image" id="image")
-    button(type="submit") Добавить
+    input(type="text" name="emoji" id="emoji" placeholder="emoji").input.stickers__input
+    input(type="file" accept="image/jpeg,image/png,image/jpg" name="image" id="image").inputfile
+    label(for="image")
+      i Обзор
+      span.filename
+    button(type="submit").button.button_primary Добавить
+
+  .stickers__list
+    for item in stickers
+      .stickers__item
+        .stickers__image
+          img(src= item.image_url, alt= item.emoji)
+        .stickers__emoji= item.emoji
+

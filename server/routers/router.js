@@ -3,6 +3,7 @@ const router = express.Router();
 const Auth = require('../middlewares/auth');
 const BotMessages = require('../models/botmessage').BotMessages;
 const BotSettings = require('../models/botsetting').BotSettings;
+const Stickers = require('../models/sticker').Sticker;
 
 router.get('/', (req, res, next) => {
   if (!req.session.token) {
@@ -22,9 +23,15 @@ router.get('/home', Auth, (req, res, next) => {
       BotSettings.findOne().then(settings => {
         if (settings) {
           data.settings = settings;
-          res.render('home', {
-            messages: data.messages,
-            settings: data.settings,
+          Stickers.find({}).then(stickers => {
+            if (stickers) {
+              data.stickers = stickers;
+              res.render('home', {
+                messages: data.messages,
+                settings: data.settings,
+                stickers: data.stickers,
+              });
+            }
           });
         }
       });
