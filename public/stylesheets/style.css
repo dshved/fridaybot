@@ -471,3 +471,6 @@ a.ui-button:active,
 .modal__textarea {
   font-size: 18px;
 }
+.stickers__emoji {
+  text-transform: uppercase;
+}

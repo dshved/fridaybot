@@ -9,6 +9,8 @@ const UserMessages = require('./../models/usermessage').UserMessages;
 const BotMessages = require('./../models/botmessage').BotMessages;
 const BotSettings = require('./../models/botsetting').BotSettings;
 const Anek = require('./../models/anek').Anek;
+// const Sticker = require('./../models/sticker').Sticker;
+const getSticker = require('./commands/sticker').getSticker;
 const Log = require('./../models/log').Log;
 
 const cheerio = require('cheerio');
@@ -18,6 +20,13 @@ const iconv = require('iconv-lite');
 const bot = new SlackBot(config.bot);
 
 const messageParams = {};
+
+// const newSticker = new Sticker({
+//   emoji: ':PEP:',
+//   image_url: 'http://dshved.com/sticker.png',
+// });
+
+// newSticker.save();
 
 const botParams = {};
 
@@ -313,6 +322,13 @@ bot.on('message', (data) => {
         );
         saveLog(data);
       }
+    });
+    getSticker(data.text, (att) => {
+      bot.postMessageToChannel(
+          botParams.channelName,
+          '',
+          att
+        );
     });
     UserMessages.findOne({ user_id: data.user }).then(result => {
       if (!result) {

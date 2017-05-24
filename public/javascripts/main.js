@@ -264,4 +264,27 @@ $(document).ready(function() {
       },
     });
   });
+
+  var form = document.forms.namedItem("addSticker");
+  form.addEventListener('submit', function(ev) {
+
+    var oData = new FormData(form);
+
+
+    var oReq = new XMLHttpRequest();
+    oReq.open("POST", "/api/addSticker", true);
+    oReq.onload = function(oEvent) {
+      if (oReq.status == 200) {
+        document.getElementById("save_emoji").reset();
+      } else {
+        console.log(oReq.status);
+      }
+    };
+
+    oReq.send(oData);
+    ev.preventDefault();
+  }, false);
+
+
+
 });

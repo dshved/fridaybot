@@ -240,5 +240,6 @@ module.exports = {
   borderText: function(text, callback) {
     sayBorderText(text, false, 300, callback);
   },
+  sayBorderText,
 };
-module.exports = { sayBorderText };
+
