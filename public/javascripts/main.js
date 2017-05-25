@@ -264,4 +264,93 @@ $(document).ready(function() {
       },
     });
   });
+
+  const inputs = document.querySelectorAll('.inputfile');
+  Array.prototype.forEach.call(inputs, function(input) {
+    const label = input.nextElementSibling;
+    const labelVal = label.innerHTML;
+
+    input.addEventListener('change', function(e) {
+      let fileName = '';
+      if (this.files && this.files.length > 1) {
+        fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
+      } else {
+        fileName = e.target.value.split('\\').pop();
+      }
+
+      if (fileName) {
+        label.querySelector('span').innerHTML = fileName;
+      } else {
+        label.innerHTML = labelVal;
+      }
+    });
+  });
+
+
+  function addNewSticker(data) {
+    const template = `
+        <div class="stickers__item">
+          <div class="stickers__image">
+            <img src="${data.image_url}" alt="${data.emoji}">
+          </div>
+          <a class="stickers__delete" href="#" data-sticker-id="${data._id}">
+            <i class="fa fa-close"></i>
+          </a>
+          <div class="stickers__emoji">${data.emoji}</div>
+        </div>`;
+    $('.stickers__list').append(template);
+  };
+
+
+  const form = document.forms.namedItem('addSticker');
+  form.addEventListener('submit', function(ev) {
+
+    const oData = new FormData(form);
+
+    const oReq = new XMLHttpRequest();
+    oReq.open('POST', '/api/addSticker', true);
+    oReq.onload = function(oEvent) {
+      if (oReq.status == 200) {
+        document.getElementById('save_emoji').reset();
+        $('.filename').text('');
+        const json = JSON.parse(oReq.response);
+        addNewSticker(json);
+      } else {
+        console.log(oReq.status);
+      }
+    };
+
+    oReq.send(oData);
+    ev.preventDefault();
+  }, false);
+
+
+  $('.stickers__list').on('click', 'a.stickers__delete', function(e) {
+    e.preventDefault();
+    const $this = $(this);
+    const item = $this.closest('.stickers__item');
+    const itemId = $this.data('sticker-id');
+
+    const confirmRemove = confirm('Вы точно хотите удалить?');
+    if (confirmRemove) {
+      const message = {
+        id: itemId,
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/api/removeSticker',
+        data: JSON.stringify(message),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function(data) {
+          item.remove();
+        },
+        failure: function(errMsg) {
+          console.log(errMsg);
+        },
+      });
+    }
+  });
+
 });

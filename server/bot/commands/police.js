@@ -1,4 +1,5 @@
 'use strict';
+const sayBorderText = require('./say').sayBorderText;
 
 const customResponse = [
   'не хорошо так делать.',
@@ -22,11 +23,16 @@ function getPolice(text, callback, msg) {
     if (matchUser) {
       let users = '';
       for (let i = 0; i < matchUser.length; i++) {
-        users += `<${matchUser[i]}>, `;
+        // users += `<${matchUser[i]}>, `;
+        users += `${matchUser[i]}`;
       }
-      const randomResponse = Math.floor(Math.random() * (customResponse.length - 1));
-      const message = `:drudgesiren:Господин полицейский к Вашим услугам.:drudgesiren:\nСпасибо за обращение.\n${users}на вас поступила жалоба, ${customResponse[randomResponse]}`;
-      callback(message, {}, attachment);
+      sayBorderText(users, false, 100, (cb) => {
+        const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse:\n${cb}Вы окружены!!!\n`;
+        callback(message, {}, attachment);
+      });
+      // const randomResponse = Math.floor(Math.random() * (customResponse.length - 1));
+      // const message = `:drudgesiren:Господин полицейский к Вашим услугам.:drudgesiren:\nСпасибо за обращение.\n${users}на вас поступила жалоба, ${customResponse[randomResponse]}`;
+      // callback(message, {}, attachment);
     } else {
       callback(':drudgesiren:Господин полицейский всегда на страже закона.:drudgesiren:\nЕсли у вас жалоба на конкретного человека, то повторите команду и укажите его @username', {}, attachment);
     }
