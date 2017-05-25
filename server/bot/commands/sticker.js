@@ -6,11 +6,12 @@ function getSticker(emoji, callback) {
   Sticker.findOne({ emoji: emoji }).then(result => {
     if (result) {
       const attachment = {};
-      attachment.username = 'stickerbot';
+      const domainURL = 'http://fridaybot.tk';
+      attachment.username = 'fridaybot';
       attachment.icon_emoji = ':fbf:';
       attachment.attachments = [{
         fallback: '',
-        image_url: result.image_url,
+        image_url: `${domainURL}${result.image_url}`,
       }, ];
       callback(attachment);
     }
