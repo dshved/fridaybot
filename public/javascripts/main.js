@@ -311,7 +311,7 @@ $(document).ready(function() {
         document.getElementById('save_emoji').reset();
         $('.filename').text('');
         const json = JSON.parse(oReq.response);
-        addNewMessage(json);
+        addNewSticker(json);
       } else {
         console.log(oReq.status);
       }
