@@ -45,20 +45,19 @@ const addSticker = (req, res, next) => {
 
   const form = new multiparty.Form();
 
-  form.parse(req, function(err, fields, files) {
-
+  form.parse(req, (err, fields, files) => {
     emoji = fields.emoji[0];
     filePath = files.image[0].path;
     let newEmoji = emoji.replace(/:/g, '').toUpperCase();
     newEmoji = `:${newEmoji}:`;
 
-    fs.readFile(filePath, function(err, data) {
-      let radom = Math.random().toString(36);
-      let randomName = radom.substring(2, radom.length);
-      let path = './public/uploads/stickers/' + randomName + '-' + files.image[0].originalFilename;
-      fs.writeFile(path, data, function(err) {
-        if (err) return next(err);
-        const imageURL = '/uploads/stickers/' + randomName + '-' + files.image[0].originalFilename;
+    fs.readFile(filePath, (err, data) => {
+      const radom = Math.random().toString(36);
+      const randomName = radom.substring(2, radom.length);
+      const path = './public/uploads/stickers/' + randomName + '-' + files.image[0].originalFilename;
+      fs.writeFile(path, data, (error) => {
+        if (error) return next(err);
+        const imageURL = `/uploads/stickers/${randomName}-${files.image[0].originalFilename}`;
         const newSticker = new Sticker({
           emoji: newEmoji,
           image_url: imageURL,
