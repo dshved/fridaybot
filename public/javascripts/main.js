@@ -293,6 +293,9 @@ $(document).ready(function() {
           <div class="stickers__image">
             <img src="${data.image_url}" alt="${data.emoji}">
           </div>
+          <a class="stickers__delete" href="#" data-sticker-id="${data._id}">
+            <i class="fa fa-close"></i>
+          </a>
           <div class="stickers__emoji">${data.emoji}</div>
         </div>`;
     $('.stickers__list').append(template);
@@ -321,5 +324,33 @@ $(document).ready(function() {
     ev.preventDefault();
   }, false);
 
+
+  $('.stickers__list').on('click', 'a.stickers__delete', function(e) {
+    e.preventDefault();
+    const $this = $(this);
+    const item = $this.closest('.stickers__item');
+    const itemId = $this.data('sticker-id');
+
+    const confirmRemove = confirm('Вы точно хотите удалить?');
+    if (confirmRemove) {
+      const message = {
+        id: itemId,
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/api/removeSticker',
+        data: JSON.stringify(message),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function(data) {
+          item.remove();
+        },
+        failure: function(errMsg) {
+          console.log(errMsg);
+        },
+      });
+    }
+  });
 
 });

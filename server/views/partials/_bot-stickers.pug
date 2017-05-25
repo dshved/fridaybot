@@ -13,5 +13,7 @@ p Стикеры
       .stickers__item
         .stickers__image
           img(src= item.image_url, alt= item.emoji)
+        a(href="#" data-sticker-id= item._id).stickers__delete
+          i.fa.fa-close
         .stickers__emoji= item.emoji
 

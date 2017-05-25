@@ -62,16 +62,40 @@ const addSticker = (req, res, next) => {
           emoji: newEmoji,
           image_url: imageURL,
         });
-        newSticker.save();
-        res.send({
-          msg: 'success',
-          emoji: newEmoji,
-          image_url: imageURL,
+        let stickerId;
+        newSticker.save((err, sticker) => {
+          stickerId = sticker.id;
+          res.send({
+            msg: 'success',
+            emoji: newEmoji,
+            _id: stickerId,
+            image_url: imageURL,
+          });
         });
+
         // res.end();
       });
     });
   });
+};
+
+const removeSticker = (req, res, next) => {
+  Sticker.findOne({ _id: req.body.id }).then((result) => {
+    if (result) {
+      fs.unlink(`./public${result.image_url}`, (err) => {
+        if (err) throw err;
+        Sticker.remove({ _id: req.body.id }, (err, result) => {
+          if (!err) {
+            res.send({
+              msg: 'success',
+            });
+          } else {
+            console.log(err);
+          }
+        });
+      });
+    }
+  })
 };
 
 const editBotMessage = (req, res, next) => {
@@ -182,6 +206,7 @@ const auth = function(req, res, next) {
   }
 };
 router.post('/addSticker', addSticker);
+router.post('/removeSticker', removeSticker);
 router.post('/slack/test', testSlackCommand);
 
 router.use(auth);
