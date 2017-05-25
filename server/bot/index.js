@@ -11,6 +11,7 @@ const BotSettings = require('./../models/botsetting').BotSettings;
 const Anek = require('./../models/anek').Anek;
 // const Sticker = require('./../models/sticker').Sticker;
 const getSticker = require('./commands/sticker').getSticker;
+const sayText = require('./commands/say').sayText;
 const Log = require('./../models/log').Log;
 
 const cheerio = require('cheerio');
@@ -21,12 +22,6 @@ const bot = new SlackBot(config.bot);
 
 const messageParams = {};
 
-// const newSticker = new Sticker({
-//   emoji: ':PEP:',
-//   image_url: 'http://dshved.com/sticker.png',
-// });
-
-// newSticker.save();
 
 const botParams = {};
 
@@ -264,15 +259,37 @@ bot.on('message', (data) => {
     BotSettings.findOne().then(result => {
       if (result) {
         if (result.user_leave.active) {
-          const leaveMessage = result.user_leave.message
-            .replace(/first_name/g, data.user_profile.first_name)
-            .replace(/real_name/g, data.user_profile.real_name)
-            .replace(/name/g, `<@${data.user_profile.name}>`);
-          bot.postMessageToChannel(
-            botParams.channelName,
-            leaveMessage,
-            messageParams
-          );
+          request({
+            url: `https://slack.com/api/channels.info?token=${config.bot.token}&channel=${botParams.channelId}`,
+            encoding: null,
+          },
+          (err, res, body) => {
+            const json = JSON.parse(body);
+            if (json.ok) {
+              const countUsers = json.channel.members.length;
+              sayText(`:RAGE: ${countUsers}`, true, 10, (callback) => {
+                const leaveMessage = callback + result.user_leave.message
+                .replace(/first_name/g, data.user_profile.first_name)
+                .replace(/real_name/g, data.user_profile.real_name)
+                .replace(/name/g, `<@${data.user_profile.name}>`);
+                bot.postMessageToChannel(
+                  botParams.channelName,
+                  leaveMessage,
+                  messageParams
+                );
+              });
+            } else {
+              const leaveMessage = result.user_leave.message
+                .replace(/first_name/g, data.user_profile.first_name)
+                .replace(/real_name/g, data.user_profile.real_name)
+                .replace(/name/g, `<@${data.user_profile.name}>`);
+              bot.postMessageToChannel(
+                botParams.channelName,
+                leaveMessage,
+                messageParams
+              );
+            }
+          });
         }
       }
       UserMessages.remove({ user_id: data.user }, (err, result) => {
@@ -291,16 +308,39 @@ bot.on('message', (data) => {
     BotSettings.findOne().then(result => {
       if (result) {
         if (result.user_join.active) {
-          const joinMessage = result.user_join.message
-            .replace(/first_name/g, data.user_profile.first_name)
-            .replace(/real_name/g, data.user_profile.real_name)
-            .replace(/user_name/g, `<@${data.user_profile.name}>`)
-            .replace(/channel_name/g, `<#${botParams.channelId}>`);
-          bot.postMessageToChannel(
-            botParams.channelName,
-            joinMessage,
-            messageParams
-          );
+          request({
+            url: `https://slack.com/api/channels.info?token=${config.bot.token}&channel=${botParams.channelId}`,
+            encoding: null,
+          },
+          (err, res, body) => {
+            const json = JSON.parse(body);
+            if (json.ok) {
+              const countUsers = json.channel.members.length;
+              sayText(`:TADA: ${countUsers}`, true, 10, (callback) => {
+                const joinMessage = callback + result.user_join.message
+                  .replace(/first_name/g, data.user_profile.first_name)
+                  .replace(/real_name/g, data.user_profile.real_name)
+                  .replace(/user_name/g, `<@${data.user_profile.name}>`)
+                  .replace(/channel_name/g, `<#${botParams.channelId}>`);
+                bot.postMessageToChannel(
+                  botParams.channelName,
+                  joinMessage,
+                  messageParams
+                );
+              });
+            } else {
+              const joinMessage = result.user_join.message
+                  .replace(/first_name/g, data.user_profile.first_name)
+                  .replace(/real_name/g, data.user_profile.real_name)
+                  .replace(/user_name/g, `<@${data.user_profile.name}>`)
+                  .replace(/channel_name/g, `<#${botParams.channelId}>`);
+              bot.postMessageToChannel(
+                botParams.channelName,
+                joinMessage,
+                messageParams
+              );
+            }
+          });
         }
       }
     });
