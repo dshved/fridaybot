@@ -58,7 +58,7 @@ const addSticker = (req, res, next) => {
       let path = './public/uploads/stickers/' + randomName + '-' + files.image[0].originalFilename;
       fs.writeFile(path, data, function(err) {
         if (err) return next(err);
-        const imageURL = 'https://fridaybot.tk/uploads/stickers/' + randomName + '-' + files.image[0].originalFilename;
+        const imageURL = '/uploads/stickers/' + randomName + '-' + files.image[0].originalFilename;
         const newSticker = new Sticker({
           emoji: newEmoji,
           image_url: imageURL,
