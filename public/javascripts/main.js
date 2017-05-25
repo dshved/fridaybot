@@ -265,26 +265,29 @@ $(document).ready(function() {
     });
   });
 
-  var inputs = document.querySelectorAll('.inputfile');
+  const inputs = document.querySelectorAll('.inputfile');
   Array.prototype.forEach.call(inputs, function(input) {
-    var label = input.nextElementSibling,
-      labelVal = label.innerHTML;
+    const label = input.nextElementSibling;
+    const labelVal = label.innerHTML;
 
     input.addEventListener('change', function(e) {
-      var fileName = '';
-      if (this.files && this.files.length > 1)
+      let fileName = '';
+      if (this.files && this.files.length > 1) {
         fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
-      else
+      } else {
         fileName = e.target.value.split('\\').pop();
+      }
 
-      if (fileName)
+      if (fileName) {
         label.querySelector('span').innerHTML = fileName;
-      else
+      } else {
         label.innerHTML = labelVal;
+      }
     });
   });
 
-  const addNewSticker = function(data) {
+
+  function addNewSticker(data) {
     const template = `
         <div class="stickers__item">
           <div class="stickers__image">
@@ -296,17 +299,16 @@ $(document).ready(function() {
   };
 
 
-  var form = document.forms.namedItem("addSticker");
+  const form = document.forms.namedItem('addSticker');
   form.addEventListener('submit', function(ev) {
 
-    var oData = new FormData(form);
+    const oData = new FormData(form);
 
-
-    var oReq = new XMLHttpRequest();
-    oReq.open("POST", "/api/addSticker", true);
+    const oReq = new XMLHttpRequest();
+    oReq.open('POST', '/api/addSticker', true);
     oReq.onload = function(oEvent) {
       if (oReq.status == 200) {
-        document.getElementById("save_emoji").reset();
+        document.getElementById('save_emoji').reset();
         $('.filename').text('');
         const json = JSON.parse(oReq.response);
         addNewMessage(json);
@@ -318,7 +320,6 @@ $(document).ready(function() {
     oReq.send(oData);
     ev.preventDefault();
   }, false);
-
 
 
 });
