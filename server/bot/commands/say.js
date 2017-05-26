@@ -241,5 +241,6 @@ module.exports = {
     sayBorderText(text, false, 300, callback);
   },
   sayBorderText,
+  sayText,
 };
 
