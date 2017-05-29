@@ -165,6 +165,7 @@ function getStatistic(text, callback) {
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const startTimestamp = startOfDay / 1000;
   const endTimestamp = startTimestamp + (startTimestamp % 86400);
+  console.log(startTimestamp, endTimestamp);
   Statistics.find({
     timestamp: {
       $gte: startTimestamp,
