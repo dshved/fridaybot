@@ -91,6 +91,13 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./police').police,
   },
+  {
+    messages: ['СТАТИСТИКА ЗА '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').statistic,
+  },
 
 ];
 

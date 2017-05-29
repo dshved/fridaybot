@@ -8,8 +8,8 @@ const fs = require('fs');
 const UserMessages = require('./../models/usermessage').UserMessages;
 const BotMessages = require('./../models/botmessage').BotMessages;
 const BotSettings = require('./../models/botsetting').BotSettings;
-const Anek = require('./../models/anek').Anek;
-// const Sticker = require('./../models/sticker').Sticker;
+// const Anek = require('./../models/anek').Anek;
+const Statistics = require('./../models/statistics').Statistics;
 const getSticker = require('./commands/sticker').getSticker;
 const sayText = require('./commands/say').sayText;
 const Log = require('./../models/log').Log;
@@ -155,7 +155,7 @@ global.io.on('connection', (socket) => {
   });
 });
 
-
+let accessBotPost;
 bot.on('message', (data) => {
   global.io.emit('data', data);
   // console.log(data);
@@ -178,10 +178,11 @@ bot.on('message', (data) => {
   }
 
 
-  if (data.text) {
+  if (data.text && data.subtype !== 'bot_message') {
     if (~data.text.indexOf('повтори ') == -1) {
       const userText = data.text.substr(8);
       bot.postMessageToChannel(botParams.channelName, userText, messageParams);
+      accessBotPost = true;
     }
   }
 
@@ -194,11 +195,13 @@ bot.on('message', (data) => {
     }
   }
 
-  if (data.text && data.subtype !== 'bot_message') {
+  if (data.text) {
+    data.text = data.text.toUpperCase();
     const channel = channelName(data);
-
-    UserMessages.findOne({ user_id: data.user }).then(result => {
+    const user = data.user ? data.user : data.bot_id;
+    UserMessages.findOne({ user_id: user }).then(result => {
       if (result) {
+
         botResponse.userMessageRes(data, channel, (text, error, attachment) => {
           if (!error.message) {
             if (attachment) {
@@ -301,6 +304,13 @@ bot.on('message', (data) => {
       });
 
     });
+    const statistic = new Statistics({
+      event_type: 'channel_leave',
+      user_id: data.user,
+      timestamp: data.ts,
+    });
+
+    statistic.save();
   }
 
 
@@ -344,7 +354,31 @@ bot.on('message', (data) => {
         }
       }
     });
+    const statistic = new Statistics({
+      event_type: 'channel_join',
+      user_id: data.user,
+      timestamp: data.ts,
+    });
 
+    statistic.save();
+  }
+  if (
+    data.type === 'message' &&
+    data.channel === botParams.channelId &&
+    accessBotPost &&
+    data.subtype !== 'channel_leave'
+  ) {
+    BotMessages.findOne({ user_message: data.text }).then(result => {
+      if (result) {
+        bot.postMessageToChannel(
+          botParams.channelName,
+          result.bot_message,
+          messageParams
+        );
+        accessBotPost = false;
+        saveLog(data);
+      }
+    });
   }
 
   if (
@@ -392,6 +426,15 @@ bot.on('message', (data) => {
         ).then();
       }
     });
+
+    const statistic = new Statistics({
+      event_type: 'user_message',
+      user_id: data.user,
+      timestamp: data.ts,
+      parrot_count: countParrots,
+    });
+
+    statistic.save();
   }
 });
 
