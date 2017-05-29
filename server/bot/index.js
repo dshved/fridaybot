@@ -155,7 +155,7 @@ global.io.on('connection', (socket) => {
   });
 });
 
-
+let accessBotPost;
 bot.on('message', (data) => {
   global.io.emit('data', data);
   // console.log(data);
@@ -178,10 +178,11 @@ bot.on('message', (data) => {
   }
 
 
-  if (data.text) {
+  if (data.text && data.subtype !== 'bot_message') {
     if (~data.text.indexOf('повтори ') == -1) {
       const userText = data.text.substr(8);
       bot.postMessageToChannel(botParams.channelName, userText, messageParams);
+      accessBotPost = true;
     }
   }
 
@@ -194,11 +195,13 @@ bot.on('message', (data) => {
     }
   }
 
-  if (data.text && data.subtype !== 'bot_message') {
+  if (data.text) {
+    data.text = data.text.toUpperCase();
     const channel = channelName(data);
-
-    UserMessages.findOne({ user_id: data.user }).then(result => {
+    const user = data.user ? data.user : data.bot_id;
+    UserMessages.findOne({ user_id: user }).then(result => {
       if (result) {
+
         botResponse.userMessageRes(data, channel, (text, error, attachment) => {
           if (!error.message) {
             if (attachment) {
@@ -358,6 +361,24 @@ bot.on('message', (data) => {
     });
 
     statistic.save();
+  }
+  if (
+    data.type === 'message' &&
+    data.channel === botParams.channelId &&
+    accessBotPost &&
+    data.subtype !== 'channel_leave'
+  ) {
+    BotMessages.findOne({ user_message: data.text }).then(result => {
+      if (result) {
+        bot.postMessageToChannel(
+          botParams.channelName,
+          result.bot_message,
+          messageParams
+        );
+        accessBotPost = false;
+        saveLog(data);
+      }
+    });
   }
 
   if (
