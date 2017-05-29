@@ -164,7 +164,7 @@ function getStatistic(text, callback) {
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const startTimestamp = startOfDay / 1000;
-  const endTimestamp = startTimestamp + (startTimestamp % 86400);
+  const endTimestamp = startTimestamp + 86400;
   Statistics.aggregate(
     [{
       $match: {
