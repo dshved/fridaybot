@@ -8,8 +8,8 @@ const fs = require('fs');
 const UserMessages = require('./../models/usermessage').UserMessages;
 const BotMessages = require('./../models/botmessage').BotMessages;
 const BotSettings = require('./../models/botsetting').BotSettings;
-const Anek = require('./../models/anek').Anek;
-// const Sticker = require('./../models/sticker').Sticker;
+// const Anek = require('./../models/anek').Anek;
+const Statistics = require('./../models/statistics').Statistics;
 const getSticker = require('./commands/sticker').getSticker;
 const sayText = require('./commands/say').sayText;
 const Log = require('./../models/log').Log;
@@ -301,6 +301,13 @@ bot.on('message', (data) => {
       });
 
     });
+    const statistic = new Statistics({
+      event_type: 'channel_leave',
+      user_id: data.user,
+      timestamp: data.ts,
+    });
+
+    statistic.save();
   }
 
 
@@ -344,7 +351,13 @@ bot.on('message', (data) => {
         }
       }
     });
+    const statistic = new Statistics({
+      event_type: 'channel_join',
+      user_id: data.user,
+      timestamp: data.ts,
+    });
 
+    statistic.save();
   }
 
   if (
@@ -392,6 +405,15 @@ bot.on('message', (data) => {
         ).then();
       }
     });
+
+    const statistic = new Statistics({
+      event_type: 'user_message',
+      user_id: data.user,
+      timestamp: data.ts,
+      parrot_count: countParrots,
+    });
+
+    statistic.save();
   }
 });
 
