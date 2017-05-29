@@ -164,44 +164,32 @@ function getStatistic(text, callback) {
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const startTimestamp = startOfDay / 1000;
-  const endTimestamp = startTimestamp + 86400;
-  console.log(startTimestamp, endTimestamp);
-  Statistics.find({
-    timestamp: {
-      $gte: startTimestamp,
-      $lt: endTimestamp,
-    },
-  }).then(res => {
-    if (res) {
-      console.log(res);
-    }
-  });
-  // Statistics.aggregate(
-  //   [{
-  //     $match: {
-  //       timestamp: {
-  //         '$gte': startTimestamp,
-  //         '$lt': endTimestamp,
-  //       },
-  //       event_type: 'user_message',
-  //     },
-  //   }, {
-  //     $group: { _id: null, parrot_count: { $sum: "$parrot_count" } }, }, ],
-  //   (err, res) => {
-  //     console.log(res);
-  //     const parrotCounts = 0;
-  //     Statistics.find({
-  //       'timestamp': {
-  //         '$gte': startTimestamp,
-  //         '$lt': endTimestamp,
-  //       },
-  //     }).then(res => {
-  //       if (res) {
-  //         const message = `Сегодня отправлено:\nсообщений - ${res.length}\nпэрротов - ${parrotCounts}`;
-  //         callback(message, {})
-  //       }
-  //     });
-  //   });
+  const endTimestamp = startTimestamp + (startTimestamp % 86400);
+  Statistics.aggregate(
+    [{
+      $match: {
+        timestamp: {
+          $gte: startTimestamp,
+          $lt: endTimestamp,
+        },
+        event_type: 'user_message',
+      },
+    }, {
+      $group: { _id: null, parrot_counts: { $sum: $parrot_count } }, }, ],
+    (err, res) => {
+      const parrotCounts = res[0].parrot_counts;
+      Statistics.find({
+        timestamp: {
+          $gte: startTimestamp,
+          $lt: endTimestamp,
+        },
+      }).then(res => {
+        if (res) {
+          const message = `Сегодня отправлено:\nсообщений - ${res.length}\nпэрротов - ${parrotCounts}`;
+          callback(message, {});
+        }
+      });
+    });
 }
 
 module.exports = {
