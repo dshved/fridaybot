@@ -2,6 +2,7 @@
 
 const BotSettings = require('./../../models/botsetting').BotSettings;
 const UserMessages = require('./../../models/usermessage').UserMessages;
+const Statistics = require('./../../models/statistics').Statistics;
 const Log = require('./../../models/log').Log;
 const fs = require('fs');
 
@@ -159,6 +160,38 @@ function getChangelog(text, callback) {
   callback(changelogURL, {});
 }
 
+function getStatistic(text, callback) {
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startTimestamp = startOfDay / 1000;
+  const endTimestamp = startTimestamp + (startTimestamp % 86400);
+  Statistics.aggregate(
+    [{
+      $match: {
+        timestamp: {
+          '$gte': startTimestamp,
+          '$lt': endTimestamp,
+        },
+        event_type: 'user_message',
+      },
+    }, {
+      $group: { _id: null, parrot_counts: { $sum: "$parrot_count" } }, }, ],
+    (err, res) => {
+      const parrot_counts = res[0].parrot_counts;
+      Statistics.find({
+        'timestamp': {
+          '$gte': startTimestamp,
+          '$lt': endTimestamp,
+        },
+      }).then(res => {
+        if (res) {
+          const message = `Сегодня отправлено:\nсообщений - ${res.length}\nпэрротов - ${parrot_counts}`;
+          callback(message, {})
+        }
+      });
+    });
+}
+
 module.exports = {
   parrotCount: (text, callback) => {
     getParrotCount(text, callback);
@@ -180,5 +213,8 @@ module.exports = {
   },
   changelog: (text, callback) => {
     getChangelog(text, callback);
+  },
+  statistic: (text, callback) => {
+    getStatistic(text, callback);
   },
 };
