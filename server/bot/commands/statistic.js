@@ -177,7 +177,8 @@ function getStatistic(text, callback) {
     }, {
       $group: { _id: null, parrot_counts: { $sum: "$parrot_count" } }, }, ],
     (err, res) => {
-      const parrot_counts = res[0].parrot_counts;
+      console.log(res);
+      const parrotCounts = res[0].parrot_counts ? res[0].parrot_counts : 0;
       Statistics.find({
         'timestamp': {
           '$gte': startTimestamp,
@@ -185,7 +186,7 @@ function getStatistic(text, callback) {
         },
       }).then(res => {
         if (res) {
-          const message = `Сегодня отправлено:\nсообщений - ${res.length}\nпэрротов - ${parrot_counts}`;
+          const message = `Сегодня отправлено:\nсообщений - ${res.length}\nпэрротов - ${parrotCounts}`;
           callback(message, {})
         }
       });
