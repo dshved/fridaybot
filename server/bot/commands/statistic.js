@@ -177,7 +177,7 @@ function getStatistic(text, callback) {
     }, {
       $group: { _id: null, parrot_counts: { $sum: '$parrot_count' } }, }, ],
     (err, res) => {
-      const parrotCounts = res[0].parrot_counts;
+      const parrotCounts = res[0] ? res[0].parrot_counts : 0;
       Statistics.find({
         'timestamp': {
           '$gte': startTimestamp,
