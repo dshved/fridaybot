@@ -97,7 +97,7 @@ router.get('/', (req, res) => {
   let nextTimestamp;
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startTimestamp = startOfDay / 1000;
+  const startTimestamp = (startOfDay / 1000) - 10800;
   const times = [];
 
   for (let i = 0; i < 24; i++) {
