@@ -37,7 +37,7 @@ function getParrotCount(text, callback) {
 }
 
 function getUserCount(text, callback) {
-  UserMessages.find().sort([
+  UserMessages.find({ count_messages: { $gt: 1 } }).sort([
       ['count_messages', 'descending'],
     ])
     .then((r) => {
@@ -47,12 +47,14 @@ function getUserCount(text, callback) {
         for (let i = 0; i < 10; i++) {
           mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
         }
+        mes += `\nВсего живых: ${r.length}`;
         callback(mes, {});
       } else {
         mes = 'Вот люди, которые подают признаки жизни: \n';
         for (let i = 0; i < r.length; i++) {
           mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
         }
+        mes += `\nВсего живых: ${r.length}`;
         callback(mes, {});
       }
     });
