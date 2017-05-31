@@ -65,60 +65,28 @@ const templatePage = (messages, parrots) => {
 
 
 router.get('/', (req, res) => {
-  const findCounters = (hour, prev, next, cb) => {
-    Statistics.aggregate(
-      [{
-        $match: {
-          'timestamp': {
-            '$gte': prev,
-            '$lt': next,
-          },
-          event_type: 'user_message',
-        },
-      }, {
-        $group: { _id: null, parrot_counts: { $sum: '$parrot_count' } },
-      }, ],
-      (err, resp) => {
-        const parrotCounts = resp[0] ? resp[0].parrot_counts : 0;
-        Statistics.find({
-          'timestamp': {
-            '$gte': prev,
-            '$lt': next,
-          },
-        }).then((response) => {
-          if (response) {
-            const messages = response.length;
-            cb({ hour, messages, parrotCounts });
-          }
-        });
-      });
-  };
-  let prevTimestamp;
-  let nextTimestamp;
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const startTimestamp = (startOfDay / 1000) - 10800;
-  const times = [];
-
-  for (let i = 0; i < 24; i++) {
-    prevTimestamp = startTimestamp + (3600 * i);
-    nextTimestamp = startTimestamp + (3600 * (i + 1));
-
-    findCounters(i, prevTimestamp, nextTimestamp, (ress) => {
-      times.push(ress);
-      if (times.length === 24) {
-        times.sort((a, b) => a.hour - b.hour);
-        const messages = [];
-        const parrots = [];
-        for (let j = 0; j < times.length; j++) {
-          messages.push(times[j].messages);
-          parrots.push(times[j].parrotCounts);
-        }
-        const html = templatePage(messages, parrots);
-        res.send(html);
-      }
-    });
-  }
+  const endTimestamp = startTimestamp + 86400;
+  const messages = [];
+  const parrots = [];
+  Statistics.find({ 'timestamp': { '$gte': startTimestamp, '$lt': endTimestamp }, event_type: 'user_message' })
+  .then((response) => {
+    for (let i = 0; i < 24; i++) {
+      const prevTimestamp = startTimestamp + (3600 * i);
+      const nextTimestamp = startTimestamp + (3600 * (i + 1));
+      const timeInterval = response.filter(item => {
+        return item.timestamp >= prevTimestamp && item.timestamp <= nextTimestamp;
+      });
+      messages.push(timeInterval.length);
+      let parrotCounts = 0;
+      timeInterval.forEach(item => parrotCounts += item.parrot_count);
+      parrots.push(parrotCounts);
+    }
+    const html = templatePage(messages, parrots);
+    res.send(html);
+  });
 });
 
 
