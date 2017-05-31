@@ -16,6 +16,7 @@ const app = express();
 const router = require('./server/routers/router');
 const api = require('./server/routers/api');
 const login = require('./server/routers/login');
+const statistics = require('./server/routers/statistics');
 
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
@@ -55,6 +56,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(router);
 app.use('/login', login);
+app.use('/statistics', statistics);
 app.use('/api', api);
 
 app.get('/logout', (req, res) => {
