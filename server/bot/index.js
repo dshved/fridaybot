@@ -174,6 +174,16 @@ bot.on('message', (data) => {
         { parrot_counts: botParams.parrotCount }
       ).then();
       global.io.emit('parrot count', botParams.parrotCount);
+
+      const user = data.user ? data.user : data.bot_id;
+      const statistic = new Statistics({
+        event_type: 'user_message',
+        user_id: user,
+        timestamp: data.ts,
+        parrot_count: countParrots,
+      });
+
+      statistic.save();
     }
   }
 
@@ -426,15 +436,6 @@ bot.on('message', (data) => {
         ).then();
       }
     });
-
-    const statistic = new Statistics({
-      event_type: 'user_message',
-      user_id: data.user,
-      timestamp: data.ts,
-      parrot_count: countParrots,
-    });
-
-    statistic.save();
   }
 });
 
