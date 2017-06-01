@@ -303,26 +303,29 @@ $(document).ready(function() {
 
 
   const form = document.forms.namedItem('addSticker');
-  form.addEventListener('submit', function(ev) {
+  if (form) {
+    form.addEventListener('submit', function(ev) {
 
-    const oData = new FormData(form);
+      const oData = new FormData(form);
 
-    const oReq = new XMLHttpRequest();
-    oReq.open('POST', '/api/addSticker', true);
-    oReq.onload = function(oEvent) {
-      if (oReq.status == 200) {
-        document.getElementById('save_emoji').reset();
-        $('.filename').text('');
-        const json = JSON.parse(oReq.response);
-        addNewSticker(json);
-      } else {
-        console.log(oReq.status);
-      }
-    };
+      const oReq = new XMLHttpRequest();
+      oReq.open('POST', '/api/addSticker', true);
+      oReq.onload = function(oEvent) {
+        if (oReq.status == 200) {
+          document.getElementById('save_emoji').reset();
+          $('.filename').text('');
+          const json = JSON.parse(oReq.response);
+          addNewSticker(json);
+        } else {
+          console.log(oReq.status);
+        }
+      };
 
-    oReq.send(oData);
-    ev.preventDefault();
-  }, false);
+      oReq.send(oData);
+      ev.preventDefault();
+    }, false);
+  }
+
 
 
   $('.stickers__list').on('click', 'a.stickers__delete', function(e) {
@@ -353,4 +356,71 @@ $(document).ready(function() {
     }
   });
 
+
+
+  const getChartData = (date, cb) => {
+    $.ajax({
+      type: 'GET',
+      url: '/api/getStatistics?date=' + date,
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      success: function(data) {
+        let chartData = {
+          type: 'bar',
+          data: {
+            labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"],
+            datasets: [{
+              label: 'сообщений: ' + data.data.total_messages,
+              data: data.data.messages,
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              borderColor: 'rgba(255,99,132,1)',
+              borderWidth: 1
+            }, {
+              label: 'пэрротов: ' + data.data.total_parrots,
+              data: data.data.parrots,
+              backgroundColor: 'rgba(25, 99, 132, 0.2)',
+              borderColor: 'rgba(25,99,132,1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }
+        };
+        cb(chartData);
+      },
+      failure: function(errMsg) {
+        console.log(errMsg);
+      },
+    });
+  };
+
+  const ctx = document.getElementById("myChart");
+  let myChart;
+  if (ctx) {
+    ctx.getContext('2d');
+    getChartData(new Date(), data => {
+      myChart = new Chart(ctx, data);
+    });
+  }
+
+  const addData = (data) => {
+    myChart.data.datasets = data.data.datasets;
+    myChart.update();
+  };
+
+
+  $('#datepicker').datepicker({
+    onSelect: (date) => {
+      getChartData(date, data => {
+        addData(data);
+      });
+    }
+  });
 });
