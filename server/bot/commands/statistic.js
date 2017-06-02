@@ -113,7 +113,6 @@ function getLog(text, callback) {
         mes += `${i + 1}. ${res[i]._id} - ${res[i].count}\n`;
       }
       callback(mes, {});
-      // bot.postMessageToChannel(botParams.channelName, mes, messageParams);
       mes = '';
     }
   );
@@ -139,7 +138,6 @@ function getPPM(text, callback) {
           mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
         }
         callback(mes, {});
-        // bot.postMessageToChannel(botParams.channelName, mes, messageParams);
         mes = '';
       } else {
         for (let i = 0; i < res.length; i++) {
@@ -147,7 +145,6 @@ function getPPM(text, callback) {
           mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
         }
         callback(mes, {});
-        // bot.postMessageToChannel(botParams.channelName, mes, messageParams);
         mes = '';
       }
     }

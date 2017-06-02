@@ -43,7 +43,6 @@ const replaceMention = (str, resolve) => {
 };
 
 const replaceTextEmoji = (str) => {
-  // const myRegexpEmoji = /^:\w+:/g;
   const myRegexpEmoji = /^(:\w+:)|(:\w+.*.\w+:)/g;
   const matchEmoji = myRegexpEmoji.exec(str);
   const myObj = {};
@@ -150,7 +149,6 @@ const sayBorderText = (text, split, maxW, callback) => {
   let userText = text;
   let sendMessage = '';
   const newLetterArray = [];
-  // let userText = data.text.substr(6);
   userText = userText
     .replace(/&AMP;/g, '&')
     .replace(/&LT;/g, '<')
