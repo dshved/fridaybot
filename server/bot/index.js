@@ -8,7 +8,6 @@ const fs = require('fs');
 const UserMessages = require('./../models/usermessage').UserMessages;
 const BotMessages = require('./../models/botmessage').BotMessages;
 const BotSettings = require('./../models/botsetting').BotSettings;
-// const Anek = require('./../models/anek').Anek;
 const Statistics = require('./../models/statistics').Statistics;
 const getSticker = require('./commands/sticker').getSticker;
 const sayText = require('./commands/say').sayText;
@@ -21,7 +20,6 @@ const iconv = require('iconv-lite');
 const bot = new SlackBot(config.bot);
 
 const messageParams = {};
-
 
 const botParams = {};
 
@@ -206,6 +204,23 @@ bot.on('message', (data) => {
   }
 
   if (data.text) {
+    if (~data.text.indexOf('файл ') == -1) {
+      let url = data.text.substr(6)
+        .replace(/</g, '')
+        .replace(/>/g, '');
+      const message = '';
+      const attachment = {};
+      attachment.username = 'fridaybot';
+      attachment.icon_emoji = ':fbf:';
+      attachment.attachments = [{
+        fallback: '',
+        image_url: `${url}`,
+      }, ];
+      bot.postMessageToChannel(botParams.channelName, message, attachment);
+    }
+  }
+
+  if (data.text) {
     data.text = data.text.toUpperCase();
     const channel = channelName(data);
     const user = data.user ? data.user : data.bot_id;
@@ -216,13 +231,11 @@ bot.on('message', (data) => {
           if (!error.message) {
             if (attachment) {
               sendToWhom(data, text, attachment);
-              // bot.postMessageToChannel(botParams.channelName, text, messageParams);
             } else {
               sendToWhom(data, text);
             }
           } else {
             sendToWhom(data, `<@${data.user}> ${error.message}`);
-            // bot.postMessageToChannel(botParams.channelName, `<@${data.user}> `+error.message, messageParams);
           }
         });
       }

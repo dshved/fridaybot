@@ -37,7 +37,7 @@ function getParrotCount(text, callback) {
 }
 
 function getUserCount(text, callback) {
-  UserMessages.find().sort([
+  UserMessages.find({ count_messages: { $gt: 1 } }).sort([
       ['count_messages', 'descending'],
     ])
     .then((r) => {
@@ -47,12 +47,14 @@ function getUserCount(text, callback) {
         for (let i = 0; i < 10; i++) {
           mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
         }
+        mes += `\nВсего живых: ${r.length}`;
         callback(mes, {});
       } else {
         mes = 'Вот люди, которые подают признаки жизни: \n';
         for (let i = 0; i < r.length; i++) {
           mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
         }
+        mes += `\nВсего живых: ${r.length}`;
         callback(mes, {});
       }
     });
@@ -111,7 +113,6 @@ function getLog(text, callback) {
         mes += `${i + 1}. ${res[i]._id} - ${res[i].count}\n`;
       }
       callback(mes, {});
-      // bot.postMessageToChannel(botParams.channelName, mes, messageParams);
       mes = '';
     }
   );
@@ -137,7 +138,6 @@ function getPPM(text, callback) {
           mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
         }
         callback(mes, {});
-        // bot.postMessageToChannel(botParams.channelName, mes, messageParams);
         mes = '';
       } else {
         for (let i = 0; i < res.length; i++) {
@@ -145,7 +145,6 @@ function getPPM(text, callback) {
           mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
         }
         callback(mes, {});
-        // bot.postMessageToChannel(botParams.channelName, mes, messageParams);
         mes = '';
       }
     }
@@ -163,7 +162,7 @@ function getChangelog(text, callback) {
 function getStatistic(text, callback) {
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startTimestamp = startOfDay / 1000;
+  const startTimestamp = (startOfDay / 1000) - 10800;
   const endTimestamp = startTimestamp + 86400;
   Statistics.aggregate(
     [{

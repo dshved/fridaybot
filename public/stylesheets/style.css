@@ -567,3 +567,13 @@ a.ui-button:active,
 .stickers__item:hover .stickers__delete {
   display: block;
 }
+.date {
+  text-align: center;
+}
+.date input {
+  padding: 5px;
+  margin-top: -15px;
+}
+.sending {
+  text-align: center;
+}

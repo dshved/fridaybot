@@ -8,6 +8,7 @@ const UserMessages = require('./../models/usermessage').UserMessages;
 const BotMessages = require('./../models/botmessage').BotMessages;
 const BotSettings = require('./../models/botsetting').BotSettings;
 const Sticker = require('./../models/sticker').Sticker;
+const Statistics = require('./../models/statistics').Statistics;
 // const auth = require('./auth').auth;
 
 const getBotMessages = (req, res, next) => {
@@ -169,6 +170,50 @@ const editBotSettings = (req, res, next) => {
   );
 };
 
+const getStatisticsData = (date = new Date(), cb) => {
+  const now = new Date(date);
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startTimestamp = (startOfDay / 1000) - 10800;
+  const endTimestamp = startTimestamp + 86400;
+  const messages = [];
+  const parrots = [];
+  let totalMessages = 0;
+  let totalParrots = 0;
+  Statistics.find({ 'timestamp': { '$gte': startTimestamp, '$lt': endTimestamp }, event_type: 'user_message' })
+    .then((response) => {
+      for (let i = 0; i < 24; i++) {
+        const prevTimestamp = startTimestamp + (3600 * i);
+        const nextTimestamp = startTimestamp + (3600 * (i + 1));
+        const timeInterval = response.filter(item => {
+          return item.timestamp >= prevTimestamp && item.timestamp <= nextTimestamp;
+        });
+        messages.push(timeInterval.length);
+        totalMessages += timeInterval.length;
+        let parrotCounts = 0;
+        timeInterval.forEach(item => parrotCounts += item.parrot_count);
+        parrots.push(parrotCounts);
+        totalParrots += parrotCounts;
+      }
+      const data = {};
+      data.messages = messages;
+      data.parrots = parrots;
+      data.total_messages = totalMessages;
+      data.total_parrots = totalParrots;
+      cb(data);
+    });
+};
+
+
+const getStatistics = (req, res, next) => {
+  const date = req.query.date;
+  getStatisticsData(date, (data) => {
+    res.send({
+      msg: 'success',
+      data,
+    });
+  });
+};
+
 const testSlackCommand = (req, res, next) => {
   console.log(req.body);
   const testObj = {
@@ -208,7 +253,7 @@ const auth = function(req, res, next) {
 router.post('/addSticker', addSticker);
 router.post('/removeSticker', removeSticker);
 router.post('/slack/test', testSlackCommand);
-
+router.get('/getStatistics', getStatistics);
 router.use(auth);
 
 router.get('/getBotMessages', getBotMessages);
@@ -220,7 +265,6 @@ router.get('/getUserMessages', getUserMessages);
 
 router.get('/getBotSettings', getBotSettings);
 router.post('/editBotSettings', editBotSettings);
-
 
 
 module.exports = router;
