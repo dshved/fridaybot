@@ -206,6 +206,23 @@ bot.on('message', (data) => {
   }
 
   if (data.text) {
+    if (~data.text.indexOf('файл ') == -1) {
+      let url = data.text.substr(6)
+        .replace(/</g, '')
+        .replace(/>/g, '');
+      const message = '';
+      const attachment = {};
+      attachment.username = 'fridaybot';
+      attachment.icon_emoji = ':fbf:';
+      attachment.attachments = [{
+        fallback: '',
+        image_url: `${url}`,
+      }, ];
+      bot.postMessageToChannel(botParams.channelName, message, attachment);
+    }
+  }
+
+  if (data.text) {
     data.text = data.text.toUpperCase();
     const channel = channelName(data);
     const user = data.user ? data.user : data.bot_id;
