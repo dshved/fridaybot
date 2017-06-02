@@ -165,7 +165,7 @@ function getChangelog(text, callback) {
 function getStatistic(text, callback) {
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startTimestamp = startOfDay / 1000;
+  const startTimestamp = (startOfDay / 1000) - 10800;
   const endTimestamp = startTimestamp + 86400;
   Statistics.aggregate(
     [{
