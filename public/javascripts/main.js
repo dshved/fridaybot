@@ -417,6 +417,7 @@ $(document).ready(function() {
 
 
   $('#datepicker').datepicker({
+    firstDay: 1,
     onSelect: (date) => {
       getChartData(date, data => {
         addData(data);
