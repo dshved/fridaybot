@@ -572,7 +572,7 @@ a.ui-button:active,
 }
 .date input {
   padding: 5px;
-  margin-top: -15px;
+  margin: 10px;
 }
 .sending {
   text-align: center;
