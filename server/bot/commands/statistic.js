@@ -159,37 +159,67 @@ function getChangelog(text, callback) {
   callback(changelogURL, {});
 }
 
-function getStatistic(text, callback) {
-  const now = new Date();
-  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startTimestamp = (startOfDay / 1000) - 10800;
-  const endTimestamp = startTimestamp + 86400;
-  Statistics.aggregate(
-    [{
-      $match: {
-        'timestamp': {
-          '$gte': startTimestamp,
-          '$lt': endTimestamp,
-        },
-        event_type: 'user_message',
-      },
-    }, {
-      $group: { _id: null, parrot_counts: { $sum: '$parrot_count' } }, }, ],
-    (err, res) => {
-      const parrotCounts = res[0] ? res[0].parrot_counts : 0;
-      Statistics.find({
-        'timestamp': {
-          '$gte': startTimestamp,
-          '$lt': endTimestamp,
-        },
-      }).then(res => {
-        if (res) {
-          const message = `Сегодня отправлено:\nсообщений - ${res.length}\nпэрротов - ${parrotCounts}`;
-          callback(message, {})
-        }
-      });
-    });
+function parseDate(str) {
+  const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  return (m) ? `${m[3]}/${m[2]}/${m[1]}` : null;
 }
+
+function getStatistic(text, callback) {
+  let dateOffset;
+  let dateText = 0;
+  let date;
+  if (text === 'СЕГОДНЯ') {
+    dateOffset = 0;
+    dateText = 'Сегодня';
+    date = new Date();
+  } else if (text === 'ВЧЕРА') {
+    dateOffset = 1;
+    dateText = 'Вчера';
+    date = new Date();
+  } else if (parseDate(text)) {
+    if (new Date(parseDate(text)) > new Date()) {
+      callback('Мне не известно, что будет в будущем!', {});
+    } else {
+      date = new Date(parseDate(text));
+      dateOffset = 0;
+      dateText = parseDate(text);
+    }
+  } else {
+    callback('Повторите команду с указанием даты в формате `DD/MM/YYYY` или ключевых слов `сегодня`, `вчера`', {});
+  }
+  if (date) {
+    const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() - dateOffset);
+    const startTimestamp = (startOfDay / 1000) - 10800;
+    const endTimestamp = startTimestamp + 86400;
+    Statistics.aggregate(
+      [{
+        $match: {
+          'timestamp': {
+            '$gte': startTimestamp,
+            '$lt': endTimestamp,
+          },
+          event_type: 'user_message',
+        },
+      }, {
+        $group: { _id: null, parrot_counts: { $sum: '$parrot_count' } },
+      }, ],
+      (err, res) => {
+        const parrotCounts = res[0] ? res[0].parrot_counts : 0;
+        Statistics.find({
+          'timestamp': {
+            '$gte': startTimestamp,
+            '$lt': endTimestamp,
+          },
+        }).then(res => {
+          if (res) {
+            const message = `${dateText} отправлено:\nсообщений - ${res.length}\nпэрротов - ${parrotCounts}`;
+            callback(message, {})
+          }
+        });
+      });
+  }
+}
+
 
 module.exports = {
   parrotCount: (text, callback) => {
