@@ -106,7 +106,7 @@ const messages = [
     callback: require('./pikabu').pikabuHot,
   },
   {
-    messages: ['PIKABU BEST', 'ПИКАБУ ЛЮЧШЕЕ'],
+    messages: ['PIKABU BEST', 'ПИКАБУ ЛУЧШЕЕ'],
     startFrom: false,
     entrance: false,
     channels: ['test', 'direct', 'friday'],
