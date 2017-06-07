@@ -98,6 +98,27 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./statistic').statistic,
   },
+  {
+    messages: ['ПИКАБУ', 'PIKABU', 'PIKABU HOT', 'ПИКАБУ ГОРЯЧЕЕ'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./pikabu').pikabuHot,
+  },
+  {
+    messages: ['PIKABU BEST', 'ПИКАБУ ЛЮЧШЕЕ'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./pikabu').pikabuBest,
+  },
+  {
+    messages: ['PIKABU NEW', 'ПИКАБУ СВЕЖЕЕ'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./pikabu').pikabuNew,
+  },
 
 ];
 
