@@ -120,7 +120,7 @@ function getLog(text, callback) {
 
 function getConversion(text, callback) {
   const date = new Date();
-  const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 3);
+  const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 2);
   const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   const startTimestamp = ((startOfDay / 1000) - 10800);
   const endTimestamp = ((endOfDay / 1000) - 10800) + 86400;
