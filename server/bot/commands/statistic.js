@@ -118,7 +118,7 @@ function getLog(text, callback) {
   );
 }
 
-function getConversion(text, callback) {
+function getActiveUsers(text, callback) {
   const date = new Date();
   const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 2);
   const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -296,7 +296,7 @@ module.exports = {
   statistic: (text, callback) => {
     getStatistic(text, callback);
   },
-  conversion: (text, callback) => {
-    getConversion(text, callback);
+  activeUsers: (text, callback) => {
+    getActiveUsers(text, callback);
   },
 };
