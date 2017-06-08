@@ -32,7 +32,7 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./statistic').parrotCount,
   }, {
-    messages: ['ЕСТЬ КТО ЖИВОЙ?', 'ЕСТЬ КТО ЖИВОЙ', 'ЕСТЬ КТО', 'ЕСТЬ КТО?', 'КТО ЖИВОЙ?', 'КТО ЖИВОЙ'],
+    messages: ['СПАМЕРЫ', 'КТО СПАМЕРЫ', 'КТО СПАМЕРЫ?', 'ТОП СПАМЕРОВ', 'ТОП'],
     startFrom: false,
     entrance: false,
     channels: ['test', 'friday', 'direct'],
@@ -97,6 +97,13 @@ const messages = [
     entrance: false,
     channels: ['test', 'friday', 'direct'],
     callback: require('./statistic').statistic,
+  },
+  {
+    messages: ['ЕСТЬ КТО ЖИВОЙ?', 'ЕСТЬ КТО ЖИВОЙ', 'ЕСТЬ КТО', 'ЕСТЬ КТО?', 'КТО ЖИВОЙ?', 'КТО ЖИВОЙ'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').activeUsers,
   },
   {
     messages: ['ПИКАБУ', 'PIKABU', 'PIKABU HOT', 'ПИКАБУ ГОРЯЧЕЕ'],

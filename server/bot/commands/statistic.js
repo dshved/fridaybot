@@ -118,6 +118,56 @@ function getLog(text, callback) {
   );
 }
 
+function getActiveUsers(text, callback) {
+  const date = new Date();
+  const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 2);
+  const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const startTimestamp = ((startOfDay / 1000) - 10800);
+  const endTimestamp = ((endOfDay / 1000) - 10800) + 86400;
+  Statistics.aggregate(
+    [{
+      $match: {
+        'timestamp': {
+          '$gte': startTimestamp,
+          '$lt': endTimestamp,
+        },
+        event_type: 'user_message',
+      },
+    }, {
+      $group: {
+        _id: '$user_id',
+        count: { $sum: 1 },
+      },
+    }, {
+      $sort: { count: -1 },
+    }, ],
+    (err, res) => {
+      let mes = 'Статистика по сообщениям за 3 дня:\n';
+      let messages = [];
+      for (let i = 0; i < res.length; i++) {
+        UserMessages.findOne({ user_id: res[i]._id }).then(response => {
+          if (response) {
+            messages.push({item: i + 1, user_name: response.user_name, count: res[i].count});
+            // mes += `${i + 1}. ${response.user_name} - ${res[i].count}\n`;
+          }
+        });
+      }
+      setTimeout(() => {
+        function sortItem(a,b) {
+          return a.item - b.item;
+        }
+        const newMessages = messages.sort(sortItem);
+        newMessages.forEach(item => {
+          mes += `${item.item}. ${item.user_name} - ${item.count}\n`;
+        });
+        callback(mes, {});
+        mes = '';
+      }, 2000);
+    }
+  );
+}
+
+
 function getPPM(text, callback) {
   UserMessages.aggregate(
     [{
@@ -245,5 +295,8 @@ module.exports = {
   },
   statistic: (text, callback) => {
     getStatistic(text, callback);
+  },
+  activeUsers: (text, callback) => {
+    getActiveUsers(text, callback);
   },
 };
