@@ -18,6 +18,7 @@ const request = require('request');
 const iconv = require('iconv-lite');
 
 const bot = new SlackBot(config.bot);
+const bot2 = new SlackBot(config.bot2);
 
 const messageParams = {};
 
@@ -126,6 +127,10 @@ bot.on('start', () => {
   });
 });
 
+bot2.on('start', () => {
+  console.log('bot2 started');
+});
+
 
 const channelName = data => {
   const channel = channelsList.find(c => data.channel === c.id);
@@ -154,7 +159,34 @@ global.io.on('connection', (socket) => {
 });
 
 let accessBotPost;
+bot2.on('message', (data) => {
+  if (data.text) {
+    const message = data.text;
+    if (data.channel === config.bot2.connect_channel) {
+      const attachment = {};
+      bot2.getUserById(data.user).then((res) => {
+        attachment.username = `${res.name}, ${config.bot2.slack_name}`;
+        attachment.icon_url = res.profile.image_512;
+        bot.postMessage(config.bot.connect_channel, message, attachment);
+      });
+    }
+  }
+});
+
+
 bot.on('message', (data) => {
+  if (data.text) {
+    const message = data.text;
+    if (data.channel === config.bot.connect_channel) {
+      const attachment = {};
+      bot.getUserById(data.user).then((res) => {
+        attachment.username = `${res.name}, ${config.bot.slack_name}`;
+        attachment.icon_url = res.profile.image_512;
+        bot2.postMessage(config.bot2.connect_channel, message, attachment);
+      });
+    }
+  }
+
   global.io.emit('data', data);
   // console.log(data);
   let countParrots = 0;
