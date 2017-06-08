@@ -147,22 +147,21 @@ function getActiveUsers(text, callback) {
       for (let i = 0; i < res.length; i++) {
         UserMessages.findOne({ user_id: res[i]._id }).then(response => {
           if (response) {
-            messages.push({item: i + 1, user_name: response.user_name, count: res[i].count});
-            // mes += `${i + 1}. ${response.user_name} - ${res[i].count}\n`;
+            messages.push({ item: i + 1, user_name: response.user_name, count: res[i].count });
+            if (messages.length === res.length) {
+              function sortItem(a, b) {
+                return a.item - b.item;
+              }
+              const newMessages = messages.sort(sortItem);
+              newMessages.forEach(item => {
+                mes += `${item.item}. ${item.user_name} - ${item.count}\n`;
+              });
+              callback(mes, {});
+              mes = '';
+            }
           }
         });
       }
-      setTimeout(() => {
-        function sortItem(a,b) {
-          return a.item - b.item;
-        }
-        const newMessages = messages.sort(sortItem);
-        newMessages.forEach(item => {
-          mes += `${item.item}. ${item.user_name} - ${item.count}\n`;
-        });
-        callback(mes, {});
-        mes = '';
-      }, 2000);
     }
   );
 }
