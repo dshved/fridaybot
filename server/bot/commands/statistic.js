@@ -153,7 +153,11 @@ function getConversion(text, callback) {
         });
       }
       setTimeout(() => {
-        messages.forEach(item => {
+        function sortItem(a,b) {
+          return a.item - b.item;
+        }
+        const newMessages = messages.sort(sortItem);
+        newMessages.forEach(item => {
           mes += `${item.item}. ${item.user_name} - ${item.count}\n`;
         });
         callback(mes, {});
