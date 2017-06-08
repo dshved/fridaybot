@@ -99,6 +99,13 @@ const messages = [
     callback: require('./statistic').statistic,
   },
   {
+    messages: ['КОНВЕРСИЯ', 'ЧТО ЗА ЧУДО КОМАНДА'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').conversion,
+  },
+  {
     messages: ['ПИКАБУ', 'PIKABU', 'PIKABU HOT', 'ПИКАБУ ГОРЯЧЕЕ'],
     startFrom: false,
     entrance: false,
