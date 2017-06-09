@@ -156,7 +156,7 @@ function getActiveUsers(text, callback) {
           mes = '';
         }
       });
-    },
+    }
   );
 }
 
