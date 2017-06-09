@@ -143,26 +143,20 @@ function getActiveUsers(text, callback) {
     }, ],
     (err, res) => {
       let mes = 'Статистика по сообщениям за 3 дня:\n';
-      let messages = [];
-      for (let i = 0; i < res.length; i++) {
-        UserMessages.findOne({ user_id: res[i]._id }).then(response => {
-          if (response) {
-            messages.push({ item: i + 1, user_name: response.user_name, count: res[i].count });
-            if (messages.length === res.length) {
-              function sortItem(a, b) {
-                return a.item - b.item;
-              }
-              const newMessages = messages.sort(sortItem);
-              newMessages.forEach(item => {
-                mes += `${item.item}. ${item.user_name} - ${item.count}\n`;
-              });
-              callback(mes, {});
-              mes = '';
+      UserMessages.find({}).then((result) => {
+        if (result) {
+          res.forEach((item, index) => {
+            const user = result.filter(el => el.user_id === item._id);
+
+            if (user[0]) {
+              mes += `${index + 1}. ${user[0].user_name} - ${item.count}\n`;
             }
-          }
-        });
-      }
-    }
+          });
+          callback(mes, {});
+          mes = '';
+        }
+      });
+    },
   );
 }
 
