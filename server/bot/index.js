@@ -131,6 +131,18 @@ bot2.on('start', () => {
   console.log('bot2 started');
 });
 
+const isThread = (data, att) => {
+  if (data.thread_ts) {
+    att.thread_ts = data.thread_ts;
+    return att;
+  }
+
+  if (att.thread_ts) {
+    delete att['thread_ts'];
+  }
+
+  return att;
+};
 
 const channelName = data => {
   const channel = channelsList.find(c => data.channel === c.id);
@@ -143,11 +155,15 @@ const channelName = data => {
 
 const sendToWhom = (data, message, attachment) => {
   if (attachment) {
-    bot.postMessage(data.channel, message, attachment);
+    const att = isThread(data, attachment);
+    bot.postMessage(data.channel, message, att);
   } else {
-    bot.postMessage(data.channel, message, messageParams);
+    const att = isThread(data, messageParams);
+    bot.postMessage(data.channel, message, att);
   }
 };
+
+
 
 
 global.io.on('connection', (socket) => {
@@ -221,7 +237,8 @@ bot.on('message', (data) => {
   if (data.text && data.subtype !== 'bot_message') {
     if (~data.text.indexOf('повтори ') == -1) {
       const userText = data.text.substr(8);
-      bot.postMessageToChannel(botParams.channelName, userText, messageParams);
+      const att = isThread(data, messageParams);
+      bot.postMessageToChannel(botParams.channelName, userText, att);
       accessBotPost = true;
     }
   }
@@ -425,10 +442,11 @@ bot.on('message', (data) => {
   ) {
     BotMessages.findOne({ user_message: data.text }).then(result => {
       if (result) {
+        const att = isThread(data, messageParams);
         bot.postMessageToChannel(
           botParams.channelName,
           result.bot_message,
-          messageParams
+          att
         );
         accessBotPost = false;
         saveLog(data);
@@ -444,19 +462,21 @@ bot.on('message', (data) => {
   ) {
     BotMessages.findOne({ user_message: data.text }).then(result => {
       if (result) {
+        const att = isThread(data, messageParams);
         bot.postMessageToChannel(
           botParams.channelName,
           result.bot_message,
-          messageParams
+          att
         );
         saveLog(data);
       }
     });
     getSticker(data.text, (att) => {
+      const attr = isThread(data, att);
       bot.postMessageToChannel(
           botParams.channelName,
           '',
-          att
+          attr
         );
     });
     UserMessages.findOne({ user_id: data.user }).then(result => {
