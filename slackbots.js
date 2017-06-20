@@ -164,7 +164,7 @@ class Bot extends EventEmitter {
       .then(data => {
         const res = _.find(data.members, { id });
 
-        console.assert(res, 'user not found');
+        // console.assert(res, 'user not found');
         return res;
       })
       .catch(data => console.log(data));
