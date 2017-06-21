@@ -263,6 +263,37 @@ function getStatistic(text, callback) {
   }
 }
 
+function whenFriday(text, callback) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  let day = now.getDate();
+
+  while (new Date(year, month, day).getDay() != 5) {
+    day++;
+  }
+
+  const friday = new Date(year, month, day);
+
+  const millisecToTimeStruct = (millisec) => {
+    if (isNaN(millisec)) {
+      return {};
+    }
+    const days = millisec / (60 * 60 * 24);
+    const hours = (days - ~~days) * 24;
+    const minutes = (hours - ~~hours) * 60;
+    const seconds = (minutes - ~~minutes) * 60;
+    return `${~~days}:${~~hours}:${~~minutes}:${~~seconds }`;
+  };
+
+  const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
+  if (result < 0) {
+    callback('Сегодня пятница!:fp:', {});
+  } else {
+    callback(`До пятницы осталось: ${millisecToTimeStruct(result)}`, {});
+  }
+}
+
 
 module.exports = {
   parrotCount: (text, callback) => {
@@ -291,5 +322,8 @@ module.exports = {
   },
   activeUsers: (text, callback) => {
     getActiveUsers(text, callback);
+  },
+  friday: (text, callback) => {
+    whenFriday(text, callback);
   },
 };

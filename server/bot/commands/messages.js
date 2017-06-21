@@ -126,6 +126,13 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./pikabu').pikabuNew,
   },
+  {
+    messages: ['КОГДА ПЯТНИЦА', 'КОГДА ПЯТНИЦА?', 'КОГДА УЖЕ ПЯТНИЦА', 'КОГДА УЖЕ ПЯТНИЦА?', 'СКОРО ПЯТНИЦА', 'СКОРО ПЯТНИЦА?', 'СКОРО УЖЕ ПЯТНИЦА', 'СКОРО УЖЕ ПЯТНИЦА?'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./statistic').friday,
+  },
 
 ];
 
