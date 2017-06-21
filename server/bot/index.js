@@ -342,7 +342,7 @@ bot.on('message', (data) => {
             const json = JSON.parse(body);
             if (json.ok) {
               const countUsers = json.channel.members.length;
-              sayText(`:RAGE: ${countUsers}`, true, 10, (callback) => {
+              sayText(`:RAGE: ${countUsers}`, true, 10, false, (callback) => {
                 const leaveMessage = callback + result.user_leave.message
                 .replace(/first_name/g, data.user_profile.first_name)
                 .replace(/real_name/g, data.user_profile.real_name)
@@ -398,7 +398,7 @@ bot.on('message', (data) => {
             const json = JSON.parse(body);
             if (json.ok) {
               const countUsers = json.channel.members.length;
-              sayText(`:TADA: ${countUsers}`, true, 10, (callback) => {
+              sayText(`:TADA: ${countUsers}`, true, 10, false,(callback) => {
                 const joinMessage = callback + result.user_join.message
                   .replace(/first_name/g, data.user_profile.first_name)
                   .replace(/real_name/g, data.user_profile.real_name)
