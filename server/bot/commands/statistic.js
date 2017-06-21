@@ -274,6 +274,9 @@ function whenFriday(text, callback) {
   }
 
   const friday = new Date(year, month, day);
+  const zero = (a) => {
+    return a < 10 ? `0${a}` : a;
+  };
 
   const millisecToTimeStruct = (millisec) => {
     if (isNaN(millisec)) {
@@ -283,7 +286,7 @@ function whenFriday(text, callback) {
     const hours = (days - ~~days) * 24;
     const minutes = (hours - ~~hours) * 60;
     const seconds = (minutes - ~~minutes) * 60;
-    return `${~~days}:${~~hours}:${~~minutes}:${~~seconds }`;
+    return `${zero(~~days)}:${zero(~~hours)}:${zero(~~minutes)}:${zero(~~seconds)}`;
   };
 
   const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
