@@ -133,6 +133,13 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./statistic').friday,
   },
+  {
+    messages: ['УЕЗЖАЙ '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./say').goAway,
+  },
 
 ];
 

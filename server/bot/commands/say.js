@@ -58,7 +58,7 @@ const replaceTextEmoji = (str) => {
   }
 };
 
-const sayText = (text, split, maxW, callback) => {
+const sayText = (text, split, maxW, away, callback) => {
   let newLetterArray = [];
   let newArray = [];
   let sendMessage = '';
@@ -100,6 +100,9 @@ const sayText = (text, split, maxW, callback) => {
 
       for (let i = 0; i < lineCount; i++) {
         let line = '';
+        if (away) {
+          line += ':p_petr_rides:';
+        }
         for (let j = 0; j < newArray.length; j++) {
           line += newArray[j][i];
         }
@@ -110,6 +113,10 @@ const sayText = (text, split, maxW, callback) => {
     let newMessage = replaseEmoji(text, sendMessage);
     if (replaced) {
       newMessage = newMessage.replace(/:fp:/g, replacedEmoji);
+    }
+    if (away) {
+      newMessage = newMessage.replace(/:fp:/g, ':bk:');
+      newMessage = newMessage.replace(/:sp:/g, ':p_petr_rides:');
     }
     callback(newMessage, {});
   }, 500);
@@ -227,16 +234,19 @@ const sayBorderText = (text, split, maxW, callback) => {
 
 module.exports = {
   inRow: function(text, callback) {
-    sayText(text, true, 12, callback);
+    sayText(text, true, 20, false, callback);
   },
   inColumn: function(text, callback) {
-    sayText(text, false, 10, callback);
+    sayText(text, false, 20, false, callback);
   },
   emojiText: function(text, callback) {
     sayEmoji(text, false, 300, callback);
   },
   borderText: function(text, callback) {
     sayBorderText(text, false, 300, callback);
+  },
+  goAway: function(text, callback) {
+    sayText(text, true, 20, true, callback);
   },
   sayBorderText,
   sayText,
