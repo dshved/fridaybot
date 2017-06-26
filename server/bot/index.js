@@ -191,6 +191,10 @@ bot2.on('message', (data) => {
 
 
 bot.on('message', (data) => {
+  if (data.subtype === 'message_changed') {
+    data.text = data.message.text;
+    data.user = data.message.user;
+  }
   if (data.text) {
     const message = data.text;
     if (data.channel === config.bot.connect_channel) {
@@ -271,6 +275,7 @@ bot.on('message', (data) => {
 
   if (data.text) {
     data.text = data.text.toUpperCase();
+
     const channel = channelName(data);
     const user = data.user ? data.user : data.bot_id;
     UserMessages.findOne({ user_id: user }).then(result => {
