@@ -510,6 +510,7 @@ a.ui-button:active,
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
+  padding: 5px;
 }
 
 .stickers__list {
