@@ -85,6 +85,20 @@ const messages = [
     callback: require('./reddit').redditJs,
   },
   {
+    messages: ['REDDIT '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct', 'general'],
+    callback: require('./reddit').redditSub,
+  },
+  {
+    messages: ['REDDIT'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct', 'general'],
+    callback: require('./reddit').redditSub,
+  },
+  {
     messages: ['МИЛИЦИЯ', 'МИЛИЦИЮ ВЫЗОВУ', 'ПОЛИЦИЯ', 'ГОСПОДИН ПОЛИЦЕЙСКИЙ', 'ОМОН'],
     startFrom: false,
     entrance: true,
