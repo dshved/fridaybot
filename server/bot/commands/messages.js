@@ -99,7 +99,7 @@ const messages = [
     callback: require('./reddit').redditSub,
   },
   {
-    messages: ['МИЛИЦИЯ', 'МИЛИЦИЮ ВЫЗОВУ', 'ПОЛИЦИЯ', 'ГОСПОДИН ПОЛИЦЕЙСКИЙ', 'ОМОН'],
+    messages: ['МИЛИЦИЯ', 'МИЛИЦИЮ ВЫЗОВУ', 'ПОЛИЦИЯ', 'ГОСПОДИН ПОЛИЦЕЙСКИЙ', 'ОМОН', 'OMON'],
     startFrom: false,
     entrance: true,
     channels: ['test', 'friday', 'direct'],

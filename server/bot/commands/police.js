@@ -10,12 +10,23 @@ function getPolice(text, callback, msg) {
 
   if (text.startsWith(msg)) {
     if (matchUser) {
-      let users = '';
+      const users = [];
       for (let i = 0; i < matchUser.length; i++) {
-        users += `${matchUser[i]}`;
+        users.push(`${matchUser[i]}`);
       }
-      sayBorderText(users, false, 100, (cb) => {
-        const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse:\n${cb}Вы окружены!!!\n`;
+      const fn = function asyncMultiplyBy2(user) {
+        return new Promise((resolve) => {
+          sayBorderText(user, false, 100, (cb) => {
+            resolve(cb);
+          });
+        });
+      };
+
+      const actions = users.map(fn);
+
+      const results = Promise.all(actions);
+      results.then(data => {
+        const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse:\n${data}Вы окружены!!!\n`;
         callback(message, {}, attachment);
       });
     } else {
@@ -23,6 +34,7 @@ function getPolice(text, callback, msg) {
     }
   }
 }
+
 
 module.exports = {
   police: (text, callback, msg) => {
