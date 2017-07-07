@@ -30,7 +30,10 @@ const messagesRus = num => {
 function getParrotCount(text, callback) {
   BotSettings.findOne().then(r => {
     if (r) {
-      callback(`Всего отправлено: ${r.parrot_counts} шт.`, {});
+      const parrotCounts = r.parrot_counts
+        .toString()
+        .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+      callback(`Всего отправлено: ${parrotCounts} шт.`, {});
     } else {
       callback('', { message: 'что то пошло не так :sad_parrot:' });
     }
