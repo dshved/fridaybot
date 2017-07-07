@@ -75,7 +75,7 @@ class Bot extends EventEmitter {
      */
   getChannels() {
     if (this.channels) {
-        return Vow.fulfill({ channels: this.channels });
+      return Vow.fulfill({ channels: this.channels });
     }
     return this._api('channels.list');
   }
@@ -98,7 +98,7 @@ class Bot extends EventEmitter {
      */
   getGroups() {
     if (this.groups) {
-        return Vow.fulfill({ groups: this.groups });
+      return Vow.fulfill({ groups: this.groups });
     }
 
     return this._api('groups.list');
@@ -232,7 +232,7 @@ class Bot extends EventEmitter {
      */
   getUserByEmail(email) {
     return this.getUsers().then(data =>
-      _.find(data.members, { profile: { email } })
+      _.find(data.members, { profile: { email } }),
     );
   }
 
@@ -274,7 +274,7 @@ class Bot extends EventEmitter {
         channel: id,
         username: this.name,
       },
-      params || {}
+      params || {},
     );
 
     return this._api('chat.postMessage', params);
@@ -296,7 +296,7 @@ class Bot extends EventEmitter {
         username: this.name,
         text,
       },
-      params || {}
+      params || {},
     );
 
     return this._api('chat.update', params);
@@ -316,7 +316,7 @@ class Bot extends EventEmitter {
       name,
       text,
       params,
-      cb
+      cb,
     );
   }
 

@@ -1,22 +1,22 @@
-const express = require("express");
+const express = require('express');
 
 const router = express.Router();
-const jwt = require("jsonwebtoken");
-const multiparty = require("multiparty");
-const fs = require("fs");
-const UserMessages = require("./../models/usermessage").UserMessages;
-const BotMessages = require("./../models/botmessage").BotMessages;
-const BotSettings = require("./../models/botsetting").BotSettings;
-const Sticker = require("./../models/sticker").Sticker;
-const Statistics = require("./../models/statistics").Statistics;
+const jwt = require('jsonwebtoken');
+const multiparty = require('multiparty');
+const fs = require('fs');
+const UserMessages = require('./../models/usermessage').UserMessages;
+const BotMessages = require('./../models/botmessage').BotMessages;
+const BotSettings = require('./../models/botsetting').BotSettings;
+const Sticker = require('./../models/sticker').Sticker;
+const Statistics = require('./../models/statistics').Statistics;
 // const auth = require('./auth').auth;
 
 const getBotMessages = (req, res, next) => {
   BotMessages.find({}).then(data => {
     if (data) {
       res.send({
-        msg: "success",
-        data
+        msg: 'success',
+        data,
       });
     } else {
       res.send(404);
@@ -31,8 +31,8 @@ const addBotMessage = (req, res, next) => {
   botMessage.save((err, data) => {
     if (!err) {
       res.send({
-        msg: "success",
-        data
+        msg: 'success',
+        data,
       });
     } else {
       res.send(404);
@@ -49,16 +49,16 @@ const addSticker = (req, res, next) => {
   form.parse(req, (err, fields, files) => {
     emoji = fields.emoji[0];
     filePath = files.image[0].path;
-    let newEmoji = emoji.replace(/:/g, "").toUpperCase();
+    let newEmoji = emoji.replace(/:/g, '').toUpperCase();
     newEmoji = `:${newEmoji}:`;
 
     fs.readFile(filePath, (err, data) => {
       const radom = Math.random().toString(36);
       const randomName = radom.substring(2, radom.length);
       const path =
-        "./public/uploads/stickers/" +
+        './public/uploads/stickers/' +
         randomName +
-        "-" +
+        '-' +
         files.image[0].originalFilename;
       fs.writeFile(path, data, error => {
         if (error) return next(err);
@@ -66,16 +66,16 @@ const addSticker = (req, res, next) => {
           .originalFilename}`;
         const newSticker = new Sticker({
           emoji: newEmoji,
-          image_url: imageURL
+          image_url: imageURL,
         });
         let stickerId;
         newSticker.save((err, sticker) => {
           stickerId = sticker.id;
           res.send({
-            msg: "success",
+            msg: 'success',
             emoji: newEmoji,
             _id: stickerId,
-            image_url: imageURL
+            image_url: imageURL,
           });
         });
 
@@ -93,7 +93,7 @@ const removeSticker = (req, res, next) => {
         Sticker.remove({ _id: req.body.id }, (err, result) => {
           if (!err) {
             res.send({
-              msg: "success"
+              msg: 'success',
             });
           } else {
             console.log(err);
@@ -111,13 +111,13 @@ const editBotMessage = (req, res, next) => {
     (err, result) => {
       if (!err) {
         res.send({
-          msg: "success",
-          user: req.session.user
+          msg: 'success',
+          user: req.session.user,
         });
       } else {
         console.log(err);
       }
-    }
+    },
   );
 };
 
@@ -125,7 +125,7 @@ const removeBotMessage = (req, res, next) => {
   BotMessages.remove({ _id: req.body.id }, (err, result) => {
     if (!err) {
       res.send({
-        msg: "success"
+        msg: 'success',
       });
     } else {
       console.log(err);
@@ -137,8 +137,8 @@ const getUserMessages = (req, res, next) => {
   UserMessages.find({}).then(data => {
     if (data) {
       res.send({
-        msg: "success",
-        data
+        msg: 'success',
+        data,
       });
     } else {
       res.send(404);
@@ -150,8 +150,8 @@ const getBotSettings = (req, res, next) => {
   BotSettings.findOne({}).then(data => {
     if (data) {
       res.send({
-        msg: "success",
-        data
+        msg: 'success',
+        data,
       });
     } else {
       res.send(404);
@@ -166,12 +166,12 @@ const editBotSettings = (req, res, next) => {
     (err, result) => {
       if (!err) {
         res.send({
-          msg: "success"
+          msg: 'success',
         });
       } else {
         res.send(404);
       }
-    }
+    },
   );
 };
 
@@ -186,7 +186,7 @@ const getStatisticsData = (date = new Date(), cb) => {
   let totalParrots = 0;
   Statistics.find({
     timestamp: { $gte: startTimestamp, $lt: endTimestamp },
-    event_type: "user_message"
+    event_type: 'user_message',
   }).then(response => {
     for (let i = 0; i < 24; i++) {
       const prevTimestamp = startTimestamp + 3600 * i;
@@ -216,8 +216,8 @@ const getStatistics = (req, res, next) => {
   const date = req.query.date;
   getStatisticsData(date, data => {
     res.send({
-      msg: "success",
-      data
+      msg: 'success',
+      data,
     });
   });
 };
@@ -225,14 +225,14 @@ const getStatistics = (req, res, next) => {
 const testSlackCommand = (req, res, next) => {
   console.log(req.body);
   const testObj = {
-    response_type: "in_channel",
-    text: "gdfgd"
+    response_type: 'in_channel',
+    text: 'gdfgd',
   };
   res.send(testObj);
 };
 
-router.get("/", (req, res) => {
-  res.send("hello");
+router.get('/', (req, res) => {
+  res.send('hello');
 });
 
 const auth = function(req, res, next) {
@@ -240,12 +240,12 @@ const auth = function(req, res, next) {
     req.session.token ||
     req.body.token ||
     req.query.token ||
-    req.headers["x-access-token"];
+    req.headers['x-access-token'];
 
   if (token) {
-    jwt.verify(token, "abcdef", (err, decoded) => {
+    jwt.verify(token, 'abcdef', (err, decoded) => {
       if (err) {
-        return res.json({ success: false, message: "Failed token" });
+        return res.json({ success: false, message: 'Failed token' });
       } else {
         req.decoded = decoded;
         next();
@@ -254,24 +254,24 @@ const auth = function(req, res, next) {
   } else {
     return res.status(403).send({
       success: false,
-      message: "No token provided."
+      message: 'No token provided.',
     });
   }
 };
-router.post("/addSticker", addSticker);
-router.post("/removeSticker", removeSticker);
-router.post("/slack/test", testSlackCommand);
-router.get("/getStatistics", getStatistics);
+router.post('/addSticker', addSticker);
+router.post('/removeSticker', removeSticker);
+router.post('/slack/test', testSlackCommand);
+router.get('/getStatistics', getStatistics);
 router.use(auth);
 
-router.get("/getBotMessages", getBotMessages);
-router.post("/addBotMessage", addBotMessage);
-router.post("/editBotMessage", editBotMessage);
-router.post("/removeBotMessage", removeBotMessage);
+router.get('/getBotMessages', getBotMessages);
+router.post('/addBotMessage', addBotMessage);
+router.post('/editBotMessage', editBotMessage);
+router.post('/removeBotMessage', removeBotMessage);
 
-router.get("/getUserMessages", getUserMessages);
+router.get('/getUserMessages', getUserMessages);
 
-router.get("/getBotSettings", getBotSettings);
-router.post("/editBotSettings", editBotSettings);
+router.get('/getBotSettings', getBotSettings);
+router.post('/editBotSettings', editBotSettings);
 
 module.exports = router;
