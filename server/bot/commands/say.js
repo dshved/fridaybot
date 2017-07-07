@@ -1,19 +1,34 @@
-'use strict';
+"use strict";
 
-const aParrots = require('./../../../alphabet_parrots.js');
-const aEpilepsy = require('./../../../alphabet_epilepsy.js');
-const UserMessages = require('./../../models/usermessage').UserMessages;
+const aParrots = require("./../../../alphabet_parrots.js");
+const aEpilepsy = require("./../../../alphabet_epilepsy.js");
+const UserMessages = require("./../../models/usermessage").UserMessages;
 
 const replaseEmoji = (value, message) => {
-  message = value === 'REACT' || value === 'РЕАКТ' ? message.replace(/fp/g, 'rt') : message;
-  message = value === 'JS' ||
-    value === 'ЖС' ||
-    value === 'ДЖС' ||
-    value === 'ДЖАВАСКРИПТ' ||
-    value === 'JAVASCRIPT' ? message.replace(/fp/g, 'js') : message;
-  message = value === 'ANGULAR' || value === 'АНГУЛЯР' ? message.replace(/fp/g, 'ag') : message;
-  message = value === 'JQUERY' || value === 'ЖКВЕРИ' || value === 'ДЖКВЕРИ' ? message.replace(/fp/g, 'jquery') : message;
-  message = value === 'VUE' || value === 'ВУЙ' || value === 'ВУЕ' ? message.replace(/fp/g, 'vue') : message;
+  message =
+    value === "REACT" || value === "РЕАКТ"
+      ? message.replace(/fp/g, "rt")
+      : message;
+  message =
+    value === "JS" ||
+    value === "ЖС" ||
+    value === "ДЖС" ||
+    value === "ДЖАВАСКРИПТ" ||
+    value === "JAVASCRIPT"
+      ? message.replace(/fp/g, "js")
+      : message;
+  message =
+    value === "ANGULAR" || value === "АНГУЛЯР"
+      ? message.replace(/fp/g, "ag")
+      : message;
+  message =
+    value === "JQUERY" || value === "ЖКВЕРИ" || value === "ДЖКВЕРИ"
+      ? message.replace(/fp/g, "jquery")
+      : message;
+  message =
+    value === "VUE" || value === "ВУЙ" || value === "ВУЕ"
+      ? message.replace(/fp/g, "vue")
+      : message;
 
   return message;
 };
@@ -42,8 +57,7 @@ const replaceMention = (str, resolve) => {
   }
 };
 
-
-const replaceTextEmoji = (str) => {
+const replaceTextEmoji = str => {
   const myRegexpEmoji = /^(:\w+:)|(:[-\w]+:)/g;
   let matchEmoji = myRegexpEmoji.exec(str);
   let emoji = [];
@@ -53,28 +67,27 @@ const replaceTextEmoji = (str) => {
   }
   const myObj = {};
   if (emoji.length) {
-    let string = emoji.join(' ');
+    let string = emoji.join(" ");
     myObj.isExec = true;
     myObj.countEmoji = emoji.length;
     myObj.emoji = emoji;
     const message = str.substr(string.length + 1, str.length);
     myObj.message = message ? message : emoji[1];
-    
+
     return myObj;
   } else {
     myObj.message = str;
     myObj.countEmoji = 0;
     myObj.isExec = false;
-    
+
     return myObj;
   }
 };
 
-
 const sayText = (text, split, maxW, away, callback) => {
   let newLetterArray = [];
   let newArray = [];
-  let sendMessage = '';
+  let sendMessage = "";
   text = text.substr(0, text.length);
   replaceMention(text, function(message) {
     text = message;
@@ -87,27 +100,33 @@ const sayText = (text, split, maxW, away, callback) => {
     if (newStr.isExec) {
       replaced = true;
       replacedEmoji = newStr.emoji[0];
-      text = newStr.message ? newStr.message : '';
+      text = newStr.message ? newStr.message : "";
       if (newStr.countEmoji === 2) {
         replacedBg = newStr.emoji[1];
       }
     }
-    
+
     if (text.length > maxW) {
-      callback('', { message: `, ты просишь слишком много... Я могу сказать не больше ${maxW} символов!` });
-      return '';
+      callback("", {
+        message: `, ты просишь слишком много... Я могу сказать не больше ${maxW} символов!`
+      });
+      return "";
     }
     if (text) {
       if (split) {
-        text.match(/.{1,3}/g).forEach(w => { newLetterArray.push(w.split('')) });
+        text.match(/.{1,3}/g).forEach(w => {
+          newLetterArray.push(w.split(""));
+        });
       } else {
-        text.match(/.{1}/g).forEach(w => { newLetterArray.push(w.split('')) });
+        text.match(/.{1}/g).forEach(w => {
+          newLetterArray.push(w.split(""));
+        });
       }
     }
 
-    newLetterArray.forEach((item) => {
+    newLetterArray.forEach(item => {
       const newArray = [];
-      item.forEach((itm) => {
+      item.forEach(itm => {
         function findLetter(alphabet) {
           return alphabet.letter === itm;
         }
@@ -118,9 +137,9 @@ const sayText = (text, split, maxW, away, callback) => {
       const lineCount = 6;
 
       for (let i = 0; i < lineCount; i++) {
-        let line = '';
+        let line = "";
         if (away) {
-          line += ':p_petr_rides:';
+          line += ":p_petr_rides:";
         }
         if (replacedBg) {
           line += replacedBg;
@@ -128,7 +147,7 @@ const sayText = (text, split, maxW, away, callback) => {
         for (let j = 0; j < newArray.length; j++) {
           line += newArray[j][i];
         }
-        line += '\n';
+        line += "\n";
         sendMessage += line;
       }
     });
@@ -140,8 +159,8 @@ const sayText = (text, split, maxW, away, callback) => {
       }
     }
     if (away) {
-      newMessage = newMessage.replace(/:fp:/g, ':bk:');
-      newMessage = newMessage.replace(/:sp:/g, ':p_petr_rides:');
+      newMessage = newMessage.replace(/:fp:/g, ":bk:");
+      newMessage = newMessage.replace(/:sp:/g, ":p_petr_rides:");
     }
     callback(newMessage, {});
   }, 500);
@@ -149,46 +168,46 @@ const sayText = (text, split, maxW, away, callback) => {
 
 const sayEmoji = (text, split, maxW, callback) => {
   if (text.length > maxW) {
-    callback('', { message: `, ты просишь слишком много... Я могу сказать не больше ${maxW} символов!` });
-    return '';
+    callback("", {
+      message: `, ты просишь слишком много... Я могу сказать не больше ${maxW} символов!`
+    });
+    return "";
   }
   let userText = text;
-  replaceMention(userText, (message) => {
+  replaceMention(userText, message => {
     userText = message;
   });
-  setTimeout(() =>{
-    const userTextArray = userText.toUpperCase().split('');
-    let sendMessage = '';
-    userTextArray.forEach((item) => {
+  setTimeout(() => {
+    const userTextArray = userText.toUpperCase().split("");
+    let sendMessage = "";
+    userTextArray.forEach(item => {
       function findLetter(alphabet) {
         return alphabet.letter === item;
       }
       if (!!aEpilepsy.find(findLetter)) {
         sendMessage += aEpilepsy.find(findLetter).text;
       }
-
     });
     callback(sendMessage, {});
-    sendMessage = '';
+    sendMessage = "";
   }, 1000);
 };
 
 const sayBorderText = (text, split, maxW, callback) => {
   if (text.length > maxW) {
-    callback('', { message: `, ты просишь слишком много... Я могу сказать не больше ${maxW} символов!` });
-    return '';
+    callback("", {
+      message: `, ты просишь слишком много... Я могу сказать не больше ${maxW} символов!`
+    });
+    return "";
   }
   let userText = text;
-  let sendMessage = '';
+  let sendMessage = "";
   const newLetterArray = [];
   userText = userText
-    .replace(/&AMP;/g, '&')
-    .replace(/&LT;/g, '<')
-    .replace(/&GT;/g, '>');
-  userText
-    .replace(/&AMP;/g, '&')
-    .replace(/&LT;/g, '<')
-    .replace(/&GT;/g, '>');
+    .replace(/&AMP;/g, "&")
+    .replace(/&LT;/g, "<")
+    .replace(/&GT;/g, ">");
+  userText.replace(/&AMP;/g, "&").replace(/&LT;/g, "<").replace(/&GT;/g, ">");
   replaceMention(userText, message => {
     userText = message;
   });
@@ -204,15 +223,15 @@ const sayBorderText = (text, split, maxW, callback) => {
     }
 
     let countLetters = userText.length > 16 ? 16 : userText.length;
-    const reg = new RegExp(`.{1,${countLetters}}`, 'g');
+    const reg = new RegExp(`.{1,${countLetters}}`, "g");
     userText.match(reg).forEach(w => {
-      newLetterArray.push(w.split(''));
+      newLetterArray.push(w.split(""));
     });
-    sendMessage += ':cptl:';
+    sendMessage += ":cptl:";
     for (let i = 0; i < countLetters; i++) {
-      sendMessage += ':cpt:';
+      sendMessage += ":cpt:";
     }
-    sendMessage += ':cptr:\n';
+    sendMessage += ":cptr:\n";
     newLetterArray.forEach(item => {
       const newArray = [];
       item.forEach(itm => {
@@ -227,10 +246,10 @@ const sayBorderText = (text, split, maxW, callback) => {
       if (newArray.length < countLetters) {
         let contSpace = countLetters - newArray.length;
         for (let i = 0; i < contSpace; i++) {
-          newArray.push(':sp:');
+          newArray.push(":sp:");
         }
       }
-      sendMessage += ':cpl:';
+      sendMessage += ":cpl:";
       for (let i = 0; i < newArray.length; i++) {
         if (i == countLetters - 1) {
           sendMessage += `${newArray[i]}:cpr:\n`;
@@ -239,11 +258,11 @@ const sayBorderText = (text, split, maxW, callback) => {
         }
       }
     });
-    sendMessage += ':cpbl:';
+    sendMessage += ":cpbl:";
     for (let i = 0; i < countLetters; i++) {
-      sendMessage += ':cpb:';
+      sendMessage += ":cpb:";
     }
-    sendMessage += ':cpbr:\n';
+    sendMessage += ":cpbr:\n";
 
     let newMessage = replaseEmoji(userText, sendMessage);
     if (replaced) {
@@ -253,7 +272,7 @@ const sayBorderText = (text, split, maxW, callback) => {
       );
     }
     callback(newMessage, {});
-    sendMessage = '';
+    sendMessage = "";
   }, 1000);
 };
 
@@ -274,6 +293,5 @@ module.exports = {
     sayText(text, true, 20, true, callback);
   },
   sayBorderText,
-  sayText,
+  sayText
 };
-

@@ -1,58 +1,60 @@
-'use strict';
+"use strict";
 
-const BotSettings = require('./../../models/botsetting').BotSettings;
-const UserMessages = require('./../../models/usermessage').UserMessages;
-const Statistics = require('./../../models/statistics').Statistics;
-const Log = require('./../../models/log').Log;
-const fs = require('fs');
+const BotSettings = require("./../../models/botsetting").BotSettings;
+const UserMessages = require("./../../models/usermessage").UserMessages;
+const Statistics = require("./../../models/statistics").Statistics;
+const Log = require("./../../models/log").Log;
+const fs = require("fs");
 
-const commandsURL = 'https://github.com/dshved/fridaybot/blob/master/COMMANDS.md';
-const changelogURL = 'https://github.com/dshved/fridaybot/blob/master/CHANGELOG.md';
+const commandsURL =
+  "https://github.com/dshved/fridaybot/blob/master/COMMANDS.md";
+const changelogURL =
+  "https://github.com/dshved/fridaybot/blob/master/CHANGELOG.md";
 
-
-const messagesRus = (num) => {
+const messagesRus = num => {
   num = Math.abs(num);
   num %= 100;
   if (num >= 5 && num <= 20) {
-    return 'сообщений';
+    return "сообщений";
   }
   num %= 10;
   if (num === 1) {
-    return 'сообщение';
+    return "сообщение";
   }
   if (num >= 2 && num <= 4) {
-    return 'сообщения';
+    return "сообщения";
   }
-  return 'сообщений';
+  return "сообщений";
 };
 
 function getParrotCount(text, callback) {
-  BotSettings.findOne().then((r) => {
+  BotSettings.findOne().then(r => {
     if (r) {
       callback(`Всего отправлено: ${r.parrot_counts} шт.`, {});
     } else {
-      callback('', { message: 'что то пошло не так :sad_parrot:' });
+      callback("", { message: "что то пошло не так :sad_parrot:" });
     }
   });
 }
 
 function getUserCount(text, callback) {
-  UserMessages.find({ count_messages: { $gt: 1 } }).sort([
-      ['count_messages', 'descending'],
-    ])
-    .then((r) => {
-      let mes = '';
+  UserMessages.find({ count_messages: { $gt: 1 } })
+    .sort([["count_messages", "descending"]])
+    .then(r => {
+      let mes = "";
       if (r.length > 10) {
-        mes = 'TOP 10: \n';
+        mes = "TOP 10: \n";
         for (let i = 0; i < 10; i++) {
-          mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
+          mes += `${i + 1}. ${r[i].user_name}: ${r[i]
+            .count_messages} ${messagesRus(r[i].count_messages)}\n`;
         }
         mes += `\nВсего живых: ${r.length}`;
         callback(mes, {});
       } else {
-        mes = 'Вот люди, которые подают признаки жизни: \n';
+        mes = "Вот люди, которые подают признаки жизни: \n";
         for (let i = 0; i < r.length; i++) {
-          mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_messages} ${messagesRus(r[i].count_messages)}\n`;
+          mes += `${i + 1}. ${r[i].user_name}: ${r[i]
+            .count_messages} ${messagesRus(r[i].count_messages)}\n`;
         }
         mes += `\nВсего живых: ${r.length}`;
         callback(mes, {});
@@ -61,89 +63,102 @@ function getUserCount(text, callback) {
 }
 
 function getElite(text, callback) {
-  UserMessages.find({ user_name: { $ne: 'slackbot' } }).sort([
-      ['count_parrots', 'descending'],
-    ])
-    .then((r) => {
-      let mes = '';
+  UserMessages.find({ user_name: { $ne: "slackbot" } })
+    .sort([["count_parrots", "descending"]])
+    .then(r => {
+      let mes = "";
       if (r.length > 10) {
-        mes = ':crown:Илита Friday:crown: \n';
+        mes = ":crown:Илита Friday:crown: \n";
         for (let i = 0; i < 10; i++) {
           if (r[i].count_parrots > 0) {
             mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
           }
         }
-        UserMessages.findOne({ user_name: 'slackbot' })
-          .then((d) => {
-            if (d) {
-              mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
-            }
+        UserMessages.findOne({ user_name: "slackbot" }).then(d => {
+          if (d) {
+            mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
+          }
 
-            callback(mes, {});
-          });
+          callback(mes, {});
+        });
       } else {
-        mes = ':crown:Илита Friday:crown: \n';
+        mes = ":crown:Илита Friday:crown: \n";
         for (let i = 0; i < r.length; i++) {
           mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
         }
-        UserMessages.findOne({ user_name: 'slackbot' })
-          .then((d) => {
-            if (d) {
-              mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
-            }
+        UserMessages.findOne({ user_name: "slackbot" }).then(d => {
+          if (d) {
+            mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
+          }
 
-            callback(mes, {});
-          });
+          callback(mes, {});
+        });
       }
     });
 }
 
 function getLog(text, callback) {
-  Log.aggregate([{
-      $group: {
-        _id: '$command',
-        count: { $sum: 1 },
+  Log.aggregate(
+    [
+      {
+        $group: {
+          _id: "$command",
+          count: { $sum: 1 }
+        }
       },
-    }, {
-      $sort: { count: -1 },
-    }, ],
+      {
+        $sort: { count: -1 }
+      }
+    ],
     (err, res) => {
-      let mes = 'Статистика вызова команд:\n';
+      let mes = "Статистика вызова команд:\n";
       for (let i = 0; i < res.length; i++) {
         mes += `${i + 1}. ${res[i]._id} - ${res[i].count}\n`;
       }
       callback(mes, {});
-      mes = '';
+      mes = "";
     }
   );
 }
 
 function getActiveUsers(text, callback) {
   const date = new Date();
-  const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 2);
-  const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const startTimestamp = ((startOfDay / 1000) - 10800);
-  const endTimestamp = ((endOfDay / 1000) - 10800) + 86400;
+  const startOfDay = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate() - 2
+  );
+  const endOfDay = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  );
+  const startTimestamp = startOfDay / 1000 - 10800;
+  const endTimestamp = endOfDay / 1000 - 10800 + 86400;
   Statistics.aggregate(
-    [{
-      $match: {
-        'timestamp': {
-          '$gte': startTimestamp,
-          '$lt': endTimestamp,
-        },
-        event_type: 'user_message',
+    [
+      {
+        $match: {
+          timestamp: {
+            $gte: startTimestamp,
+            $lt: endTimestamp
+          },
+          event_type: "user_message"
+        }
       },
-    }, {
-      $group: {
-        _id: '$user_id',
-        count: { $sum: 1 },
+      {
+        $group: {
+          _id: "$user_id",
+          count: { $sum: 1 }
+        }
       },
-    }, {
-      $sort: { count: -1 },
-    }, ],
+      {
+        $sort: { count: -1 }
+      }
+    ],
     (err, res) => {
-      let mes = 'Статистика по сообщениям за 3 дня:\n';
-      UserMessages.find({}).then((result) => {
+      let mes = "Статистика по сообщениям за 3 дня:\n";
+      UserMessages.find({}).then(result => {
         if (result) {
           res.forEach((item, index) => {
             const user = result.filter(el => el.user_id === item._id);
@@ -153,42 +168,44 @@ function getActiveUsers(text, callback) {
             }
           });
           callback(mes, {});
-          mes = '';
+          mes = "";
         }
       });
     }
   );
 }
 
-
 function getPPM(text, callback) {
   UserMessages.aggregate(
-    [{
-      $project: {
-        user_name: 1,
-        ppm: {
-          $divide: ['$count_parrots', '$count_messages'],
-        },
+    [
+      {
+        $project: {
+          user_name: 1,
+          ppm: {
+            $divide: ["$count_parrots", "$count_messages"]
+          }
+        }
       },
-    }, {
-      $sort: { ppm: -1 },
-    }, ],
+      {
+        $sort: { ppm: -1 }
+      }
+    ],
     (err, res) => {
-      let mes = ':fp: Рейтинг PPM: :fp:\n';
+      let mes = ":fp: Рейтинг PPM: :fp:\n";
       if (res.length > 10) {
         for (let i = 0; i < 10; i++) {
           const ppm = Math.round(res[i].ppm * 100) / 100;
           mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
         }
         callback(mes, {});
-        mes = '';
+        mes = "";
       } else {
         for (let i = 0; i < res.length; i++) {
           const ppm = Math.round(res[i].ppm * 100) / 100;
           mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
         }
         callback(mes, {});
-        mes = '';
+        mes = "";
       }
     }
   );
@@ -204,62 +221,73 @@ function getChangelog(text, callback) {
 
 function parseDate(str) {
   const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  return (m) ? `${m[3]}/${m[2]}/${m[1]}` : null;
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : null;
 }
 
 function getStatistic(text, callback) {
   let dateOffset;
   let dateText = 0;
   let date;
-  if (text === 'СЕГОДНЯ') {
+  if (text === "СЕГОДНЯ") {
     dateOffset = 0;
-    dateText = 'Сегодня';
+    dateText = "Сегодня";
     date = new Date();
-  } else if (text === 'ВЧЕРА') {
+  } else if (text === "ВЧЕРА") {
     dateOffset = 1;
-    dateText = 'Вчера';
+    dateText = "Вчера";
     date = new Date();
   } else if (parseDate(text)) {
     if (new Date(parseDate(text)) > new Date()) {
-      callback('Мне не известно, что будет в будущем!', {});
+      callback("Мне не известно, что будет в будущем!", {});
     } else {
       date = new Date(parseDate(text));
       dateOffset = 0;
       dateText = parseDate(text);
     }
   } else {
-    callback('Повторите команду с указанием даты в формате `DD/MM/YYYY` или ключевых слов `сегодня`, `вчера`', {});
+    callback(
+      "Повторите команду с указанием даты в формате `DD/MM/YYYY` или ключевых слов `сегодня`, `вчера`",
+      {}
+    );
   }
   if (date) {
-    const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() - dateOffset);
-    const startTimestamp = (startOfDay / 1000) - 10800;
+    const startOfDay = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate() - dateOffset
+    );
+    const startTimestamp = startOfDay / 1000 - 10800;
     const endTimestamp = startTimestamp + 86400;
     Statistics.aggregate(
-      [{
-        $match: {
-          'timestamp': {
-            '$gte': startTimestamp,
-            '$lt': endTimestamp,
-          },
-          event_type: 'user_message',
+      [
+        {
+          $match: {
+            timestamp: {
+              $gte: startTimestamp,
+              $lt: endTimestamp
+            },
+            event_type: "user_message"
+          }
         },
-      }, {
-        $group: { _id: null, parrot_counts: { $sum: '$parrot_count' } },
-      }, ],
+        {
+          $group: { _id: null, parrot_counts: { $sum: "$parrot_count" } }
+        }
+      ],
       (err, res) => {
         const parrotCounts = res[0] ? res[0].parrot_counts : 0;
         Statistics.find({
-          'timestamp': {
-            '$gte': startTimestamp,
-            '$lt': endTimestamp,
-          },
+          timestamp: {
+            $gte: startTimestamp,
+            $lt: endTimestamp
+          }
         }).then(res => {
           if (res) {
             const message = `${dateText} отправлено:\nсообщений - ${res.length}\nпэрротов - ${parrotCounts}`;
-            callback(message, {})
+            callback(message, {});
           }
         });
-      });
+      }
+    );
   }
 }
 
@@ -274,11 +302,11 @@ function whenFriday(text, callback) {
   }
 
   const friday = new Date(year, month, day);
-  const zero = (a) => {
+  const zero = a => {
     return a < 10 ? `0${a}` : a;
   };
 
-  const millisecToTimeStruct = (millisec) => {
+  const millisecToTimeStruct = millisec => {
     if (isNaN(millisec)) {
       return {};
     }
@@ -286,17 +314,18 @@ function whenFriday(text, callback) {
     const hours = (days - ~~days) * 24;
     const minutes = (hours - ~~hours) * 60;
     const seconds = (minutes - ~~minutes) * 60;
-    return `${zero(~~days)}:${zero(~~hours)}:${zero(~~minutes)}:${zero(~~seconds)}`;
+    return `${zero(~~days)}:${zero(~~hours)}:${zero(~~minutes)}:${zero(
+      ~~seconds
+    )}`;
   };
 
   const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
   if (result < 0) {
-    callback('Сегодня пятница!:fp:', {});
+    callback("Сегодня пятница!:fp:", {});
   } else {
     callback(`До пятницы осталось: ${millisecToTimeStruct(result)}`, {});
   }
 }
-
 
 module.exports = {
   parrotCount: (text, callback) => {
@@ -328,5 +357,5 @@ module.exports = {
   },
   friday: (text, callback) => {
     whenFriday(text, callback);
-  },
+  }
 };

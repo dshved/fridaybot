@@ -1,6 +1,5 @@
-
-const getBotEmoji = (array) => {
-  const commandIndex = array.findIndex((command) => {
+const getBotEmoji = array => {
+  const commandIndex = array.findIndex(command => {
     return command === "-e";
   });
   if (commandIndex !== -1) {
@@ -19,17 +18,17 @@ const getBotName = array => {
   return "fridaybot";
 };
 
-const getBotText = (array) => {
-  const emojiIndex = array.findIndex((command) => {
-    return command === '-e';
+const getBotText = array => {
+  const emojiIndex = array.findIndex(command => {
+    return command === "-e";
   });
 
-  const nameIndex = array.findIndex((command) => {
-    return command === '-n';
+  const nameIndex = array.findIndex(command => {
+    return command === "-n";
   });
 
-  const textIndex = array.findIndex((command) => {
-    return command === '-t';
+  const textIndex = array.findIndex(command => {
+    return command === "-t";
   });
 
   if (textIndex !== -1 && nameIndex !== -1 && emojiIndex !== -1) {
@@ -38,7 +37,7 @@ const getBotText = (array) => {
       for (let i = textIndex + 1; i < array.length; i++) {
         text.push(array[i]);
       }
-      return text.join(' ');
+      return text.join(" ");
     }
 
     if (textIndex < emojiIndex && textIndex < nameIndex) {
@@ -46,36 +45,35 @@ const getBotText = (array) => {
       for (let i = textIndex + 1; i < n; i++) {
         text.push(array[i]);
       }
-      return text.join(' ');
+      return text.join(" ");
     }
 
     if (textIndex > emojiIndex && textIndex < nameIndex) {
       for (let i = textIndex + 1; i < nameIndex; i++) {
         text.push(array[i]);
       }
-      return text.join(' ');
+      return text.join(" ");
     }
 
     if (textIndex < emojiIndex && textIndex > nameIndex) {
       for (let i = textIndex + 1; i < emojiIndex; i++) {
         text.push(array[i]);
       }
-      return text.join(' ');
+      return text.join(" ");
     }
   }
 
-  return '';
+  return "";
 };
 
-const parseMessage = (text) => {
-  const commandsArray = text.split(' ');
+const parseMessage = text => {
+  const commandsArray = text.split(" ");
   const message = getBotText(commandsArray);
   const attachment = {};
   attachment.username = getBotName(commandsArray);
   attachment.icon_emoji = getBotEmoji(commandsArray);
 
-  return {message, attachment};
-}
-
+  return { message, attachment };
+};
 
 module.exports = { parseMessage };

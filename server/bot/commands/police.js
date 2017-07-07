@@ -1,25 +1,62 @@
-'use strict';
-const sayBorderText = require('./say').sayBorderText;
+"use strict";
+const sayBorderText = require("./say").sayBorderText;
 
 function getPolice(text, callback, msg) {
   const attachment = {};
-  attachment.username = 'милиция';
-  attachment.icon_emoji = ':warneng:';
+  attachment.username = "милиция";
+  attachment.icon_emoji = ":warneng:";
   const myRegexpUser = /@\w+/g;
   const matchUser = text.match(myRegexpUser);
 
   if (text.startsWith(msg)) {
     if (matchUser) {
-      let users = '';
+      let users = [];
       for (let i = 0; i < matchUser.length; i++) {
-        users += `${matchUser[i]}`;
+        users.push(`${matchUser[i]}`);
       }
-      sayBorderText(users, false, 100, (cb) => {
-        const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse:\n${cb}Вы окружены!!!\n`;
-        callback(message, {}, attachment);
-      });
+
+      const unique = arr => {
+        const obj = {};
+
+        for (let i = 0; i < arr.length; i++) {
+          const str = arr[i];
+          obj[str] = true;
+        }
+
+        return Object.keys(obj);
+      };
+
+      users = unique(users);
+
+      if (users.length > 5) {
+        callback(
+          "Автозак не резиновый!\nНе больше 5-ти человек :warneng:",
+          {},
+          attachment
+        );
+      } else {
+        const fn = function asyncMultiply(user) {
+          return new Promise(resolve => {
+            sayBorderText(user, false, 100, cb => {
+              resolve(cb);
+            });
+          });
+        };
+
+        const actions = users.map(fn);
+
+        const results = Promise.all(actions);
+        results.then(data => {
+          const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse:\n${data}Вы окружены!!!\n`;
+          callback(message, {}, attachment);
+        });
+      }
     } else {
-      callback(':drudgesiren:Господин полицейский всегда на страже закона.:drudgesiren:\nЕсли у вас жалоба на конкретного человека, то повторите команду и укажите его @username', {}, attachment);
+      callback(
+        ":drudgesiren:Господин полицейский всегда на страже закона.:drudgesiren:\nЕсли у вас жалоба на конкретного человека, то повторите команду и укажите его @username",
+        {},
+        attachment
+      );
     }
   }
 }
@@ -27,5 +64,5 @@ function getPolice(text, callback, msg) {
 module.exports = {
   police: (text, callback, msg) => {
     getPolice(text, callback, msg);
-  },
+  }
 };

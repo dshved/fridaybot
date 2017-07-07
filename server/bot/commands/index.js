@@ -1,22 +1,31 @@
-'use strict';
+"use strict";
 
-const msgs = require('./messages').messages;
-const Log = require('./../../models/log').Log;
+const msgs = require("./messages").messages;
+const Log = require("./../../models/log").Log;
 
-const saveLog = (d) => {
+const saveLog = d => {
   const newCommand = new Log({
     user: d.user,
     command: d.text,
-    date: d.ts,
+    date: d.ts
   });
   newCommand.save();
 };
 
-
-const execResponse = (data, channel, text, expr, startFrom, entrance, channels, func, callback) => {
+const execResponse = (
+  data,
+  channel,
+  text,
+  expr,
+  startFrom,
+  entrance,
+  channels,
+  func,
+  callback
+) => {
   const access = channels.find(cl => cl === channel);
 
-  expr.forEach((msg) => {
+  expr.forEach(msg => {
     if (access) {
       if (entrance) {
         func(text, callback, msg);
@@ -38,10 +47,9 @@ const execResponse = (data, channel, text, expr, startFrom, entrance, channels, 
   });
 };
 
-
 const userMessageRes = (data, channel, callback) => {
   const messageText = data.text.toUpperCase();
-  msgs.forEach((msg) => {
+  msgs.forEach(msg => {
     execResponse(
       data,
       channel,
@@ -53,10 +61,11 @@ const userMessageRes = (data, channel, callback) => {
       msg.callback,
       (d, error, attachment) => {
         callback(d, error, attachment);
-      });
+      }
+    );
   });
 };
 
 module.exports = {
-  userMessageRes,
+  userMessageRes
 };
