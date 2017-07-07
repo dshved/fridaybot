@@ -1,10 +1,10 @@
-'use strict';
-const sayBorderText = require('./say').sayBorderText;
+"use strict";
+const sayBorderText = require("./say").sayBorderText;
 
 function getPolice(text, callback, msg) {
   const attachment = {};
-  attachment.username = 'милиция';
-  attachment.icon_emoji = ':warneng:';
+  attachment.username = "милиция";
+  attachment.icon_emoji = ":warneng:";
   const myRegexpUser = /@\w+/g;
   const matchUser = text.match(myRegexpUser);
 
@@ -15,7 +15,7 @@ function getPolice(text, callback, msg) {
         users.push(`${matchUser[i]}`);
       }
 
-      const unique = (arr) => {
+      const unique = arr => {
         const obj = {};
 
         for (let i = 0; i < arr.length; i++) {
@@ -29,11 +29,15 @@ function getPolice(text, callback, msg) {
       users = unique(users);
 
       if (users.length > 5) {
-        callback('Автозак не резиновый!\nНе больше 5-ти человек :warneng:', {}, attachment);
+        callback(
+          "Автозак не резиновый!\nНе больше 5-ти человек :warneng:",
+          {},
+          attachment
+        );
       } else {
         const fn = function asyncMultiply(user) {
-          return new Promise((resolve) => {
-            sayBorderText(user, false, 100, (cb) => {
+          return new Promise(resolve => {
+            sayBorderText(user, false, 100, cb => {
               resolve(cb);
             });
           });
@@ -48,14 +52,17 @@ function getPolice(text, callback, msg) {
         });
       }
     } else {
-      callback(':drudgesiren:Господин полицейский всегда на страже закона.:drudgesiren:\nЕсли у вас жалоба на конкретного человека, то повторите команду и укажите его @username', {}, attachment);
+      callback(
+        ":drudgesiren:Господин полицейский всегда на страже закона.:drudgesiren:\nЕсли у вас жалоба на конкретного человека, то повторите команду и укажите его @username",
+        {},
+        attachment
+      );
     }
   }
 }
 
-
 module.exports = {
   police: (text, callback, msg) => {
     getPolice(text, callback, msg);
-  },
+  }
 };

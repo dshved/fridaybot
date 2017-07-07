@@ -1,0 +1,4 @@
+-   repo: https://github.com/dshved/fridaybot
+    sha: ''  # Use the sha or tag you want to point at
+    hooks:
+    -   id: prettier

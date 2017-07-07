@@ -1,21 +1,21 @@
-const SlackBot = require('./../../slackbots.js');
-const config = require('./../../config.js');
+const SlackBot = require("./../../slackbots.js");
+const config = require("./../../config.js");
 
-const botResponse = require('./commands');
+const botResponse = require("./commands");
 
-const fs = require('fs');
+const fs = require("fs");
 
-const UserMessages = require('./../models/usermessage').UserMessages;
-const BotMessages = require('./../models/botmessage').BotMessages;
-const BotSettings = require('./../models/botsetting').BotSettings;
-const Statistics = require('./../models/statistics').Statistics;
-const getSticker = require('./commands/sticker').getSticker;
-const sayText = require('./commands/say').sayText;
-const Log = require('./../models/log').Log;
+const UserMessages = require("./../models/usermessage").UserMessages;
+const BotMessages = require("./../models/botmessage").BotMessages;
+const BotSettings = require("./../models/botsetting").BotSettings;
+const Statistics = require("./../models/statistics").Statistics;
+const getSticker = require("./commands/sticker").getSticker;
+const sayText = require("./commands/say").sayText;
+const Log = require("./../models/log").Log;
 
-const cheerio = require('cheerio');
-const request = require('request');
-const iconv = require('iconv-lite');
+const cheerio = require("cheerio");
+const request = require("request");
+const iconv = require("iconv-lite");
 
 const bot = new SlackBot(config.bot);
 const bot2 = new SlackBot(config.bot2);
@@ -26,15 +26,14 @@ const botParams = {};
 
 let channelsList = [];
 
-const saveLog = (d) => {
+const saveLog = d => {
   const newCommand = new Log({
     user: d.user,
     command: d.text,
-    date: d.ts,
+    date: d.ts
   });
   newCommand.save();
 };
-
 
 let bashArray = [];
 
@@ -42,29 +41,29 @@ setInterval(() => {
   bashArray = [];
   request(
     {
-      url: 'http://bash.im/random',
-      encoding: null,
+      url: "http://bash.im/random",
+      encoding: null
     },
     (err, res, body) => {
-      const $ = cheerio.load(iconv.decode(body, 'cp1251'), {
-        decodeEntities: false,
+      const $ = cheerio.load(iconv.decode(body, "cp1251"), {
+        decodeEntities: false
       });
 
-      const quote = $('#body > .quote > .text');
+      const quote = $("#body > .quote > .text");
 
       quote.each((i, post) => {
         bashArray[i] = $(post)
           .html()
-          .replace(/<br>/g, '\n')
-          .replace(/&quot;/g, '')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>');
+          .replace(/<br>/g, "\n")
+          .replace(/&quot;/g, "")
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">");
       });
     }
   );
 }, 180000);
 
-bot.on('start', () => {
+bot.on("start", () => {
   bot.getUser(config.bot.name).then(res => {
     if (res) {
       botParams.botId = res.id;
@@ -127,8 +126,8 @@ bot.on('start', () => {
   });
 });
 
-bot2.on('start', () => {
-  console.log('bot2 started');
+bot2.on("start", () => {
+  console.log("bot2 started");
 });
 
 const isThread = (data, att) => {
@@ -138,7 +137,7 @@ const isThread = (data, att) => {
   }
 
   if (att.thread_ts) {
-    delete att['thread_ts'];
+    delete att["thread_ts"];
   }
 
   return att;
@@ -149,9 +148,8 @@ const channelName = data => {
   if (channel) {
     return channel.name;
   }
-  return 'direct';
+  return "direct";
 };
-
 
 const sendToWhom = (data, message, attachment) => {
   if (attachment) {
@@ -163,11 +161,8 @@ const sendToWhom = (data, message, attachment) => {
   }
 };
 
-
-
-
-global.io.on('connection', (socket) => {
-  socket.on('post', (data) => {
+global.io.on("connection", socket => {
+  socket.on("post", data => {
     if (data) {
       sendToWhom(data, data.message);
     }
@@ -175,12 +170,12 @@ global.io.on('connection', (socket) => {
 });
 
 let accessBotPost;
-bot2.on('message', (data) => {
+bot2.on("message", data => {
   if (data.text) {
     const message = data.text;
     if (data.channel === config.bot2.connect_channel) {
       const attachment = {};
-      bot2.getUserById(data.user).then((res) => {
+      bot2.getUserById(data.user).then(res => {
         attachment.username = `${res.name}, ${config.bot2.slack_name}`;
         attachment.icon_url = res.profile.image_512;
         bot.postMessage(config.bot.connect_channel, message, attachment);
@@ -189,9 +184,8 @@ bot2.on('message', (data) => {
   }
 });
 
-
-bot.on('message', (data) => {
-  if (data.subtype === 'message_changed') {
+bot.on("message", data => {
+  if (data.subtype === "message_changed") {
     data.text = data.message.text;
     data.user = data.message.user;
   }
@@ -199,7 +193,7 @@ bot.on('message', (data) => {
     const message = data.text;
     if (data.channel === config.bot.connect_channel) {
       const attachment = {};
-      bot.getUserById(data.user).then((res) => {
+      bot.getUserById(data.user).then(res => {
         attachment.username = `${res.name}, ${config.bot.slack_name}`;
         attachment.icon_url = res.profile.image_512;
         bot2.postMessage(config.bot2.connect_channel, message, attachment);
@@ -207,7 +201,7 @@ bot.on('message', (data) => {
     }
   }
 
-  global.io.emit('data', data);
+  global.io.emit("data", data);
   // console.log(data);
   let countParrots = 0;
   if (data.text) {
@@ -223,23 +217,22 @@ bot.on('message', (data) => {
         { name: messageParams.username },
         { parrot_counts: botParams.parrotCount }
       ).then();
-      global.io.emit('parrot count', botParams.parrotCount);
+      global.io.emit("parrot count", botParams.parrotCount);
 
       const user = data.user ? data.user : data.bot_id;
       const statistic = new Statistics({
-        event_type: 'user_message',
+        event_type: "user_message",
         user_id: user,
         timestamp: data.ts,
-        parrot_count: countParrots,
+        parrot_count: countParrots
       });
 
       statistic.save();
     }
   }
 
-
-  if (data.text && data.subtype !== 'bot_message') {
-    if (~data.text.indexOf('повтори ') == -1) {
+  if (data.text && data.subtype !== "bot_message") {
+    if (~data.text.indexOf("повтори ") == -1) {
       const userText = data.text.substr(8);
       const att = isThread(data, messageParams);
       bot.postMessageToChannel(botParams.channelName, userText, att);
@@ -248,27 +241,27 @@ bot.on('message', (data) => {
   }
 
   if (data.text) {
-    if (~data.text.indexOf('маска ') == -1) {
+    if (~data.text.indexOf("маска ") == -1) {
       const userText = data.text.substr(6);
-      const say = require('./commands/sayHow').parseMessage;
-      let {message, attachment} = say(userText);
+      const say = require("./commands/sayHow").parseMessage;
+      let { message, attachment } = say(userText);
       bot.postMessageToChannel(botParams.channelName, message, attachment);
     }
   }
 
   if (data.text) {
-    if (~data.text.indexOf('файл ') == -1) {
-      let url = data.text.substr(6)
-        .replace(/</g, '')
-        .replace(/>/g, '');
-      const message = '';
+    if (~data.text.indexOf("файл ") == -1) {
+      let url = data.text.substr(6).replace(/</g, "").replace(/>/g, "");
+      const message = "";
       const attachment = {};
-      attachment.username = 'fridaybot';
-      attachment.icon_emoji = ':fbf:';
-      attachment.attachments = [{
-        fallback: '',
-        image_url: `${url}`,
-      }, ];
+      attachment.username = "fridaybot";
+      attachment.icon_emoji = ":fbf:";
+      attachment.attachments = [
+        {
+          fallback: "",
+          image_url: `${url}`
+        }
+      ];
       bot.postMessageToChannel(botParams.channelName, message, attachment);
     }
   }
@@ -280,7 +273,6 @@ bot.on('message', (data) => {
     const user = data.user ? data.user : data.bot_id;
     UserMessages.findOne({ user_id: user }).then(result => {
       if (result) {
-
         botResponse.userMessageRes(data, channel, (text, error, attachment) => {
           if (!error.message) {
             if (attachment) {
@@ -296,13 +288,11 @@ bot.on('message', (data) => {
     });
   }
 
-
   if (data.text) {
     data.text = data.text.toUpperCase();
   }
 
-
-  if (data.text === 'БАШ' || data.text === 'BASH' || data.text === 'БАШОРГ') {
+  if (data.text === "БАШ" || data.text === "BASH" || data.text === "БАШОРГ") {
     const randomBashId = Math.floor(Math.random() * (50 - 1 + 1)) + 1;
     bot.postMessageToChannel(
       botParams.channelName,
@@ -313,7 +303,7 @@ bot.on('message', (data) => {
   }
 
   if (data.text) {
-    if (~data.text.indexOf('UPTIME') == -1) {
+    if (~data.text.indexOf("UPTIME") == -1) {
       var millisecToTimeStruct = function(millisec) {
         var days, hours, minutes, seconds;
         if (isNaN(millisec)) {
@@ -323,88 +313,109 @@ bot.on('message', (data) => {
         hours = (days - ~~days) * 24;
         minutes = (hours - ~~hours) * 60;
         seconds = (minutes - ~~minutes) * 60;
-        return `${~~days}:${~~hours}:${~~minutes}:${~~seconds }`;
+        return `${~~days}:${~~hours}:${~~minutes}:${~~seconds}`;
       };
       const uptime = process.uptime();
       sendToWhom(data, millisecToTimeStruct(uptime));
     }
   }
 
-
-  if (data.text === 'ПАРОЛЬ') {
+  if (data.text === "ПАРОЛЬ") {
     console.log(data.user);
   }
 
-  if (data.subtype === 'channel_leave' && data.channel === botParams.channelId) {
+  if (
+    data.subtype === "channel_leave" &&
+    data.channel === botParams.channelId
+  ) {
     BotSettings.findOne().then(result => {
       if (result) {
         if (result.user_leave.active) {
-          request({
-            url: `https://slack.com/api/channels.info?token=${config.bot.token}&channel=${botParams.channelId}`,
-            encoding: null,
-          },
-          (err, res, body) => {
-            const json = JSON.parse(body);
-            if (json.ok) {
-              const countUsers = json.channel.members.length;
-              sayText(`:RAGE: ${countUsers}`, true, 10, false, (callback) => {
-                const leaveMessage = callback + result.user_leave.message
-                .replace(/first_name/g, data.user_profile.first_name)
-                .replace(/real_name/g, data.user_profile.real_name)
-                .replace(/name/g, `<@${data.user_profile.name}>`);
+          request(
+            {
+              url: `https://slack.com/api/channels.info?token=${config.bot
+                .token}&channel=${botParams.channelId}`,
+              encoding: null
+            },
+            (err, res, body) => {
+              const json = JSON.parse(body);
+              if (json.ok) {
+                const countUsers = json.channel.members.length;
+                sayText(`:RAGE: ${countUsers}`, true, 10, false, callback => {
+                  const leaveMessage =
+                    callback +
+                    result.user_leave.message
+                      .replace(/first_name/g, data.user_profile.first_name)
+                      .replace(/real_name/g, data.user_profile.real_name)
+                      .replace(/name/g, `<@${data.user_profile.name}>`);
+                  bot.postMessageToChannel(
+                    botParams.channelName,
+                    leaveMessage,
+                    messageParams
+                  );
+                });
+              } else {
+                const leaveMessage = result.user_leave.message
+                  .replace(/first_name/g, data.user_profile.first_name)
+                  .replace(/real_name/g, data.user_profile.real_name)
+                  .replace(/name/g, `<@${data.user_profile.name}>`);
                 bot.postMessageToChannel(
                   botParams.channelName,
                   leaveMessage,
                   messageParams
                 );
-              });
-            } else {
-              const leaveMessage = result.user_leave.message
-                .replace(/first_name/g, data.user_profile.first_name)
-                .replace(/real_name/g, data.user_profile.real_name)
-                .replace(/name/g, `<@${data.user_profile.name}>`);
-              bot.postMessageToChannel(
-                botParams.channelName,
-                leaveMessage,
-                messageParams
-              );
+              }
             }
-          });
+          );
         }
       }
       UserMessages.remove({ user_id: data.user }, (err, result) => {
         if (!err) {
-          console.log('Пользователь удален');
+          console.log("Пользователь удален");
         } else {
           console.log(err);
         }
       });
-
     });
     const statistic = new Statistics({
-      event_type: 'channel_leave',
+      event_type: "channel_leave",
       user_id: data.user,
-      timestamp: data.ts,
+      timestamp: data.ts
     });
 
     statistic.save();
   }
 
-
-  if (data.subtype === 'channel_join' && data.channel === botParams.channelId) {
+  if (data.subtype === "channel_join" && data.channel === botParams.channelId) {
     BotSettings.findOne().then(result => {
       if (result) {
         if (result.user_join.active) {
-          request({
-            url: `https://slack.com/api/channels.info?token=${config.bot.token}&channel=${botParams.channelId}`,
-            encoding: null,
-          },
-          (err, res, body) => {
-            const json = JSON.parse(body);
-            if (json.ok) {
-              const countUsers = json.channel.members.length;
-              sayText(`:TADA: ${countUsers}`, true, 10, false,(callback) => {
-                const joinMessage = callback + result.user_join.message
+          request(
+            {
+              url: `https://slack.com/api/channels.info?token=${config.bot
+                .token}&channel=${botParams.channelId}`,
+              encoding: null
+            },
+            (err, res, body) => {
+              const json = JSON.parse(body);
+              if (json.ok) {
+                const countUsers = json.channel.members.length;
+                sayText(`:TADA: ${countUsers}`, true, 10, false, callback => {
+                  const joinMessage =
+                    callback +
+                    result.user_join.message
+                      .replace(/first_name/g, data.user_profile.first_name)
+                      .replace(/real_name/g, data.user_profile.real_name)
+                      .replace(/user_name/g, `<@${data.user_profile.name}>`)
+                      .replace(/channel_name/g, `<#${botParams.channelId}>`);
+                  bot.postMessageToChannel(
+                    botParams.channelName,
+                    joinMessage,
+                    messageParams
+                  );
+                });
+              } else {
+                const joinMessage = result.user_join.message
                   .replace(/first_name/g, data.user_profile.first_name)
                   .replace(/real_name/g, data.user_profile.real_name)
                   .replace(/user_name/g, `<@${data.user_profile.name}>`)
@@ -414,36 +425,25 @@ bot.on('message', (data) => {
                   joinMessage,
                   messageParams
                 );
-              });
-            } else {
-              const joinMessage = result.user_join.message
-                  .replace(/first_name/g, data.user_profile.first_name)
-                  .replace(/real_name/g, data.user_profile.real_name)
-                  .replace(/user_name/g, `<@${data.user_profile.name}>`)
-                  .replace(/channel_name/g, `<#${botParams.channelId}>`);
-              bot.postMessageToChannel(
-                botParams.channelName,
-                joinMessage,
-                messageParams
-              );
+              }
             }
-          });
+          );
         }
       }
     });
     const statistic = new Statistics({
-      event_type: 'channel_join',
+      event_type: "channel_join",
       user_id: data.user,
-      timestamp: data.ts,
+      timestamp: data.ts
     });
 
     statistic.save();
   }
   if (
-    data.type === 'message' &&
+    data.type === "message" &&
     data.channel === botParams.channelId &&
     accessBotPost &&
-    data.subtype !== 'channel_leave'
+    data.subtype !== "channel_leave"
   ) {
     BotMessages.findOne({ user_message: data.text }).then(result => {
       if (result) {
@@ -460,10 +460,10 @@ bot.on('message', (data) => {
   }
 
   if (
-    data.type === 'message' &&
+    data.type === "message" &&
     data.channel === botParams.channelId &&
-    data.subtype !== 'bot_message' &&
-    data.subtype !== 'channel_leave'
+    data.subtype !== "bot_message" &&
+    data.subtype !== "channel_leave"
   ) {
     BotMessages.findOne({ user_message: data.text }).then(result => {
       if (result) {
@@ -476,13 +476,9 @@ bot.on('message', (data) => {
         saveLog(data);
       }
     });
-    getSticker(data.text, (att) => {
+    getSticker(data.text, att => {
       const attr = isThread(data, att);
-      bot.postMessageToChannel(
-          botParams.channelName,
-          '',
-          attr
-        );
+      bot.postMessageToChannel(botParams.channelName, "", attr);
     });
     UserMessages.findOne({ user_id: data.user }).then(result => {
       if (!result) {
@@ -492,7 +488,7 @@ bot.on('message', (data) => {
             user_name: d.name,
             user_full_name: d.real_name,
             count_messages: 1,
-            count_parrots: 0,
+            count_parrots: 0
           });
           newMessage.save(d.id);
         });
@@ -509,14 +505,13 @@ bot.on('message', (data) => {
   }
 });
 
-
-bot.on('close', e => {
-  console.log('websocket closing', e);
-  bot.on('start', () => {
-    console.log('start');
+bot.on("close", e => {
+  console.log("websocket closing", e);
+  bot.on("start", () => {
+    console.log("start");
   });
 });
 
-bot.on('error', e => {
-  console.log('error', e);
+bot.on("error", e => {
+  console.log("error", e);
 });
