@@ -9,7 +9,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "prettier --bracket-spacing=true --single-quote --trailing-comma=all --print-width=80 --write",
+      "prettier --bracket-spacing=true --single-quote=true --trailing-comma=all --print-width=80 --write",
       "git add"
     ]
   },
