@@ -348,11 +348,32 @@ bot.on('message', data => {
                       .replace(/first_name/g, data.user_profile.first_name)
                       .replace(/real_name/g, data.user_profile.real_name)
                       .replace(/name/g, `<@${data.user_profile.name}>`);
-                  bot.postMessageToChannel(
-                    botParams.channelName,
-                    leaveMessage,
-                    messageParams,
-                  );
+                  UserMessages.findOne({ user_id: data.user })
+                    .then(result => {
+                      let userStatistics = '';
+                      if (result) {
+                        const countMessages = result.count_messages;
+                        const countParrots = result.count_parrots;
+                        userStatistics = `\nПользователем было отправлено:\nсообщений - ${countMessages}\nпэрротов - ${countParrots}`;
+                      }
+                      bot.postMessageToChannel(
+                        botParams.channelName,
+                        leaveMessage + userStatistics,
+                        messageParams,
+                      );
+                    })
+                    .then(() => {
+                      UserMessages.remove(
+                        { user_id: data.user },
+                        (err, result) => {
+                          if (!err) {
+                            console.log('Пользователь удален');
+                          } else {
+                            console.log(err);
+                          }
+                        },
+                      );
+                    });
                 });
               } else {
                 const leaveMessage = result.user_leave.message
@@ -369,13 +390,6 @@ bot.on('message', data => {
           );
         }
       }
-      UserMessages.remove({ user_id: data.user }, (err, result) => {
-        if (!err) {
-          console.log('Пользователь удален');
-        } else {
-          console.log(err);
-        }
-      });
     });
     const statistic = new Statistics({
       event_type: 'channel_leave',
@@ -487,7 +501,7 @@ bot.on('message', data => {
             user_id: d.id,
             user_name: d.name,
             user_full_name: d.real_name,
-            count_messages: 1,
+            count_messages: 0,
             count_parrots: 0,
           });
           newMessage.save(d.id);
