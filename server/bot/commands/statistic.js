@@ -317,9 +317,7 @@ function whenFriday(text, callback) {
     const hours = (days - ~~days) * 24;
     const minutes = (hours - ~~hours) * 60;
     const seconds = (minutes - ~~minutes) * 60;
-    return `${zero(~~days)}:${zero(~~hours)}:${zero(~~minutes)}:${zero(
-      ~~seconds,
-    )}`;
+    return `${~~days} д. ${~~hours} ч. ${~~minutes} м. ${~~seconds} с.`;
   };
 
   const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
