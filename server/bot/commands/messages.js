@@ -164,6 +164,27 @@ const messages = [
     callback: require('./pikabu').pikabuNew,
   },
   {
+    messages: ['DEVLIFE '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./devlife').devlifeSearch,
+  },
+  {
+    messages: ['DEVLIFE', 'DEVLIFE RANDOM'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./devlife').devlifeRandom,
+  },
+  {
+    messages: ['DEVLIFE HOT'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./devlife').devlifeHot,
+  },
+  {
     messages: [
       'КОГДА ПЯТНИЦА',
       'КОГДА ПЯТНИЦА?',
