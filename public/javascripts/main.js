@@ -1,4 +1,4 @@
-const parrotRus = (num) => {
+const parrotRus = num => {
   num = Math.abs(num);
   num %= 100;
   if (num >= 5 && num <= 20) {
@@ -14,37 +14,37 @@ const parrotRus = (num) => {
   return 'попугаев';
 };
 
-
 const socket = io.connect();
 socket.on('parrot count', function(data) {
   $('.parrots__count').numerator({
     toValue: data,
-  })
+  });
   $('.parrots__word').text(parrotRus(data));
 });
 
-
-
-
 $(document).ready(function() {
-
   $('#login').submit(function(e) {
     e.preventDefault();
     const username = $('#username').val().toLowerCase();
     const password = $('#password').val().toLowerCase();
     if (username === '' || password === '') {
-      $('input[type="text"],input[type="password"]').css('border', '1px solid #ea8282');
-      $('input[type="text"],input[type="password"]').css('box-shadow', '0 0 3px #ea8282');
+      $('input[type="text"],input[type="password"]').css(
+        'border',
+        '1px solid #ea8282',
+      );
+      $('input[type="text"],input[type="password"]').css(
+        'box-shadow',
+        '0 0 3px #ea8282',
+      );
     } else {
-      $.post('/login', { name: username, password: password },
-        function(data) {
-          if (data.status === 400) {
-            $('.login__status').text(data.message);
-          }
-          if (data.status === 200) {
-            document.location.href = '/home';
-          }
-        });
+      $.post('/login', { name: username, password: password }, function(data) {
+        if (data.status === 400) {
+          $('.login__status').text(data.message);
+        }
+        if (data.status === 200) {
+          document.location.href = '/home';
+        }
+      });
     }
   });
 
@@ -273,7 +273,8 @@ $(document).ready(function() {
     input.addEventListener('change', function(e) {
       let fileName = '';
       if (this.files && this.files.length > 1) {
-        fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
+        fileName = (this.getAttribute('data-multiple-caption') || '')
+          .replace('{count}', this.files.length);
       } else {
         fileName = e.target.value.split('\\').pop();
       }
@@ -285,7 +286,6 @@ $(document).ready(function() {
       }
     });
   });
-
 
   function addNewSticker(data) {
     const template = `
@@ -299,34 +299,34 @@ $(document).ready(function() {
           <div class="stickers__emoji">${data.emoji}</div>
         </div>`;
     $('.stickers__list').append(template);
-  };
-
+  }
 
   const form = document.forms.namedItem('addSticker');
   if (form) {
-    form.addEventListener('submit', function(ev) {
+    form.addEventListener(
+      'submit',
+      function(ev) {
+        const oData = new FormData(form);
 
-      const oData = new FormData(form);
+        const oReq = new XMLHttpRequest();
+        oReq.open('POST', '/api/addSticker', true);
+        oReq.onload = function(oEvent) {
+          if (oReq.status == 200) {
+            document.getElementById('save_emoji').reset();
+            $('.filename').text('');
+            const json = JSON.parse(oReq.response);
+            addNewSticker(json);
+          } else {
+            console.log(oReq.status);
+          }
+        };
 
-      const oReq = new XMLHttpRequest();
-      oReq.open('POST', '/api/addSticker', true);
-      oReq.onload = function(oEvent) {
-        if (oReq.status == 200) {
-          document.getElementById('save_emoji').reset();
-          $('.filename').text('');
-          const json = JSON.parse(oReq.response);
-          addNewSticker(json);
-        } else {
-          console.log(oReq.status);
-        }
-      };
-
-      oReq.send(oData);
-      ev.preventDefault();
-    }, false);
+        oReq.send(oData);
+        ev.preventDefault();
+      },
+      false,
+    );
   }
-
-
 
   $('.stickers__list').on('click', 'a.stickers__delete', function(e) {
     e.preventDefault();
@@ -356,8 +356,6 @@ $(document).ready(function() {
     }
   });
 
-
-
   const getChartData = (date, cb) => {
     $.ajax({
       type: 'GET',
@@ -368,30 +366,60 @@ $(document).ready(function() {
         let chartData = {
           type: 'bar',
           data: {
-            labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"],
-            datasets: [{
-              label: 'сообщений: ' + data.data.total_messages,
-              data: data.data.messages,
-              backgroundColor: 'rgba(255, 99, 132, 0.2)',
-              borderColor: 'rgba(255,99,132,1)',
-              borderWidth: 1
-            }, {
-              label: 'пэрротов: ' + data.data.total_parrots,
-              data: data.data.parrots,
-              backgroundColor: 'rgba(25, 99, 132, 0.2)',
-              borderColor: 'rgba(25,99,132,1)',
-              borderWidth: 1
-            }]
+            labels: [
+              '0',
+              '1',
+              '2',
+              '3',
+              '4',
+              '5',
+              '6',
+              '7',
+              '8',
+              '9',
+              '10',
+              '11',
+              '12',
+              '13',
+              '14',
+              '15',
+              '16',
+              '17',
+              '18',
+              '19',
+              '20',
+              '21',
+              '22',
+              '23',
+            ],
+            datasets: [
+              {
+                label: 'сообщений: ' + data.data.total_messages,
+                data: data.data.messages,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255,99,132,1)',
+                borderWidth: 1,
+              },
+              {
+                label: 'пэрротов: ' + data.data.total_parrots,
+                data: data.data.parrots,
+                backgroundColor: 'rgba(25, 99, 132, 0.2)',
+                borderColor: 'rgba(25,99,132,1)',
+                borderWidth: 1,
+              },
+            ],
           },
           options: {
             scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: true
-                }
-              }]
-            }
-          }
+              yAxes: [
+                {
+                  ticks: {
+                    beginAtZero: true,
+                  },
+                },
+              ],
+            },
+          },
         };
         cb(chartData);
       },
@@ -401,7 +429,7 @@ $(document).ready(function() {
     });
   };
 
-  const ctx = document.getElementById("myChart");
+  const ctx = document.getElementById('myChart');
   let myChart;
   if (ctx) {
     ctx.getContext('2d');
@@ -410,18 +438,19 @@ $(document).ready(function() {
     });
   }
 
-  const addData = (data) => {
+  const addData = data => {
     myChart.data.datasets = data.data.datasets;
     myChart.update();
   };
 
-
   $('#datepicker').datepicker({
     firstDay: 1,
-    onSelect: (date) => {
+    onSelect: date => {
       getChartData(date, data => {
         addData(data);
       });
-    }
+    },
   });
+
+  autosize($('.messages__textarea'));
 });

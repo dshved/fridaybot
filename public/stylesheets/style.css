@@ -62,7 +62,7 @@ body {
 }
 
 .textarea {
-  height: 250px;
+  max-height: 250px;
   background: #FFFFFF;
   border: 1px solid #C9CCCF;
   border-radius: 5px;
