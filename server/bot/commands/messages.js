@@ -1,191 +1,212 @@
-"use strict";
+'use strict';
 
 const messages = [
   {
-    messages: ["СКАЖИ ", "SAY "],
+    messages: ['СКАЖИ ', 'SAY '],
     startFrom: true,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./say").inRow
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./say').inRow,
   },
   {
-    messages: ["ГОВОРИ ", "SPEAK "],
+    messages: ['ГОВОРИ ', 'SPEAK '],
     startFrom: true,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./say").inColumn
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./say').inColumn,
   },
   {
-    messages: ["ТЕКСТ "],
+    messages: ['ТЕКСТ '],
     startFrom: true,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./say").emojiText
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./say').emojiText,
   },
   {
-    messages: ["РАМКА "],
+    messages: ['РАМКА '],
     startFrom: true,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./say").borderText
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./say').borderText,
   },
   {
-    messages: ["СКОЛЬКО ПОПУГАЕВ?", "СКОЛЬКО ПОПУГАЕВ", "СКОЛЬКО?", "СКОЛЬКО"],
+    messages: ['СКОЛЬКО ПОПУГАЕВ?', 'СКОЛЬКО ПОПУГАЕВ', 'СКОЛЬКО?', 'СКОЛЬКО'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./statistic").parrotCount
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').parrotCount,
   },
   {
-    messages: ["СПАМЕРЫ", "КТО СПАМЕРЫ", "КТО СПАМЕРЫ?", "ТОП СПАМЕРОВ", "ТОП"],
+    messages: ['СПАМЕРЫ', 'КТО СПАМЕРЫ', 'КТО СПАМЕРЫ?', 'ТОП СПАМЕРОВ', 'ТОП'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./statistic").userCount
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').userCount,
   },
   {
-    messages: ["LOG"],
+    messages: ['LOG'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./statistic").log
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').log,
   },
   {
-    messages: ["PPM"],
+    messages: ['PPM'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./statistic").ppm
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').ppm,
   },
   {
-    messages: ["COMMANDS", "HELP"],
+    messages: ['COMMANDS', 'HELP'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./statistic").commands
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').commands,
   },
   {
-    messages: ["CHANGELOG"],
+    messages: ['CHANGELOG'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./statistic").changelog
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').changelog,
   },
   // { msg: 'БАШ',  startFrom: false, callback: require('./bash').bash },
   {
-    messages: ["ИЛИТА", "КТО ИЛИТА", "КТО ИЛИТА?"],
+    messages: ['ИЛИТА', 'КТО ИЛИТА', 'КТО ИЛИТА?'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./statistic").elite
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').elite,
   },
   {
-    messages: ["HOT"],
+    messages: ['HOT'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "friday", "direct", "general"],
-    callback: require("./reddit").redditHot
+    channels: ['test', 'friday', 'direct', 'general'],
+    callback: require('./reddit').redditHot,
   },
   {
-    messages: ["RDT"],
+    messages: ['RDT'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "direct", "friday"],
-    callback: require("./reddit").redditJs
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./reddit').redditJs,
   },
   {
-    messages: ["REDDIT "],
+    messages: ['REDDIT '],
     startFrom: true,
     entrance: false,
-    channels: ["test", "friday", "direct", "general"],
-    callback: require("./reddit").redditSub
+    channels: ['test', 'friday', 'direct', 'general'],
+    callback: require('./reddit').redditSub,
   },
   {
-    messages: ["REDDIT"],
+    messages: ['REDDIT'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "friday", "direct", "general"],
-    callback: require("./reddit").redditSub
+    channels: ['test', 'friday', 'direct', 'general'],
+    callback: require('./reddit').redditSub,
   },
   {
     messages: [
-      "МИЛИЦИЯ",
-      "МИЛИЦИЮ ВЫЗОВУ",
-      "ПОЛИЦИЯ",
-      "ГОСПОДИН ПОЛИЦЕЙСКИЙ",
-      "ОМОН",
-      "OMON"
+      'МИЛИЦИЯ',
+      'МИЛИЦИЮ ВЫЗОВУ',
+      'ПОЛИЦИЯ',
+      'ГОСПОДИН ПОЛИЦЕЙСКИЙ',
+      'ОМОН',
+      'OMON',
     ],
     startFrom: false,
     entrance: true,
-    channels: ["test", "friday", "direct"],
-    callback: require("./police").police
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./police').police,
   },
   {
-    messages: ["СТАТИСТИКА ЗА "],
+    messages: ['СТАТИСТИКА ЗА '],
     startFrom: true,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./statistic").statistic
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').statistic,
   },
   {
     messages: [
-      "ЕСТЬ КТО ЖИВОЙ?",
-      "ЕСТЬ КТО ЖИВОЙ",
-      "ЕСТЬ КТО",
-      "ЕСТЬ КТО?",
-      "КТО ЖИВОЙ?",
-      "КТО ЖИВОЙ"
+      'ЕСТЬ КТО ЖИВОЙ?',
+      'ЕСТЬ КТО ЖИВОЙ',
+      'ЕСТЬ КТО',
+      'ЕСТЬ КТО?',
+      'КТО ЖИВОЙ?',
+      'КТО ЖИВОЙ',
     ],
     startFrom: false,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./statistic").activeUsers
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').activeUsers,
   },
   {
-    messages: ["ПИКАБУ", "PIKABU", "PIKABU HOT", "ПИКАБУ ГОРЯЧЕЕ"],
+    messages: ['ПИКАБУ', 'PIKABU', 'PIKABU HOT', 'ПИКАБУ ГОРЯЧЕЕ'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "direct", "friday"],
-    callback: require("./pikabu").pikabuHot
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./pikabu').pikabuHot,
   },
   {
-    messages: ["PIKABU BEST", "ПИКАБУ ЛУЧШЕЕ"],
+    messages: ['PIKABU BEST', 'ПИКАБУ ЛУЧШЕЕ'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "direct", "friday"],
-    callback: require("./pikabu").pikabuBest
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./pikabu').pikabuBest,
   },
   {
-    messages: ["PIKABU NEW", "ПИКАБУ СВЕЖЕЕ"],
+    messages: ['PIKABU NEW', 'ПИКАБУ СВЕЖЕЕ'],
     startFrom: false,
     entrance: false,
-    channels: ["test", "direct", "friday"],
-    callback: require("./pikabu").pikabuNew
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./pikabu').pikabuNew,
+  },
+  {
+    messages: ['DEVLIFE '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./devlife').devlifeSearch,
+  },
+  {
+    messages: ['DEVLIFE', 'DEVLIFE RANDOM'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./devlife').devlifeRandom,
+  },
+  {
+    messages: ['DEVLIFE HOT'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./devlife').devlifeHot,
   },
   {
     messages: [
-      "КОГДА ПЯТНИЦА",
-      "КОГДА ПЯТНИЦА?",
-      "КОГДА УЖЕ ПЯТНИЦА",
-      "КОГДА УЖЕ ПЯТНИЦА?",
-      "СКОРО ПЯТНИЦА",
-      "СКОРО ПЯТНИЦА?",
-      "СКОРО УЖЕ ПЯТНИЦА",
-      "СКОРО УЖЕ ПЯТНИЦА?"
+      'КОГДА ПЯТНИЦА',
+      'КОГДА ПЯТНИЦА?',
+      'КОГДА УЖЕ ПЯТНИЦА',
+      'КОГДА УЖЕ ПЯТНИЦА?',
+      'СКОРО ПЯТНИЦА',
+      'СКОРО ПЯТНИЦА?',
+      'СКОРО УЖЕ ПЯТНИЦА',
+      'СКОРО УЖЕ ПЯТНИЦА?',
     ],
     startFrom: false,
     entrance: false,
-    channels: ["test", "direct", "friday"],
-    callback: require("./statistic").friday
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./statistic').friday,
   },
   {
-    messages: ["УЕЗЖАЙ "],
+    messages: ['УЕЗЖАЙ '],
     startFrom: true,
     entrance: false,
-    channels: ["test", "friday", "direct"],
-    callback: require("./say").goAway
-  }
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./say').goAway,
+  },
 ];
 
 module.exports = { messages };

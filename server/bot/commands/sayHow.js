@@ -1,34 +1,34 @@
 const getBotEmoji = array => {
   const commandIndex = array.findIndex(command => {
-    return command === "-e";
+    return command === '-e';
   });
   if (commandIndex !== -1) {
     return array[commandIndex + 1];
   }
-  return ":fbf:";
+  return ':fbf:';
 };
 
 const getBotName = array => {
   const commandIndex = array.findIndex(command => {
-    return command === "-n";
+    return command === '-n';
   });
   if (commandIndex !== -1) {
     return array[commandIndex + 1];
   }
-  return "fridaybot";
+  return 'fridaybot';
 };
 
 const getBotText = array => {
   const emojiIndex = array.findIndex(command => {
-    return command === "-e";
+    return command === '-e';
   });
 
   const nameIndex = array.findIndex(command => {
-    return command === "-n";
+    return command === '-n';
   });
 
   const textIndex = array.findIndex(command => {
-    return command === "-t";
+    return command === '-t';
   });
 
   if (textIndex !== -1 && nameIndex !== -1 && emojiIndex !== -1) {
@@ -37,7 +37,7 @@ const getBotText = array => {
       for (let i = textIndex + 1; i < array.length; i++) {
         text.push(array[i]);
       }
-      return text.join(" ");
+      return text.join(' ');
     }
 
     if (textIndex < emojiIndex && textIndex < nameIndex) {
@@ -45,29 +45,29 @@ const getBotText = array => {
       for (let i = textIndex + 1; i < n; i++) {
         text.push(array[i]);
       }
-      return text.join(" ");
+      return text.join(' ');
     }
 
     if (textIndex > emojiIndex && textIndex < nameIndex) {
       for (let i = textIndex + 1; i < nameIndex; i++) {
         text.push(array[i]);
       }
-      return text.join(" ");
+      return text.join(' ');
     }
 
     if (textIndex < emojiIndex && textIndex > nameIndex) {
       for (let i = textIndex + 1; i < emojiIndex; i++) {
         text.push(array[i]);
       }
-      return text.join(" ");
+      return text.join(' ');
     }
   }
 
-  return "";
+  return '';
 };
 
 const parseMessage = text => {
-  const commandsArray = text.split(" ");
+  const commandsArray = text.split(' ');
   const message = getBotText(commandsArray);
   const attachment = {};
   attachment.username = getBotName(commandsArray);

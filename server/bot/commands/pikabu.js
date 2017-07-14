@@ -1,39 +1,39 @@
-"use strict";
+'use strict';
 
-const cheerio = require("cheerio");
-const request = require("request");
-const iconv = require("iconv-lite");
+const cheerio = require('cheerio');
+const request = require('request');
+const iconv = require('iconv-lite');
 
 let pikabuHotStory = [];
 let pikabuBestStory = [];
 let pikabuNewStory = [];
 
 function getStory(body, array) {
-  const $ = cheerio.load(iconv.decode(body, "cp1251"), {
-    decodeEntities: false
+  const $ = cheerio.load(iconv.decode(body, 'cp1251'), {
+    decodeEntities: false,
   });
-  const stories = $(".story");
+  const stories = $('.story');
   stories.each((i, story) => {
     array.push({
-      rating: $(".story__rating-count", story).text().trim(),
-      title: $(".story__title-link", story).text(),
-      link: $(".story__title-link", story).attr("href"),
-      text: $(".b-story-block__content", story)
+      rating: $('.story__rating-count', story).text().trim(),
+      title: $('.story__title-link', story).text(),
+      link: $('.story__title-link', story).attr('href'),
+      text: $('.b-story-block__content', story)
         .text()
-        .replace(/\t/g, "")
-        .replace(/\n\n/g, ""),
+        .replace(/\t/g, '')
+        .replace(/\n\n/g, ''),
       img_1: $(
-        ".b-story-block.b-story-block_type_image > .b-story-block__content > a > img",
-        story
-      ).attr("src"),
+        '.b-story-block.b-story-block_type_image > .b-story-block__content > a > img',
+        story,
+      ).attr('src'),
       img_2: $(
-        ".b-story__content.b-story__content_type_media > a > img",
-        story
-      ).attr("src"),
+        '.b-story__content.b-story__content_type_media > a > img',
+        story,
+      ).attr('src'),
       gif: $(
-        ".b-gifx__state.b-gifx__state_playing_yes.b-gifx__save",
-        story
-      ).attr("href")
+        '.b-gifx__state.b-gifx__state_playing_yes.b-gifx__save',
+        story,
+      ).attr('href'),
     });
   });
 }
@@ -84,11 +84,11 @@ function getPost(section, array, callback) {
   const currentPost = array[randomPost];
   const attachment = {};
   attachment.username = `Pikabu/${section}`;
-  attachment.icon_emoji = ":pikabu:";
+  attachment.icon_emoji = ':pikabu:';
   attachment.attachments = [
     {
       fallback: currentPost.title,
-      color: "#36a64f",
+      color: '#36a64f',
       author_name: currentPost.author,
       title: currentPost.title,
       text: currentPost.text,
@@ -96,17 +96,17 @@ function getPost(section, array, callback) {
       image_url: currentAttachment(currentPost),
       fields: [
         {
-          title: "rating",
+          title: 'rating',
           value: currentPost.rating,
-          short: false
-        }
+          short: false,
+        },
       ],
-      footer: "Made in Friday",
-      footer_icon: "http://cultofthepartyparrot.com/parrots/hd/parrot.gif",
-      ts: currentPost.created
-    }
+      footer: 'Made in Friday',
+      footer_icon: 'http://cultofthepartyparrot.com/parrots/hd/parrot.gif',
+      ts: currentPost.created,
+    },
   ];
-  callback("", {}, attachment);
+  callback('', {}, attachment);
 }
 
 module.exports = {
@@ -118,5 +118,5 @@ module.exports = {
   },
   pikabuNew: (text, callback, msg) => {
     // getPost('new', pikabuBestStory, callback);
-  }
+  },
 };

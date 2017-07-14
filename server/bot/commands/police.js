@@ -1,10 +1,10 @@
-"use strict";
-const sayBorderText = require("./say").sayBorderText;
+'use strict';
+const sayBorderText = require('./say').sayBorderText;
 
 function getPolice(text, callback, msg) {
   const attachment = {};
-  attachment.username = "милиция";
-  attachment.icon_emoji = ":warneng:";
+  attachment.username = 'милиция';
+  attachment.icon_emoji = ':warneng:';
   const myRegexpUser = /@\w+/g;
   const matchUser = text.match(myRegexpUser);
 
@@ -30,9 +30,9 @@ function getPolice(text, callback, msg) {
 
       if (users.length > 5) {
         callback(
-          "Автозак не резиновый!\nНе больше 5-ти человек :warneng:",
+          'Автозак не резиновый!\nНе больше 5-ти человек :warneng:',
           {},
-          attachment
+          attachment,
         );
       } else {
         const fn = function asyncMultiply(user) {
@@ -53,9 +53,9 @@ function getPolice(text, callback, msg) {
       }
     } else {
       callback(
-        ":drudgesiren:Господин полицейский всегда на страже закона.:drudgesiren:\nЕсли у вас жалоба на конкретного человека, то повторите команду и укажите его @username",
+        ':drudgesiren:Господин полицейский всегда на страже закона.:drudgesiren:\nЕсли у вас жалоба на конкретного человека, то повторите команду и укажите его @username',
         {},
-        attachment
+        attachment,
       );
     }
   }
@@ -64,5 +64,5 @@ function getPolice(text, callback, msg) {
 module.exports = {
   police: (text, callback, msg) => {
     getPolice(text, callback, msg);
-  }
+  },
 };

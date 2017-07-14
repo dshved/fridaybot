@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
-const msgs = require("./messages").messages;
-const Log = require("./../../models/log").Log;
+const msgs = require('./messages').messages;
+const Log = require('./../../models/log').Log;
 
 const saveLog = d => {
   const newCommand = new Log({
     user: d.user,
     command: d.text,
-    date: d.ts
+    date: d.ts,
   });
   newCommand.save();
 };
@@ -21,7 +21,7 @@ const execResponse = (
   entrance,
   channels,
   func,
-  callback
+  callback,
 ) => {
   const access = channels.find(cl => cl === channel);
 
@@ -61,11 +61,11 @@ const userMessageRes = (data, channel, callback) => {
       msg.callback,
       (d, error, attachment) => {
         callback(d, error, attachment);
-      }
+      },
     );
   });
 };
 
 module.exports = {
-  userMessageRes
+  userMessageRes,
 };
