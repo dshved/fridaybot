@@ -501,7 +501,7 @@ bot.on('message', data => {
             user_id: d.id,
             user_name: d.name,
             user_full_name: d.real_name,
-            count_messages: 0,
+            count_messages: 1,
             count_parrots: 0,
           });
           newMessage.save(d.id);

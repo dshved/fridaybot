@@ -195,20 +195,22 @@ function getPPM(text, callback) {
     ],
     (err, res) => {
       let mes = ':fp: Рейтинг PPM: :fp:\n';
-      if (res.length > 10) {
-        for (let i = 0; i < 10; i++) {
-          const ppm = Math.round(res[i].ppm * 100) / 100;
-          mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
+      if (res) {
+        if (res.length > 10) {
+          for (let i = 0; i < 10; i++) {
+            const ppm = Math.round(res[i].ppm * 100) / 100;
+            mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
+          }
+          callback(mes, {});
+          mes = '';
+        } else {
+          for (let i = 0; i < res.length; i++) {
+            const ppm = Math.round(res[i].ppm * 100) / 100;
+            mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
+          }
+          callback(mes, {});
+          mes = '';
         }
-        callback(mes, {});
-        mes = '';
-      } else {
-        for (let i = 0; i < res.length; i++) {
-          const ppm = Math.round(res[i].ppm * 100) / 100;
-          mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
-        }
-        callback(mes, {});
-        mes = '';
       }
     },
   );
