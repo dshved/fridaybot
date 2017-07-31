@@ -15,7 +15,7 @@ function getRandomComic(text, callback) {
       const image = $('#rcg_image');
       const imageSrc = image.attr('value');
       const attachment = {};
-      attachment.username = `Random Comic`;
+      attachment.username = `Fridaybot`;
       attachment.icon_emoji = ':fbf:';
       if (imageSrc) {
         attachment.attachments = [
