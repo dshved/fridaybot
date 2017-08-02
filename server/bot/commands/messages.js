@@ -185,6 +185,13 @@ const messages = [
     callback: require('./devlife').devlifeHot,
   },
   {
+    messages: ['RANDOM COMIC'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./randomcomic').randomComic,
+  },
+  {
     messages: [
       'КОГДА ПЯТНИЦА',
       'КОГДА ПЯТНИЦА?',
