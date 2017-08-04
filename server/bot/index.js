@@ -241,6 +241,41 @@ bot.on('message', data => {
   }
 
   if (data.text) {
+    if (~data.text.indexOf('mask ') == -1) {
+      const userText = data.text.substr(5);
+      const userTextArray = userText.split(' ');
+      const userID = userTextArray[0].slice(2, -1);
+      if (userID) {
+        request(
+          {
+            url: `https://slack.com/api/users.info?token=${config.bot
+              .token}&user=${userID}&pretty=1`,
+            encoding: null,
+          },
+          (err, res, body) => {
+            const json = JSON.parse(body);
+            if (json.ok) {
+              const attachment = {};
+              attachment.username = json.user.name;
+              attachment.icon_url = json.user.profile.image_72;
+
+              let message = '';
+              for (var i = 1; i < userTextArray.length; i++) {
+                message += userTextArray[i] + ' ';
+              }
+              bot.postMessageToChannel(
+                botParams.channelName,
+                message,
+                attachment,
+              );
+            }
+          },
+        );
+      }
+    }
+  }
+
+  if (data.text) {
     if (~data.text.indexOf('маска ') == -1) {
       const userText = data.text.substr(6);
       const say = require('./commands/sayHow').parseMessage;
