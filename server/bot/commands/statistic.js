@@ -296,6 +296,30 @@ function getStatistic(text, callback) {
   }
 }
 
+function getStatisticAll(text, callback) {
+  UserMessages.aggregate(
+    [
+      {
+        $group: { _id: null, count_messages: { $sum: '$count_messages' } },
+      },
+    ],
+    (err, res) => {
+      BotSettings.findOne().then(data => {
+        if (data) {
+          const messageCounts = res[0].count_messages
+            .toString()
+            .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+          const parrotCounts = data.parrot_counts
+            .toString()
+            .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+          const message = `Всего отправлено:\nсообщений: ${messageCounts} шт.\nпэрротов: ${parrotCounts} шт.`;
+          callback(message, {});
+        }
+      });
+    },
+  );
+}
+
 function whenFriday(text, callback) {
   const now = new Date();
   const year = now.getFullYear();
@@ -354,6 +378,9 @@ module.exports = {
   },
   statistic: (text, callback) => {
     getStatistic(text, callback);
+  },
+  statisticAll: (text, callback) => {
+    getStatisticAll(text, callback);
   },
   activeUsers: (text, callback) => {
     getActiveUsers(text, callback);

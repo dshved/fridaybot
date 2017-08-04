@@ -129,6 +129,13 @@ const messages = [
     callback: require('./statistic').statistic,
   },
   {
+    messages: ['СТАТИСТИКА'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').statisticAll,
+  },
+  {
     messages: [
       'ЕСТЬ КТО ЖИВОЙ?',
       'ЕСТЬ КТО ЖИВОЙ',
