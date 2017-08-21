@@ -232,7 +232,7 @@ bot.on('message', data => {
   }
 
   if (data.text && data.subtype !== 'bot_message') {
-    if (~data.text.indexOf('повтори ') == -1) {
+    if (~data.text.toUpperCase().indexOf('ПОВТОРИ ') == -1) {
       const userText = data.text.substr(8);
       const att = isThread(data, messageParams);
       bot.postMessageToChannel(botParams.channelName, userText, att);
@@ -241,7 +241,7 @@ bot.on('message', data => {
   }
 
   if (data.text) {
-    if (~data.text.indexOf('mask ') == -1) {
+    if (~data.text.toUpperCase().indexOf('MASK ') == -1) {
       const userText = data.text.substr(5);
       const userTextArray = userText.split(' ');
       const userID = userTextArray[0].slice(2, -1);
@@ -276,7 +276,7 @@ bot.on('message', data => {
   }
 
   if (data.text) {
-    if (~data.text.indexOf('маска ') == -1) {
+    if (~data.text.toUpperCase().indexOf('МАСКА ') == -1) {
       const userText = data.text.substr(6);
       const say = require('./commands/sayHow').parseMessage;
       let { message, attachment } = say(userText);
@@ -285,7 +285,7 @@ bot.on('message', data => {
   }
 
   if (data.text) {
-    if (~data.text.indexOf('файл ') == -1) {
+    if (~data.text.toUpperCase().indexOf('ФАЙЛ ') == -1) {
       let url = data.text.substr(6).replace(/</g, '').replace(/>/g, '');
       const message = '';
       const attachment = {};
