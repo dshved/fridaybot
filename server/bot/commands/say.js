@@ -182,7 +182,13 @@ const sayText = (text, split, maxW, away, callback) => {
         for (let j = 0; j < newArray.length; j++) {
           line += newArray[j][i];
         }
-        line += '\n';
+        if (i == 0) {
+          let topLine = line.replace(/:\w\w:/g, ':sp:');
+          line = topLine + '\n' + line + '\n';
+        } else {
+          line += '\n';
+        }
+
         sendMessage += line;
       }
     });
