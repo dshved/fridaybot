@@ -176,6 +176,9 @@ const sayText = (text, split, maxW, away, callback) => {
         if (replacedBg) {
           line += replacedBg;
         }
+        if (randomEmoji) {
+          line += ':sp:';
+        }
         for (let j = 0; j < newArray.length; j++) {
           line += newArray[j][i];
         }
