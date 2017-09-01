@@ -161,6 +161,41 @@ const sendToWhom = (data, message, attachment) => {
   }
 };
 
+const deleteParrots = () => {
+  request(
+    {
+      url: `https://slack.com/api/channels.history?token=${config.bot
+        .token}&channel=${botParams.channelId}&count=100&pretty=1`,
+      encoding: null,
+    },
+    (err, res, body) => {
+      const json = JSON.parse(body);
+      if (json.ok) {
+        const messages = json.messages;
+        const emojiParrot = ':fp:';
+        const re = new RegExp(emojiParrot, 'g');
+
+        const botMessagesFiltred = messages.filter(item => {
+          return item.subtype === 'bot_message' && item.text.match(re);
+        });
+
+        botMessagesFiltred.map(elem => {
+          setTimeout(() => {
+            request(
+              {
+                url: `https://slack.com/api/chat.delete?token=${config.bot
+                  .token}&channel=${botParams.channelId}&ts=${elem.ts}&pretty=1`,
+                encoding: null,
+              },
+              (err, res, body) => {},
+            );
+          }, 1000);
+        });
+      }
+    },
+  );
+};
+
 global.io.on('connection', socket => {
   socket.on('post', data => {
     if (data) {
@@ -281,6 +316,12 @@ bot.on('message', data => {
       const say = require('./commands/sayHow').parseMessage;
       let { message, attachment } = say(userText);
       bot.postMessageToChannel(botParams.channelName, message, attachment);
+    }
+  }
+
+  if (data.text) {
+    if (~data.text.toUpperCase().indexOf('СОВЕРШИТЬ БОЛЬШУЮ ГЛУПОСТЬ') == -1) {
+      deleteParrots();
     }
   }
 

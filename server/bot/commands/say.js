@@ -1,7 +1,8 @@
 'use strict';
-
+const request = require('request');
 const aParrots = require('./../../../alphabet_parrots.js');
 const aEpilepsy = require('./../../../alphabet_epilepsy.js');
+const config = require('./../../../config.js');
 const UserMessages = require('./../../models/usermessage').UserMessages;
 
 const replaseEmoji = (value, message) => {
@@ -84,10 +85,41 @@ const replaceTextEmoji = str => {
   }
 };
 
+function randomInteger(min, max) {
+  var rand = min + Math.random() * (max + 1 - min);
+  rand = Math.floor(rand);
+  return rand;
+}
+const getRandomEmoji = cb => {
+  request(
+    {
+      url: `https://slack.com/api/emoji.list?token=${config.bot
+        .token}&pretty=1`,
+      encoding: null,
+    },
+    (err, res, body) => {
+      const json = JSON.parse(body);
+      if (json.ok) {
+        const randomEmoji = [];
+        const emojiList = Object.keys(json.emoji);
+
+        randomEmoji.push(emojiList[randomInteger(1, emojiList.length)]);
+        randomEmoji.push(emojiList[randomInteger(1, emojiList.length)]);
+        cb(randomEmoji);
+      }
+    },
+  );
+};
+
 const sayText = (text, split, maxW, away, callback) => {
   let newLetterArray = [];
   let newArray = [];
   let sendMessage = '';
+  let randomEmoji = false;
+  if (~text.indexOf('КАК-НИБУДЬ ') == -1) {
+    randomEmoji = true;
+    text = text.substr(11);
+  }
   text = text.substr(0, text.length);
   replaceMention(text, function(message) {
     text = message;
@@ -144,10 +176,19 @@ const sayText = (text, split, maxW, away, callback) => {
         if (replacedBg) {
           line += replacedBg;
         }
+        if (randomEmoji) {
+          line += ':sp:';
+        }
         for (let j = 0; j < newArray.length; j++) {
           line += newArray[j][i];
         }
-        line += '\n';
+        if (i == 0) {
+          let topLine = line.replace(/:\w\w:/g, ':sp:');
+          line = topLine + '\n' + line + '\n';
+        } else {
+          line += '\n';
+        }
+
         sendMessage += line;
       }
     });
@@ -162,7 +203,15 @@ const sayText = (text, split, maxW, away, callback) => {
       newMessage = newMessage.replace(/:fp:/g, ':bk:');
       newMessage = newMessage.replace(/:sp:/g, ':p_petr_rides:');
     }
-    callback(newMessage, {});
+    if (randomEmoji) {
+      getRandomEmoji(emoji => {
+        newMessage = newMessage.replace(/:fp:/g, `:${emoji[0]}:`);
+        newMessage = newMessage.replace(/:sp:/g, `:${emoji[1]}:`);
+        callback(newMessage, {});
+      });
+    } else {
+      callback(newMessage, {});
+    }
   }, 500);
 };
 
