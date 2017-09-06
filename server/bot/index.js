@@ -13,6 +13,8 @@ const getSticker = require('./commands/sticker').getSticker;
 const sayText = require('./commands/say').sayText;
 const Log = require('./../models/log').Log;
 
+const activeBot = require('./commands/active.js').activeBot;
+
 const cheerio = require('cheerio');
 const request = require('request');
 const iconv = require('iconv-lite');
@@ -39,8 +41,7 @@ let bashArray = [];
 
 setInterval(() => {
   bashArray = [];
-  request(
-    {
+  request({
       url: 'http://bash.im/random',
       encoding: null,
     },
@@ -89,10 +90,7 @@ bot.on('start', () => {
       if (!result.channel_id) {
         bot.getChannel(result.channel_name).then(data => {
           if (data) {
-            BotSettings.update(
-              { channel_name: result.channel_name },
-              { channel_id: data.id },
-            ).then();
+            BotSettings.update({ channel_name: result.channel_name }, { channel_id: data.id }, ).then();
             botParams.channelId = result.channel_id;
           }
         });
@@ -105,10 +103,7 @@ bot.on('start', () => {
         BotSettings.findOne().then(r => {
           bot.getChannel(r.channel_name).then(data => {
             if (data) {
-              BotSettings.update(
-                { channel_name: r.channel_name },
-                { channel_id: data.id },
-              ).then();
+              BotSettings.update({ channel_name: r.channel_name }, { channel_id: data.id }, ).then();
               botParams.channelId = r.channel_id;
               botParams.parrotCount = r.parrot_counts;
               botParams.parrotArray = r.parrot_array;
@@ -162,8 +157,7 @@ const sendToWhom = (data, message, attachment) => {
 };
 
 const deleteParrots = () => {
-  request(
-    {
+  request({
       url: `https://slack.com/api/channels.history?token=${config.bot
         .token}&channel=${botParams.channelId}&count=100&pretty=1`,
       encoding: null,
@@ -181,8 +175,7 @@ const deleteParrots = () => {
 
         botMessagesFiltred.map(elem => {
           setTimeout(() => {
-            request(
-              {
+            request({
                 url: `https://slack.com/api/chat.delete?token=${config.bot
                   .token}&channel=${botParams.channelId}&ts=${elem.ts}&pretty=1`,
                 encoding: null,
@@ -218,7 +211,7 @@ bot2.on('message', data => {
     }
   }
 });
-
+let start = true;
 bot.on('message', data => {
   // if (data.subtype === 'message_changed') {
   //   data.text = data.message.text;
@@ -240,358 +233,369 @@ bot.on('message', data => {
   // console.log(data);
   let countParrots = 0;
   if (data.text) {
-    if (data.channel === botParams.channelId) {
-      const matches = data.text.match(/:fp:|parrot/g);
-
-      if (matches !== null) {
-        botParams.parrotCount += matches.length;
-        countParrots += matches.length;
+      if (~data.text.toUpperCase().indexOf('СТАТУС БОТА') == -1) {
+        let message = start ? 'Работает' : 'Выключен';
+        bot.postMessageToChannel(botParams.channelName, message, messageParams);
       }
-
-      BotSettings.update(
-        { name: messageParams.username },
-        { parrot_counts: botParams.parrotCount },
-      ).then();
-      global.io.emit('parrot count', botParams.parrotCount);
-
-      const user = data.user ? data.user : data.bot_id;
-      const statistic = new Statistics({
-        event_type: 'user_message',
-        user_id: user,
-        timestamp: data.ts,
-        parrot_count: countParrots,
-      });
-
-      statistic.save();
-    }
   }
-
-  if (data.text && data.subtype !== 'bot_message') {
-    if (~data.text.toUpperCase().indexOf('ПОВТОРИ ') == -1) {
-      const userText = data.text.substr(8);
-      const att = isThread(data, messageParams);
-      bot.postMessageToChannel(botParams.channelName, userText, att);
-      accessBotPost = true;
-    }
-  }
-
-  if (data.text) {
-    if (~data.text.toUpperCase().indexOf('MASK ') == -1) {
-      const userText = data.text.substr(5);
-      const userTextArray = userText.split(' ');
-      const userID = userTextArray[0].slice(2, -1);
-      if (userID) {
-        request(
-          {
-            url: `https://slack.com/api/users.info?token=${config.bot
-              .token}&user=${userID}&pretty=1`,
-            encoding: null,
-          },
-          (err, res, body) => {
-            const json = JSON.parse(body);
-            if (json.ok) {
-              const attachment = {};
-              attachment.username = json.user.name;
-              attachment.icon_url = json.user.profile.image_72;
-
-              let message = '';
-              for (var i = 1; i < userTextArray.length; i++) {
-                message += userTextArray[i] + ' ';
-              }
-              bot.postMessageToChannel(
-                botParams.channelName,
-                message,
-                attachment,
-              );
-            }
-          },
-        );
+  if (data.text && !start) {
+      if (~data.text.toUpperCase().indexOf('ВКЛЮЧИТЬ БОТА') == -1) {
+        start = true;
+        bot.postMessageToChannel(botParams.channelName, 'Стартуем :fp:', messageParams);
       }
-    }
   }
+  
+  if (start) {
+    if (data.text) {
+      if (data.channel === botParams.channelId) {
+        const matches = data.text.match(/:fp:|parrot/g);
 
-  if (data.text) {
-    if (~data.text.toUpperCase().indexOf('МАСКА ') == -1) {
-      const userText = data.text.substr(6);
-      const say = require('./commands/sayHow').parseMessage;
-      let { message, attachment } = say(userText);
-      bot.postMessageToChannel(botParams.channelName, message, attachment);
-    }
-  }
-
-  if (data.text) {
-    if (~data.text.toUpperCase().indexOf('СОВЕРШИТЬ БОЛЬШУЮ ГЛУПОСТЬ') == -1) {
-      deleteParrots();
-    }
-  }
-
-  if (data.text) {
-    if (~data.text.toUpperCase().indexOf('ФАЙЛ ') == -1) {
-      let url = data.text.substr(6).replace(/</g, '').replace(/>/g, '');
-      const message = '';
-      const attachment = {};
-      attachment.username = 'fridaybot';
-      attachment.icon_emoji = ':fbf:';
-      attachment.attachments = [
-        {
-          fallback: '',
-          image_url: `${url}`,
-        },
-      ];
-      bot.postMessageToChannel(botParams.channelName, message, attachment);
-    }
-  }
-
-  if (data.text) {
-    data.text = data.text.toUpperCase();
-
-    const channel = channelName(data);
-    const user = data.user ? data.user : data.bot_id;
-    UserMessages.findOne({ user_id: user }).then(result => {
-      if (result) {
-        botResponse.userMessageRes(data, channel, (text, error, attachment) => {
-          if (!error.message) {
-            if (attachment) {
-              sendToWhom(data, text, attachment);
-            } else {
-              sendToWhom(data, text);
-            }
-          } else {
-            sendToWhom(data, `<@${data.user}> ${error.message}`);
-          }
-        });
-      }
-    });
-  }
-
-  if (data.text) {
-    data.text = data.text.toUpperCase();
-  }
-
-  if (data.text === 'БАШ' || data.text === 'BASH' || data.text === 'БАШОРГ') {
-    const randomBashId = Math.floor(Math.random() * (50 - 1 + 1)) + 1;
-    bot.postMessageToChannel(
-      botParams.channelName,
-      bashArray[randomBashId],
-      messageParams,
-    );
-    saveLog(data);
-  }
-
-  if (data.text) {
-    if (~data.text.indexOf('UPTIME') == -1) {
-      var millisecToTimeStruct = function(millisec) {
-        var days, hours, minutes, seconds;
-        if (isNaN(millisec)) {
-          return {};
+        if (matches !== null) {
+          botParams.parrotCount += matches.length;
+          countParrots += matches.length;
         }
-        days = millisec / (60 * 60 * 24);
-        hours = (days - ~~days) * 24;
-        minutes = (hours - ~~hours) * 60;
-        seconds = (minutes - ~~minutes) * 60;
-        return `${~~days}:${~~hours}:${~~minutes}:${~~seconds}`;
-      };
-      const uptime = process.uptime();
-      sendToWhom(data, millisecToTimeStruct(uptime));
+
+        BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }, ).then();
+        global.io.emit('parrot count', botParams.parrotCount);
+
+        const user = data.user ? data.user : data.bot_id;
+        const statistic = new Statistics({
+          event_type: 'user_message',
+          user_id: user,
+          timestamp: data.ts,
+          parrot_count: countParrots,
+        });
+
+        statistic.save();
+      }
     }
-  }
 
-  if (data.text === 'ПАРОЛЬ') {
-    console.log(data.user);
-  }
+    if (data.text && data.subtype !== 'bot_message') {
+      if (~data.text.toUpperCase().indexOf('ПОВТОРИ ') == -1) {
+        const userText = data.text.substr(8);
+        const att = isThread(data, messageParams);
+        bot.postMessageToChannel(botParams.channelName, userText, att);
+        accessBotPost = true;
+      }
+    }
 
-  if (
-    data.subtype === 'channel_leave' &&
-    data.channel === botParams.channelId
-  ) {
-    BotSettings.findOne().then(result => {
-      if (result) {
-        if (result.user_leave.active) {
-          request(
-            {
-              url: `https://slack.com/api/channels.info?token=${config.bot
-                .token}&channel=${botParams.channelId}`,
+    if (data.text) {
+      if (~data.text.toUpperCase().indexOf('MASK ') == -1) {
+        const userText = data.text.substr(5);
+        const userTextArray = userText.split(' ');
+        const userID = userTextArray[0].slice(2, -1);
+        if (userID) {
+          request({
+              url: `https://slack.com/api/users.info?token=${config.bot
+              .token}&user=${userID}&pretty=1`,
               encoding: null,
             },
             (err, res, body) => {
               const json = JSON.parse(body);
               if (json.ok) {
-                const countUsers = json.channel.members.length;
-                sayText(`:RAGE: ${countUsers}`, true, 10, false, callback => {
-                  const leaveMessage =
-                    callback +
-                    result.user_leave.message
-                      .replace(/first_name/g, data.user_profile.first_name)
-                      .replace(/real_name/g, data.user_profile.real_name)
-                      .replace(/name/g, `<@${data.user_profile.name}>`);
-                  UserMessages.findOne({ user_id: data.user })
-                    .then(result => {
-                      let userStatistics = '';
-                      if (result) {
-                        const countMessages = result.count_messages;
-                        const countParrots = result.count_parrots;
-                        userStatistics = `\nПользователем было отправлено:\nсообщений - ${countMessages}\nпэрротов - ${countParrots}`;
-                      }
-                      bot.postMessageToChannel(
-                        botParams.channelName,
-                        leaveMessage + userStatistics,
-                        messageParams,
-                      );
-                    })
-                    .then(() => {
-                      UserMessages.remove(
-                        { user_id: data.user },
-                        (err, result) => {
-                          if (!err) {
-                            console.log('Пользователь удален');
-                          } else {
-                            console.log(err);
-                          }
-                        },
-                      );
-                    });
-                });
-              } else {
-                const leaveMessage = result.user_leave.message
-                  .replace(/first_name/g, data.user_profile.first_name)
-                  .replace(/real_name/g, data.user_profile.real_name)
-                  .replace(/name/g, `<@${data.user_profile.name}>`);
+                const attachment = {};
+                attachment.username = json.user.name;
+                attachment.icon_url = json.user.profile.image_72;
+
+                let message = '';
+                for (var i = 1; i < userTextArray.length; i++) {
+                  message += userTextArray[i] + ' ';
+                }
                 bot.postMessageToChannel(
                   botParams.channelName,
-                  leaveMessage,
-                  messageParams,
+                  message,
+                  attachment,
                 );
               }
             },
           );
         }
       }
-    });
-    const statistic = new Statistics({
-      event_type: 'channel_leave',
-      user_id: data.user,
-      timestamp: data.ts,
-    });
+    }
 
-    statistic.save();
-  }
+    if (data.text) {
+      if (~data.text.toUpperCase().indexOf('МАСКА ') == -1) {
+        const userText = data.text.substr(6);
+        const say = require('./commands/sayHow').parseMessage;
+        let { message, attachment } = say(userText);
+        bot.postMessageToChannel(botParams.channelName, message, attachment);
+      }
+    }
 
-  if (data.subtype === 'channel_join' && data.channel === botParams.channelId) {
-    BotSettings.findOne().then(result => {
-      if (result) {
-        if (result.user_join.active) {
-          request(
-            {
-              url: `https://slack.com/api/channels.info?token=${config.bot
+    if (data.text) {
+      if (~data.text.toUpperCase().indexOf('ВЫКЛЮЧИТЬ БОТА') == -1) {
+        start = false;
+        activeBot(botParams.channelId);
+
+      }
+    }
+
+    if (data.text) {
+      if (~data.text.toUpperCase().indexOf('СОВЕРШИТЬ БОЛЬШУЮ ГЛУПОСТЬ') == -1) {
+        deleteParrots();
+      }
+    }
+
+    if (data.text) {
+      if (~data.text.toUpperCase().indexOf('ФАЙЛ ') == -1) {
+        let url = data.text.substr(6).replace(/</g, '').replace(/>/g, '');
+        const message = '';
+        const attachment = {};
+        attachment.username = 'fridaybot';
+        attachment.icon_emoji = ':fbf:';
+        attachment.attachments = [{
+          fallback: '',
+          image_url: `${url}`,
+        }, ];
+        bot.postMessageToChannel(botParams.channelName, message, attachment);
+      }
+    }
+
+    if (data.text) {
+      data.text = data.text.toUpperCase();
+
+      const channel = channelName(data);
+      const user = data.user ? data.user : data.bot_id;
+      UserMessages.findOne({ user_id: user }).then(result => {
+        if (result) {
+          botResponse.userMessageRes(data, channel, (text, error, attachment) => {
+            if (!error.message) {
+              if (attachment) {
+                sendToWhom(data, text, attachment);
+              } else {
+                sendToWhom(data, text);
+              }
+            } else {
+              sendToWhom(data, `<@${data.user}> ${error.message}`);
+            }
+          });
+        }
+      });
+    }
+
+    if (data.text) {
+      data.text = data.text.toUpperCase();
+    }
+
+    if (data.text === 'БАШ' || data.text === 'BASH' || data.text === 'БАШОРГ') {
+      const randomBashId = Math.floor(Math.random() * (50 - 1 + 1)) + 1;
+      bot.postMessageToChannel(
+        botParams.channelName,
+        bashArray[randomBashId],
+        messageParams,
+      );
+      saveLog(data);
+    }
+
+    if (data.text) {
+      if (~data.text.indexOf('UPTIME') == -1) {
+        var millisecToTimeStruct = function(millisec) {
+          var days, hours, minutes, seconds;
+          if (isNaN(millisec)) {
+            return {};
+          }
+          days = millisec / (60 * 60 * 24);
+          hours = (days - ~~days) * 24;
+          minutes = (hours - ~~hours) * 60;
+          seconds = (minutes - ~~minutes) * 60;
+          return `${~~days}:${~~hours}:${~~minutes}:${~~seconds}`;
+        };
+        const uptime = process.uptime();
+        sendToWhom(data, millisecToTimeStruct(uptime));
+      }
+    }
+
+    if (data.text === 'ПАРОЛЬ') {
+      console.log(data.user);
+    }
+
+    if (
+      data.subtype === 'channel_leave' &&
+      data.channel === botParams.channelId
+    ) {
+      BotSettings.findOne().then(result => {
+        if (result) {
+          if (result.user_leave.active) {
+            request({
+                url: `https://slack.com/api/channels.info?token=${config.bot
                 .token}&channel=${botParams.channelId}`,
-              encoding: null,
-            },
-            (err, res, body) => {
-              const json = JSON.parse(body);
-              if (json.ok) {
-                const countUsers = json.channel.members.length;
-                sayText(`:TADA: ${countUsers}`, true, 10, false, callback => {
-                  const joinMessage =
-                    callback +
-                    result.user_join.message
+                encoding: null,
+              },
+              (err, res, body) => {
+                const json = JSON.parse(body);
+                if (json.ok) {
+                  const countUsers = json.channel.members.length;
+                  sayText(`:RAGE: ${countUsers}`, true, 10, false, callback => {
+                    const leaveMessage =
+                      callback +
+                      result.user_leave.message
+                      .replace(/first_name/g, data.user_profile.first_name)
+                      .replace(/real_name/g, data.user_profile.real_name)
+                      .replace(/name/g, `<@${data.user_profile.name}>`);
+                    UserMessages.findOne({ user_id: data.user })
+                      .then(result => {
+                        let userStatistics = '';
+                        if (result) {
+                          const countMessages = result.count_messages;
+                          const countParrots = result.count_parrots;
+                          userStatistics = `\nПользователем было отправлено:\nсообщений - ${countMessages}\nпэрротов - ${countParrots}`;
+                        }
+                        bot.postMessageToChannel(
+                          botParams.channelName,
+                          leaveMessage + userStatistics,
+                          messageParams,
+                        );
+                      })
+                      .then(() => {
+                        UserMessages.remove({ user_id: data.user },
+                          (err, result) => {
+                            if (!err) {
+                              console.log('Пользователь удален');
+                            } else {
+                              console.log(err);
+                            }
+                          },
+                        );
+                      });
+                  });
+                } else {
+                  const leaveMessage = result.user_leave.message
+                    .replace(/first_name/g, data.user_profile.first_name)
+                    .replace(/real_name/g, data.user_profile.real_name)
+                    .replace(/name/g, `<@${data.user_profile.name}>`);
+                  bot.postMessageToChannel(
+                    botParams.channelName,
+                    leaveMessage,
+                    messageParams,
+                  );
+                }
+              },
+            );
+          }
+        }
+      });
+      const statistic = new Statistics({
+        event_type: 'channel_leave',
+        user_id: data.user,
+        timestamp: data.ts,
+      });
+
+      statistic.save();
+    }
+
+    if (data.subtype === 'channel_join' && data.channel === botParams.channelId) {
+      BotSettings.findOne().then(result => {
+        if (result) {
+          if (result.user_join.active) {
+            request({
+                url: `https://slack.com/api/channels.info?token=${config.bot
+                .token}&channel=${botParams.channelId}`,
+                encoding: null,
+              },
+              (err, res, body) => {
+                const json = JSON.parse(body);
+                if (json.ok) {
+                  const countUsers = json.channel.members.length;
+                  sayText(`:TADA: ${countUsers}`, true, 10, false, callback => {
+                    const joinMessage =
+                      callback +
+                      result.user_join.message
                       .replace(/first_name/g, data.user_profile.first_name)
                       .replace(/real_name/g, data.user_profile.real_name)
                       .replace(/user_name/g, `<@${data.user_profile.name}>`)
                       .replace(/channel_name/g, `<#${botParams.channelId}>`);
+                    bot.postMessageToChannel(
+                      botParams.channelName,
+                      joinMessage,
+                      messageParams,
+                    );
+                  });
+                } else {
+                  const joinMessage = result.user_join.message
+                    .replace(/first_name/g, data.user_profile.first_name)
+                    .replace(/real_name/g, data.user_profile.real_name)
+                    .replace(/user_name/g, `<@${data.user_profile.name}>`)
+                    .replace(/channel_name/g, `<#${botParams.channelId}>`);
                   bot.postMessageToChannel(
                     botParams.channelName,
                     joinMessage,
                     messageParams,
                   );
-                });
-              } else {
-                const joinMessage = result.user_join.message
-                  .replace(/first_name/g, data.user_profile.first_name)
-                  .replace(/real_name/g, data.user_profile.real_name)
-                  .replace(/user_name/g, `<@${data.user_profile.name}>`)
-                  .replace(/channel_name/g, `<#${botParams.channelId}>`);
-                bot.postMessageToChannel(
-                  botParams.channelName,
-                  joinMessage,
-                  messageParams,
-                );
-              }
-            },
-          );
+                }
+              },
+            );
+          }
         }
-      }
-    });
-    const statistic = new Statistics({
-      event_type: 'channel_join',
-      user_id: data.user,
-      timestamp: data.ts,
-    });
+      });
+      const statistic = new Statistics({
+        event_type: 'channel_join',
+        user_id: data.user,
+        timestamp: data.ts,
+      });
 
-    statistic.save();
-  }
-  if (
-    data.type === 'message' &&
-    data.channel === botParams.channelId &&
-    accessBotPost &&
-    data.subtype !== 'channel_leave'
-  ) {
-    BotMessages.findOne({ user_message: data.text }).then(result => {
-      if (result) {
-        const att = isThread(data, messageParams);
-        bot.postMessageToChannel(
-          botParams.channelName,
-          result.bot_message,
-          att,
-        );
-        accessBotPost = false;
-        saveLog(data);
-      }
-    });
-  }
+      statistic.save();
+    }
+    if (
+      data.type === 'message' &&
+      data.channel === botParams.channelId &&
+      accessBotPost &&
+      data.subtype !== 'channel_leave'
+    ) {
+      BotMessages.findOne({ user_message: data.text }).then(result => {
+        if (result) {
+          const att = isThread(data, messageParams);
+          bot.postMessageToChannel(
+            botParams.channelName,
+            result.bot_message,
+            att,
+          );
+          accessBotPost = false;
+          saveLog(data);
+        }
+      });
+    }
 
-  if (
-    data.type === 'message' &&
-    data.channel === botParams.channelId &&
-    data.subtype !== 'bot_message' &&
-    data.subtype !== 'channel_leave'
-  ) {
-    BotMessages.findOne({ user_message: data.text }).then(result => {
-      if (result) {
-        const att = isThread(data, messageParams);
-        bot.postMessageToChannel(
-          botParams.channelName,
-          result.bot_message,
-          att,
-        );
-        saveLog(data);
-      }
-    });
-    getSticker(data.text, att => {
-      const attr = isThread(data, att);
-      bot.postMessageToChannel(botParams.channelName, '', attr);
-    });
-    UserMessages.findOne({ user_id: data.user }).then(result => {
-      if (!result) {
-        bot.getUserById(data.user).then(d => {
-          const newMessage = new UserMessages({
-            user_id: d.id,
-            user_name: d.name,
-            user_full_name: d.real_name,
-            count_messages: 1,
-            count_parrots: 0,
+    if (
+      data.type === 'message' &&
+      data.channel === botParams.channelId &&
+      data.subtype !== 'bot_message' &&
+      data.subtype !== 'channel_leave'
+    ) {
+      BotMessages.findOne({ user_message: data.text }).then(result => {
+        if (result) {
+          const att = isThread(data, messageParams);
+          bot.postMessageToChannel(
+            botParams.channelName,
+            result.bot_message,
+            att,
+          );
+          saveLog(data);
+        }
+      });
+      getSticker(data.text, att => {
+        const attr = isThread(data, att);
+        bot.postMessageToChannel(botParams.channelName, '', attr);
+      });
+      UserMessages.findOne({ user_id: data.user }).then(result => {
+        if (!result) {
+          bot.getUserById(data.user).then(d => {
+            const newMessage = new UserMessages({
+              user_id: d.id,
+              user_name: d.name,
+              user_full_name: d.real_name,
+              count_messages: 1,
+              count_parrots: 0,
+            });
+            newMessage.save(d.id);
           });
-          newMessage.save(d.id);
-        });
-      } else {
-        const newCountParrots = result.count_parrots + countParrots;
-        const newCountMessages = result.count_messages + 1;
+        } else {
+          const newCountParrots = result.count_parrots + countParrots;
+          const newCountMessages = result.count_messages + 1;
 
-        UserMessages.findOneAndUpdate(
-          { user_id: data.user },
-          { count_parrots: newCountParrots, count_messages: newCountMessages },
-        ).then();
-      }
-    });
+          UserMessages.findOneAndUpdate({ user_id: data.user }, { count_parrots: newCountParrots, count_messages: newCountMessages }, ).then();
+        }
+      });
+    }
   }
 });
 
