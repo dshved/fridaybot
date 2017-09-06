@@ -41,7 +41,8 @@ let bashArray = [];
 
 setInterval(() => {
   bashArray = [];
-  request({
+  request(
+    {
       url: 'http://bash.im/random',
       encoding: null,
     },
@@ -90,7 +91,10 @@ bot.on('start', () => {
       if (!result.channel_id) {
         bot.getChannel(result.channel_name).then(data => {
           if (data) {
-            BotSettings.update({ channel_name: result.channel_name }, { channel_id: data.id }, ).then();
+            BotSettings.update(
+              { channel_name: result.channel_name },
+              { channel_id: data.id },
+            ).then();
             botParams.channelId = result.channel_id;
           }
         });
@@ -103,7 +107,10 @@ bot.on('start', () => {
         BotSettings.findOne().then(r => {
           bot.getChannel(r.channel_name).then(data => {
             if (data) {
-              BotSettings.update({ channel_name: r.channel_name }, { channel_id: data.id }, ).then();
+              BotSettings.update(
+                { channel_name: r.channel_name },
+                { channel_id: data.id },
+              ).then();
               botParams.channelId = r.channel_id;
               botParams.parrotCount = r.parrot_counts;
               botParams.parrotArray = r.parrot_array;
@@ -157,7 +164,8 @@ const sendToWhom = (data, message, attachment) => {
 };
 
 const deleteParrots = () => {
-  request({
+  request(
+    {
       url: `https://slack.com/api/channels.history?token=${config.bot
         .token}&channel=${botParams.channelId}&count=100&pretty=1`,
       encoding: null,
@@ -175,7 +183,8 @@ const deleteParrots = () => {
 
         botMessagesFiltred.map(elem => {
           setTimeout(() => {
-            request({
+            request(
+              {
                 url: `https://slack.com/api/chat.delete?token=${config.bot
                   .token}&channel=${botParams.channelId}&ts=${elem.ts}&pretty=1`,
                 encoding: null,
@@ -233,18 +242,28 @@ bot.on('message', data => {
   // console.log(data);
   let countParrots = 0;
   if (data.text) {
-      if (~data.text.toUpperCase().indexOf('СТАТУС БОТА') == -1) {
-        let message = start ? 'Работает' : 'Выключен';
-        bot.postMessageToChannel(botParams.channelName, message, messageParams);
-      }
+    if (~data.text.toUpperCase().indexOf('СТАТУС БОТА') == -1) {
+      let message = start ? 'Работает' : 'Выключен';
+      bot.postMessageToChannel(botParams.channelName, message, messageParams);
+    }
   }
   if (data.text && !start) {
-      if (~data.text.toUpperCase().indexOf('ВКЛЮЧИТЬ БОТА') == -1) {
-        start = true;
-        bot.postMessageToChannel(botParams.channelName, 'Стартуем :fp:', messageParams);
-      }
+    if (~data.text.toUpperCase().indexOf('ВКЛЮЧИТЬ БОТА') == -1) {
+      start = true;
+      const message = '';
+      const attachment = {};
+      attachment.username = 'fridaybot';
+      attachment.icon_emoji = ':fbf:';
+      attachment.attachments = [
+        {
+          fallback: '',
+          image_url: `https://avatanplus.com/files/resources/mid/578d74d9ced70156009072f7.png`,
+        },
+      ];
+      bot.postMessageToChannel(botParams.channelName, message, attachment);
+    }
   }
-  
+
   if (start) {
     if (data.text) {
       if (data.channel === botParams.channelId) {
@@ -255,7 +274,10 @@ bot.on('message', data => {
           countParrots += matches.length;
         }
 
-        BotSettings.update({ name: messageParams.username }, { parrot_counts: botParams.parrotCount }, ).then();
+        BotSettings.update(
+          { name: messageParams.username },
+          { parrot_counts: botParams.parrotCount },
+        ).then();
         global.io.emit('parrot count', botParams.parrotCount);
 
         const user = data.user ? data.user : data.bot_id;
@@ -285,9 +307,10 @@ bot.on('message', data => {
         const userTextArray = userText.split(' ');
         const userID = userTextArray[0].slice(2, -1);
         if (userID) {
-          request({
+          request(
+            {
               url: `https://slack.com/api/users.info?token=${config.bot
-              .token}&user=${userID}&pretty=1`,
+                .token}&user=${userID}&pretty=1`,
               encoding: null,
             },
             (err, res, body) => {
@@ -326,12 +349,13 @@ bot.on('message', data => {
       if (~data.text.toUpperCase().indexOf('ВЫКЛЮЧИТЬ БОТА') == -1) {
         start = false;
         activeBot(botParams.channelId);
-
       }
     }
 
     if (data.text) {
-      if (~data.text.toUpperCase().indexOf('СОВЕРШИТЬ БОЛЬШУЮ ГЛУПОСТЬ') == -1) {
+      if (
+        ~data.text.toUpperCase().indexOf('СОВЕРШИТЬ БОЛЬШУЮ ГЛУПОСТЬ') == -1
+      ) {
         deleteParrots();
       }
     }
@@ -343,10 +367,12 @@ bot.on('message', data => {
         const attachment = {};
         attachment.username = 'fridaybot';
         attachment.icon_emoji = ':fbf:';
-        attachment.attachments = [{
-          fallback: '',
-          image_url: `${url}`,
-        }, ];
+        attachment.attachments = [
+          {
+            fallback: '',
+            image_url: `${url}`,
+          },
+        ];
         bot.postMessageToChannel(botParams.channelName, message, attachment);
       }
     }
@@ -358,17 +384,21 @@ bot.on('message', data => {
       const user = data.user ? data.user : data.bot_id;
       UserMessages.findOne({ user_id: user }).then(result => {
         if (result) {
-          botResponse.userMessageRes(data, channel, (text, error, attachment) => {
-            if (!error.message) {
-              if (attachment) {
-                sendToWhom(data, text, attachment);
+          botResponse.userMessageRes(
+            data,
+            channel,
+            (text, error, attachment) => {
+              if (!error.message) {
+                if (attachment) {
+                  sendToWhom(data, text, attachment);
+                } else {
+                  sendToWhom(data, text);
+                }
               } else {
-                sendToWhom(data, text);
+                sendToWhom(data, `<@${data.user}> ${error.message}`);
               }
-            } else {
-              sendToWhom(data, `<@${data.user}> ${error.message}`);
-            }
-          });
+            },
+          );
         }
       });
     }
@@ -416,9 +446,10 @@ bot.on('message', data => {
       BotSettings.findOne().then(result => {
         if (result) {
           if (result.user_leave.active) {
-            request({
+            request(
+              {
                 url: `https://slack.com/api/channels.info?token=${config.bot
-                .token}&channel=${botParams.channelId}`,
+                  .token}&channel=${botParams.channelId}`,
                 encoding: null,
               },
               (err, res, body) => {
@@ -429,9 +460,9 @@ bot.on('message', data => {
                     const leaveMessage =
                       callback +
                       result.user_leave.message
-                      .replace(/first_name/g, data.user_profile.first_name)
-                      .replace(/real_name/g, data.user_profile.real_name)
-                      .replace(/name/g, `<@${data.user_profile.name}>`);
+                        .replace(/first_name/g, data.user_profile.first_name)
+                        .replace(/real_name/g, data.user_profile.real_name)
+                        .replace(/name/g, `<@${data.user_profile.name}>`);
                     UserMessages.findOne({ user_id: data.user })
                       .then(result => {
                         let userStatistics = '';
@@ -447,7 +478,8 @@ bot.on('message', data => {
                         );
                       })
                       .then(() => {
-                        UserMessages.remove({ user_id: data.user },
+                        UserMessages.remove(
+                          { user_id: data.user },
                           (err, result) => {
                             if (!err) {
                               console.log('Пользователь удален');
@@ -483,13 +515,17 @@ bot.on('message', data => {
       statistic.save();
     }
 
-    if (data.subtype === 'channel_join' && data.channel === botParams.channelId) {
+    if (
+      data.subtype === 'channel_join' &&
+      data.channel === botParams.channelId
+    ) {
       BotSettings.findOne().then(result => {
         if (result) {
           if (result.user_join.active) {
-            request({
+            request(
+              {
                 url: `https://slack.com/api/channels.info?token=${config.bot
-                .token}&channel=${botParams.channelId}`,
+                  .token}&channel=${botParams.channelId}`,
                 encoding: null,
               },
               (err, res, body) => {
@@ -500,10 +536,10 @@ bot.on('message', data => {
                     const joinMessage =
                       callback +
                       result.user_join.message
-                      .replace(/first_name/g, data.user_profile.first_name)
-                      .replace(/real_name/g, data.user_profile.real_name)
-                      .replace(/user_name/g, `<@${data.user_profile.name}>`)
-                      .replace(/channel_name/g, `<#${botParams.channelId}>`);
+                        .replace(/first_name/g, data.user_profile.first_name)
+                        .replace(/real_name/g, data.user_profile.real_name)
+                        .replace(/user_name/g, `<@${data.user_profile.name}>`)
+                        .replace(/channel_name/g, `<#${botParams.channelId}>`);
                     bot.postMessageToChannel(
                       botParams.channelName,
                       joinMessage,
@@ -592,7 +628,13 @@ bot.on('message', data => {
           const newCountParrots = result.count_parrots + countParrots;
           const newCountMessages = result.count_messages + 1;
 
-          UserMessages.findOneAndUpdate({ user_id: data.user }, { count_parrots: newCountParrots, count_messages: newCountMessages }, ).then();
+          UserMessages.findOneAndUpdate(
+            { user_id: data.user },
+            {
+              count_parrots: newCountParrots,
+              count_messages: newCountMessages,
+            },
+          ).then();
         }
       });
     }
