@@ -58,39 +58,26 @@ async function getUserCount(text, callback) {
   callback(messages, {});
 }
 
-function getElite(text, callback) {
-  UserMessages.find({ user_name: { $ne: 'slackbot' } })
-    .sort([['count_parrots', 'descending']])
-    .then(r => {
-      let mes = '';
-      if (r.length > 10) {
-        mes = ':crown:Илита Friday:crown: \n';
-        for (let i = 0; i < 10; i++) {
-          if (r[i].count_parrots > 0) {
-            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
-          }
-        }
-        UserMessages.findOne({ user_name: 'slackbot' }).then(d => {
-          if (d) {
-            mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
-          }
+async function getElite(text, callback) {
+  const result = await UserMessages.find({}).sort([
+    ['count_parrots', 'descending'],
+  ]);
+  const slackbot = result.filter(item => item.user_name === 'slackbot');
+  const filtred = result.filter(item => item.user_name !== 'slackbot');
+  const countUsers = filtred.length > 10 ? 10 : filtred.length;
 
-          callback(mes, {});
-        });
-      } else {
-        mes = ':crown:Илита Friday:crown: \n';
-        for (let i = 0; i < r.length; i++) {
-          mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
-        }
-        UserMessages.findOne({ user_name: 'slackbot' }).then(d => {
-          if (d) {
-            mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
-          }
+  let messages = '';
+  messages = ':crown:Илита Friday:crown: \n';
+  for (let i = 0; i < countUsers; i++) {
+    if (filtred[i].count_parrots > 0) {
+      messages += `${i + 1}. ${filtred[i].user_name}: ${filtred[i]
+        .count_parrots} parrots\n`;
+    }
+  }
 
-          callback(mes, {});
-        });
-      }
-    });
+  messages += `----------------------\n:crown: ${slackbot[0]
+    .user_name}: ${slackbot[0].count_parrots} parrots\n`;
+  callback(messages, {});
 }
 
 function getLog(text, callback) {
