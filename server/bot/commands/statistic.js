@@ -27,42 +27,35 @@ const messagesRus = num => {
   return 'сообщений';
 };
 
-function getParrotCount(text, callback) {
-  BotSettings.findOne().then(r => {
-    if (r) {
-      const parrotCounts = r.parrot_counts
-        .toString()
-        .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
-      callback(`Всего отправлено: ${parrotCounts} шт.`, {});
-    } else {
-      callback('', { message: 'что то пошло не так :sad_parrot:' });
-    }
-  });
+async function getParrotCount(text, callback) {
+  try {
+    const result = await BotSettings.findOne();
+    const parrotCounts = result.parrot_counts
+      .toString()
+      .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+    callback(`Всего отправлено: ${parrotCounts} шт.`, {});
+  } catch (error) {
+    callback('', { message: 'что то пошло не так :sad_parrot:' });
+  }
 }
 
-function getUserCount(text, callback) {
-  UserMessages.find({ count_messages: { $gt: 1 } })
-    .sort([['count_messages', 'descending']])
-    .then(r => {
-      let mes = '';
-      if (r.length > 10) {
-        mes = 'TOP 10: \n';
-        for (let i = 0; i < 10; i++) {
-          mes += `${i + 1}. ${r[i].user_name}: ${r[i]
-            .count_messages} ${messagesRus(r[i].count_messages)}\n`;
-        }
-        mes += `\nВсего живых: ${r.length}`;
-        callback(mes, {});
-      } else {
-        mes = 'Вот люди, которые подают признаки жизни: \n';
-        for (let i = 0; i < r.length; i++) {
-          mes += `${i + 1}. ${r[i].user_name}: ${r[i]
-            .count_messages} ${messagesRus(r[i].count_messages)}\n`;
-        }
-        mes += `\nВсего живых: ${r.length}`;
-        callback(mes, {});
-      }
-    });
+async function getUserCount(text, callback) {
+  const result = await UserMessages.find({ count_messages: { $gt: 1 } }).sort([
+    ['count_messages', 'descending'],
+  ]);
+  const userCounts = result.length > 10 ? 10 : result.length;
+  const titleMessage =
+    userCounts === 10
+      ? 'TOP 10: \n'
+      : 'Вот люди, которые подают признаки жизни: \n';
+  let messages = '';
+  messages += titleMessage;
+  for (let i = 0; i < userCounts; i++) {
+    messages += `${i + 1}. ${result[i].user_name}: ${result[i]
+      .count_messages} ${messagesRus(result[i].count_messages)}\n`;
+  }
+  messages += `\nВсего живых: ${result.length}`;
+  callback(messages, {});
 }
 
 function getElite(text, callback) {
