@@ -101,7 +101,7 @@ async function getLog(text, callback) {
   mes = '';
 }
 
-function getActiveUsers(text, callback) {
+async function getActiveUsers(text, callback) {
   const date = new Date();
   const startOfDay = new Date(
     date.getFullYear(),
@@ -115,44 +115,43 @@ function getActiveUsers(text, callback) {
   );
   const startTimestamp = startOfDay / 1000 - 10800;
   const endTimestamp = endOfDay / 1000 - 10800 + 86400;
-  Statistics.aggregate(
-    [
-      {
-        $match: {
-          timestamp: {
-            $gte: startTimestamp,
-            $lt: endTimestamp,
-          },
-          event_type: 'user_message',
+  const statistics = await Statistics.aggregate([
+    {
+      $match: {
+        timestamp: {
+          $gte: startTimestamp,
+          $lt: endTimestamp,
         },
+        event_type: 'user_message',
       },
-      {
-        $group: {
-          _id: '$user_id',
-          count: { $sum: 1 },
-        },
-      },
-      {
-        $sort: { count: -1 },
-      },
-    ],
-    (err, res) => {
-      let mes = 'Статистика по сообщениям за 3 дня:\n';
-      UserMessages.find({}).then(result => {
-        if (result) {
-          res.forEach((item, index) => {
-            const user = result.filter(el => el.user_id === item._id);
-
-            if (user[0]) {
-              mes += `${index + 1}. ${user[0].user_name} - ${item.count}\n`;
-            }
-          });
-          callback(mes, {});
-          mes = '';
-        }
-      });
     },
-  );
+    {
+      $group: {
+        _id: '$user_id',
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { count: -1 },
+    },
+  ]);
+
+  const userMessages = await UserMessages.find({});
+
+  let message = 'Статистика по сообщениям за 3 дня:\n';
+  let totalMessages = 0;
+
+  statistics.forEach((item, index) => {
+    const user = userMessages.filter(el => el.user_id === item._id);
+
+    if (user[0]) {
+      totalMessages += item.count;
+      message += `${index + 1}. ${user[0].user_name} - ${item.count}\n`;
+    }
+  });
+  message += `\n Всего сообщений: ${totalMessages}`;
+  callback(message, {});
+  message = '';
 }
 
 async function getPPM(text, callback) {
@@ -198,6 +197,7 @@ function getStatistic(text, callback) {
   let dateOffset;
   let dateText = 0;
   let date;
+
   if (text === 'СЕГОДНЯ') {
     dateOffset = 0;
     dateText = 'Сегодня';
@@ -282,6 +282,17 @@ async function getStatisticAll(text, callback) {
   callback(message, {});
 }
 
+function millisecToTimeStruct(millisec) {
+  if (isNaN(millisec)) {
+    return {};
+  }
+  const days = millisec / (60 * 60 * 24);
+  const hours = (days - ~~days) * 24;
+  const minutes = (hours - ~~hours) * 60;
+  const seconds = (minutes - ~~minutes) * 60;
+  return `${~~days} д. ${~~hours} ч. ${~~minutes} м. ${~~seconds} с.`;
+}
+
 function whenFriday(text, callback) {
   const now = new Date();
   const year = now.getFullYear();
@@ -297,18 +308,8 @@ function whenFriday(text, callback) {
     return a < 10 ? `0${a}` : a;
   };
 
-  const millisecToTimeStruct = millisec => {
-    if (isNaN(millisec)) {
-      return {};
-    }
-    const days = millisec / (60 * 60 * 24);
-    const hours = (days - ~~days) * 24;
-    const minutes = (hours - ~~hours) * 60;
-    const seconds = (minutes - ~~minutes) * 60;
-    return `${~~days} д. ${~~hours} ч. ${~~minutes} м. ${~~seconds} с.`;
-  };
-
   const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
+
   if (result < 0) {
     callback('Сегодня пятница!:fp:', {});
   } else {
