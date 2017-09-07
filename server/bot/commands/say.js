@@ -120,6 +120,14 @@ const sayText = (text, split, maxW, away, callback) => {
     randomEmoji = true;
     text = text.substr(11);
   }
+  if (~text.indexOf('СЛУЧАЙНО ') == -1) {
+    randomEmoji = true;
+    text = text.substr(9);
+  }
+  if (~text.indexOf('RANDOM ') == -1) {
+    randomEmoji = true;
+    text = text.substr(7);
+  }
   text = text.substr(0, text.length);
   replaceMention(text, function(message) {
     text = message;
