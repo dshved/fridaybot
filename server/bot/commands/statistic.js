@@ -27,104 +27,81 @@ const messagesRus = num => {
   return 'сообщений';
 };
 
-function getParrotCount(text, callback) {
-  BotSettings.findOne().then(r => {
-    if (r) {
-      const parrotCounts = r.parrot_counts
-        .toString()
-        .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
-      callback(`Всего отправлено: ${parrotCounts} шт.`, {});
-    } else {
-      callback('', { message: 'что то пошло не так :sad_parrot:' });
+async function getParrotCount(text, callback) {
+  try {
+    const result = await BotSettings.findOne();
+    const parrotCounts = result.parrot_counts
+      .toString()
+      .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+    callback(`Всего отправлено: ${parrotCounts} шт.`, {});
+  } catch (error) {
+    callback('', { message: 'что то пошло не так :sad_parrot:' });
+  }
+}
+
+async function getUserCount(text, callback) {
+  const result = await UserMessages.find({ count_messages: { $gt: 1 } }).sort([
+    ['count_messages', 'descending'],
+  ]);
+  const userCounts = result.length > 10 ? 10 : result.length;
+  const titleMessage =
+    userCounts === 10
+      ? 'TOP 10: \n'
+      : 'Вот люди, которые подают признаки жизни: \n';
+  let message = '';
+  message += titleMessage;
+  for (let i = 0; i < userCounts; i++) {
+    message += `${i + 1}. ${result[i].user_name}: ${result[i]
+      .count_messages} ${messagesRus(result[i].count_messages)}\n`;
+  }
+  message += `\nВсего живых: ${result.length}`;
+  callback(message, {});
+}
+
+async function getElite(text, callback) {
+  const result = await UserMessages.find({}).sort([
+    ['count_parrots', 'descending'],
+  ]);
+  const slackbot = result.filter(item => item.user_name === 'slackbot');
+  const filtred = result.filter(item => item.user_name !== 'slackbot');
+  const countUsers = filtred.length > 10 ? 10 : filtred.length;
+
+  let message = '';
+  message = ':crown:Илита Friday:crown: \n';
+  for (let i = 0; i < countUsers; i++) {
+    if (filtred[i].count_parrots > 0) {
+      message += `${i + 1}. ${filtred[i].user_name}: ${filtred[i]
+        .count_parrots} parrots\n`;
     }
-  });
+  }
+
+  message += `----------------------\n:crown: ${slackbot[0]
+    .user_name}: ${slackbot[0].count_parrots} parrots\n`;
+  callback(message, {});
 }
 
-function getUserCount(text, callback) {
-  UserMessages.find({ count_messages: { $gt: 1 } })
-    .sort([['count_messages', 'descending']])
-    .then(r => {
-      let mes = '';
-      if (r.length > 10) {
-        mes = 'TOP 10: \n';
-        for (let i = 0; i < 10; i++) {
-          mes += `${i + 1}. ${r[i].user_name}: ${r[i]
-            .count_messages} ${messagesRus(r[i].count_messages)}\n`;
-        }
-        mes += `\nВсего живых: ${r.length}`;
-        callback(mes, {});
-      } else {
-        mes = 'Вот люди, которые подают признаки жизни: \n';
-        for (let i = 0; i < r.length; i++) {
-          mes += `${i + 1}. ${r[i].user_name}: ${r[i]
-            .count_messages} ${messagesRus(r[i].count_messages)}\n`;
-        }
-        mes += `\nВсего живых: ${r.length}`;
-        callback(mes, {});
-      }
-    });
-}
-
-function getElite(text, callback) {
-  UserMessages.find({ user_name: { $ne: 'slackbot' } })
-    .sort([['count_parrots', 'descending']])
-    .then(r => {
-      let mes = '';
-      if (r.length > 10) {
-        mes = ':crown:Илита Friday:crown: \n';
-        for (let i = 0; i < 10; i++) {
-          if (r[i].count_parrots > 0) {
-            mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
-          }
-        }
-        UserMessages.findOne({ user_name: 'slackbot' }).then(d => {
-          if (d) {
-            mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
-          }
-
-          callback(mes, {});
-        });
-      } else {
-        mes = ':crown:Илита Friday:crown: \n';
-        for (let i = 0; i < r.length; i++) {
-          mes += `${i + 1}. ${r[i].user_name}: ${r[i].count_parrots} ppm\n`;
-        }
-        UserMessages.findOne({ user_name: 'slackbot' }).then(d => {
-          if (d) {
-            mes += `----------------------\n:crown: ${d.user_name}: ${d.count_parrots} ppm\n`;
-          }
-
-          callback(mes, {});
-        });
-      }
-    });
-}
-
-function getLog(text, callback) {
-  Log.aggregate(
-    [
-      {
-        $group: {
-          _id: '$command',
-          count: { $sum: 1 },
-        },
+async function getLog(text, callback) {
+  const result = await Log.aggregate([
+    {
+      $group: {
+        _id: '$command',
+        count: { $sum: 1 },
       },
-      {
-        $sort: { count: -1 },
-      },
-    ],
-    (err, res) => {
-      let mes = 'Статистика вызова команд:\n';
-      for (let i = 0; i < res.length; i++) {
-        mes += `${i + 1}. ${res[i]._id} - ${res[i].count}\n`;
-      }
-      callback(mes, {});
-      mes = '';
     },
-  );
+    {
+      $sort: { count: -1 },
+    },
+  ]);
+
+  let message = 'Статистика вызова команд:\n';
+  for (let i = 0; i < result.length; i++) {
+    message += `${i + 1}. ${result[i]._id} - ${result[i].count}\n`;
+  }
+  callback(message, {});
+  mes = '';
 }
 
-function getActiveUsers(text, callback) {
+async function getActiveUsers(text, callback) {
   const date = new Date();
   const startOfDay = new Date(
     date.getFullYear(),
@@ -138,82 +115,69 @@ function getActiveUsers(text, callback) {
   );
   const startTimestamp = startOfDay / 1000 - 10800;
   const endTimestamp = endOfDay / 1000 - 10800 + 86400;
-  Statistics.aggregate(
-    [
-      {
-        $match: {
-          timestamp: {
-            $gte: startTimestamp,
-            $lt: endTimestamp,
-          },
-          event_type: 'user_message',
+  const statistics = await Statistics.aggregate([
+    {
+      $match: {
+        timestamp: {
+          $gte: startTimestamp,
+          $lt: endTimestamp,
         },
+        event_type: 'user_message',
       },
-      {
-        $group: {
-          _id: '$user_id',
-          count: { $sum: 1 },
-        },
-      },
-      {
-        $sort: { count: -1 },
-      },
-    ],
-    (err, res) => {
-      let mes = 'Статистика по сообщениям за 3 дня:\n';
-      UserMessages.find({}).then(result => {
-        if (result) {
-          res.forEach((item, index) => {
-            const user = result.filter(el => el.user_id === item._id);
-
-            if (user[0]) {
-              mes += `${index + 1}. ${user[0].user_name} - ${item.count}\n`;
-            }
-          });
-          callback(mes, {});
-          mes = '';
-        }
-      });
     },
-  );
+    {
+      $group: {
+        _id: '$user_id',
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { count: -1 },
+    },
+  ]);
+
+  const userMessages = await UserMessages.find({});
+
+  let message = 'Статистика по сообщениям за 3 дня:\n';
+  let totalMessages = 0;
+
+  statistics.forEach((item, index) => {
+    const user = userMessages.filter(el => el.user_id === item._id);
+
+    if (user[0]) {
+      totalMessages += item.count;
+      message += `${index + 1}. ${user[0].user_name} - ${item.count}\n`;
+    }
+  });
+  message += `\n Всего сообщений: ${totalMessages}`;
+  callback(message, {});
+  message = '';
 }
 
-function getPPM(text, callback) {
-  UserMessages.aggregate(
-    [
-      {
-        $project: {
-          user_name: 1,
-          ppm: {
-            $divide: ['$count_parrots', '$count_messages'],
-          },
+async function getPPM(text, callback) {
+  const result = await UserMessages.aggregate([
+    {
+      $project: {
+        user_name: 1,
+        ppm: {
+          $divide: ['$count_parrots', '$count_messages'],
         },
       },
-      {
-        $sort: { ppm: -1 },
-      },
-    ],
-    (err, res) => {
-      let mes = ':fp: Рейтинг PPM: :fp:\n';
-      if (res) {
-        if (res.length > 10) {
-          for (let i = 0; i < 10; i++) {
-            const ppm = Math.round(res[i].ppm * 100) / 100;
-            mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
-          }
-          callback(mes, {});
-          mes = '';
-        } else {
-          for (let i = 0; i < res.length; i++) {
-            const ppm = Math.round(res[i].ppm * 100) / 100;
-            mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
-          }
-          callback(mes, {});
-          mes = '';
-        }
-      }
     },
-  );
+    {
+      $sort: { ppm: -1 },
+    },
+  ]);
+
+  let message = ':fp: Рейтинг PPM: :fp:\n';
+  const countUsers = result.length > 10 ? 10 : result.length;
+
+  for (let i = 0; i < countUsers; i++) {
+    const ppm = Math.round(result[i].ppm * 100) / 100;
+    message += `${i + 1}. ${result[i].user_name} - ${ppm}\n`;
+  }
+  callback(message, {});
+  message = '';
 }
 
 function getCommands(text, callback) {
@@ -229,10 +193,11 @@ function parseDate(str) {
   return m ? `${m[3]}/${m[2]}/${m[1]}` : null;
 }
 
-function getStatistic(text, callback) {
+async function getStatistic(text, callback) {
   let dateOffset;
   let dateText = 0;
   let date;
+
   if (text === 'СЕГОДНЯ') {
     dateOffset = 0;
     dateText = 'Сегодня';
@@ -263,61 +228,54 @@ function getStatistic(text, callback) {
     );
     const startTimestamp = startOfDay / 1000 - 10800;
     const endTimestamp = startTimestamp + 86400;
-    Statistics.aggregate(
-      [
-        {
-          $match: {
-            timestamp: {
-              $gte: startTimestamp,
-              $lt: endTimestamp,
-            },
-            event_type: 'user_message',
-          },
-        },
-        {
-          $group: { _id: null, parrot_counts: { $sum: '$parrot_count' } },
-        },
-      ],
-      (err, res) => {
-        const parrotCounts = res[0] ? res[0].parrot_counts : 0;
-        Statistics.find({
-          timestamp: {
-            $gte: startTimestamp,
-            $lt: endTimestamp,
-          },
-        }).then(res => {
-          if (res) {
-            const message = `${dateText} отправлено:\nсообщений - ${res.length}\nпэрротов - ${parrotCounts}`;
-            callback(message, {});
-          }
-        });
+
+    const result = await Statistics.find({
+      timestamp: {
+        $gte: startTimestamp,
+        $lt: endTimestamp,
       },
-    );
+    });
+
+    let messageCount = result.length;
+    let parrotCount = 0;
+
+    result.forEach(item => (parrotCount += item.parrot_count));
+
+    const message = `${dateText} отправлено:\nсообщений - ${messageCount}\nпэрротов - ${parrotCount}`;
+    callback(message, {});
   }
 }
 
-function getStatisticAll(text, callback) {
-  UserMessages.aggregate(
-    [
-      {
-        $group: { _id: null, count_messages: { $sum: '$count_messages' } },
-      },
-    ],
-    (err, res) => {
-      BotSettings.findOne().then(data => {
-        if (data) {
-          const messageCounts = res[0].count_messages
-            .toString()
-            .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
-          const parrotCounts = data.parrot_counts
-            .toString()
-            .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
-          const message = `Всего отправлено:\nсообщений: ${messageCounts} шт.\nпэрротов: ${parrotCounts} шт.`;
-          callback(message, {});
-        }
-      });
+async function getStatisticAll(text, callback) {
+  const userMessages = await UserMessages.aggregate([
+    {
+      $group: { _id: null, count_messages: { $sum: '$count_messages' } },
     },
-  );
+  ]);
+
+  const botSettings = await BotSettings.findOne();
+
+  const messageCounts = userMessages[0].count_messages
+    .toString()
+    .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+
+  const parrotCounts = botSettings.parrot_counts
+    .toString()
+    .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+
+  const message = `Всего отправлено:\nсообщений: ${messageCounts} шт.\nпэрротов: ${parrotCounts} шт.`;
+  callback(message, {});
+}
+
+function millisecToTimeStruct(millisec) {
+  if (isNaN(millisec)) {
+    return {};
+  }
+  const days = millisec / (60 * 60 * 24);
+  const hours = (days - ~~days) * 24;
+  const minutes = (hours - ~~hours) * 60;
+  const seconds = (minutes - ~~minutes) * 60;
+  return `${~~days} д. ${~~hours} ч. ${~~minutes} м. ${~~seconds} с.`;
 }
 
 function whenFriday(text, callback) {
@@ -335,18 +293,8 @@ function whenFriday(text, callback) {
     return a < 10 ? `0${a}` : a;
   };
 
-  const millisecToTimeStruct = millisec => {
-    if (isNaN(millisec)) {
-      return {};
-    }
-    const days = millisec / (60 * 60 * 24);
-    const hours = (days - ~~days) * 24;
-    const minutes = (hours - ~~hours) * 60;
-    const seconds = (minutes - ~~minutes) * 60;
-    return `${~~days} д. ${~~hours} ч. ${~~minutes} м. ${~~seconds} с.`;
-  };
-
   const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
+
   if (result < 0) {
     callback('Сегодня пятница!:fp:', {});
   } else {
