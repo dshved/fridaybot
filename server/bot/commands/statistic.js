@@ -261,28 +261,25 @@ function getStatistic(text, callback) {
   }
 }
 
-function getStatisticAll(text, callback) {
-  UserMessages.aggregate(
-    [
-      {
-        $group: { _id: null, count_messages: { $sum: '$count_messages' } },
-      },
-    ],
-    (err, res) => {
-      BotSettings.findOne().then(data => {
-        if (data) {
-          const messageCounts = res[0].count_messages
-            .toString()
-            .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
-          const parrotCounts = data.parrot_counts
-            .toString()
-            .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
-          const message = `Всего отправлено:\nсообщений: ${messageCounts} шт.\nпэрротов: ${parrotCounts} шт.`;
-          callback(message, {});
-        }
-      });
+async function getStatisticAll(text, callback) {
+  const userMessages = await UserMessages.aggregate([
+    {
+      $group: { _id: null, count_messages: { $sum: '$count_messages' } },
     },
-  );
+  ]);
+
+  const botSettings = await BotSettings.findOne();
+
+  const messageCounts = userMessages[0].count_messages
+    .toString()
+    .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+
+  const parrotCounts = botSettings.parrot_counts
+    .toString()
+    .replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+
+  const message = `Всего отправлено:\nсообщений: ${messageCounts} шт.\nпэрротов: ${parrotCounts} шт.`;
+  callback(message, {});
 }
 
 function whenFriday(text, callback) {
