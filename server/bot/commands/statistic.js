@@ -48,14 +48,14 @@ async function getUserCount(text, callback) {
     userCounts === 10
       ? 'TOP 10: \n'
       : 'Вот люди, которые подают признаки жизни: \n';
-  let messages = '';
-  messages += titleMessage;
+  let message = '';
+  message += titleMessage;
   for (let i = 0; i < userCounts; i++) {
-    messages += `${i + 1}. ${result[i].user_name}: ${result[i]
+    message += `${i + 1}. ${result[i].user_name}: ${result[i]
       .count_messages} ${messagesRus(result[i].count_messages)}\n`;
   }
-  messages += `\nВсего живых: ${result.length}`;
-  callback(messages, {});
+  message += `\nВсего живых: ${result.length}`;
+  callback(message, {});
 }
 
 async function getElite(text, callback) {
@@ -66,42 +66,39 @@ async function getElite(text, callback) {
   const filtred = result.filter(item => item.user_name !== 'slackbot');
   const countUsers = filtred.length > 10 ? 10 : filtred.length;
 
-  let messages = '';
-  messages = ':crown:Илита Friday:crown: \n';
+  let message = '';
+  message = ':crown:Илита Friday:crown: \n';
   for (let i = 0; i < countUsers; i++) {
     if (filtred[i].count_parrots > 0) {
-      messages += `${i + 1}. ${filtred[i].user_name}: ${filtred[i]
+      message += `${i + 1}. ${filtred[i].user_name}: ${filtred[i]
         .count_parrots} parrots\n`;
     }
   }
 
-  messages += `----------------------\n:crown: ${slackbot[0]
+  message += `----------------------\n:crown: ${slackbot[0]
     .user_name}: ${slackbot[0].count_parrots} parrots\n`;
-  callback(messages, {});
+  callback(message, {});
 }
 
-function getLog(text, callback) {
-  Log.aggregate(
-    [
-      {
-        $group: {
-          _id: '$command',
-          count: { $sum: 1 },
-        },
+async function getLog(text, callback) {
+  const result = await Log.aggregate([
+    {
+      $group: {
+        _id: '$command',
+        count: { $sum: 1 },
       },
-      {
-        $sort: { count: -1 },
-      },
-    ],
-    (err, res) => {
-      let mes = 'Статистика вызова команд:\n';
-      for (let i = 0; i < res.length; i++) {
-        mes += `${i + 1}. ${res[i]._id} - ${res[i].count}\n`;
-      }
-      callback(mes, {});
-      mes = '';
     },
-  );
+    {
+      $sort: { count: -1 },
+    },
+  ]);
+
+  let message = 'Статистика вызова команд:\n';
+  for (let i = 0; i < result.length; i++) {
+    message += `${i + 1}. ${result[i]._id} - ${result[i].count}\n`;
+  }
+  callback(message, {});
+  mes = '';
 }
 
 function getActiveUsers(text, callback) {
