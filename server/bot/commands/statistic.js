@@ -234,14 +234,15 @@ async function getStatistic(text, callback) {
         $gte: startTimestamp,
         $lt: endTimestamp,
       },
+      event_type: 'user_message',
     });
 
     let messageCount = result.length;
     let parrotCount = 0;
 
     result.forEach(item => (parrotCount += item.parrot_count));
-
     const message = `${dateText} отправлено:\nсообщений - ${messageCount}\nпэрротов - ${parrotCount}`;
+
     callback(message, {});
   }
 }
