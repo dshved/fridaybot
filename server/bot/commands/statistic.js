@@ -155,42 +155,30 @@ function getActiveUsers(text, callback) {
   );
 }
 
-function getPPM(text, callback) {
-  UserMessages.aggregate(
-    [
-      {
-        $project: {
-          user_name: 1,
-          ppm: {
-            $divide: ['$count_parrots', '$count_messages'],
-          },
+async function getPPM(text, callback) {
+  const result = await UserMessages.aggregate([
+    {
+      $project: {
+        user_name: 1,
+        ppm: {
+          $divide: ['$count_parrots', '$count_messages'],
         },
       },
-      {
-        $sort: { ppm: -1 },
-      },
-    ],
-    (err, res) => {
-      let mes = ':fp: Рейтинг PPM: :fp:\n';
-      if (res) {
-        if (res.length > 10) {
-          for (let i = 0; i < 10; i++) {
-            const ppm = Math.round(res[i].ppm * 100) / 100;
-            mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
-          }
-          callback(mes, {});
-          mes = '';
-        } else {
-          for (let i = 0; i < res.length; i++) {
-            const ppm = Math.round(res[i].ppm * 100) / 100;
-            mes += `${i + 1}. ${res[i].user_name} - ${ppm}\n`;
-          }
-          callback(mes, {});
-          mes = '';
-        }
-      }
     },
-  );
+    {
+      $sort: { ppm: -1 },
+    },
+  ]);
+
+  let message = ':fp: Рейтинг PPM: :fp:\n';
+  const countUsers = result.length > 10 ? 10 : result.length;
+
+  for (let i = 0; i < countUsers; i++) {
+    const ppm = Math.round(result[i].ppm * 100) / 100;
+    message += `${i + 1}. ${result[i].user_name} - ${ppm}\n`;
+  }
+  callback(message, {});
+  message = '';
 }
 
 function getCommands(text, callback) {
