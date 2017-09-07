@@ -193,7 +193,7 @@ function parseDate(str) {
   return m ? `${m[3]}/${m[2]}/${m[1]}` : null;
 }
 
-function getStatistic(text, callback) {
+async function getStatistic(text, callback) {
   let dateOffset;
   let dateText = 0;
   let date;
@@ -228,36 +228,21 @@ function getStatistic(text, callback) {
     );
     const startTimestamp = startOfDay / 1000 - 10800;
     const endTimestamp = startTimestamp + 86400;
-    Statistics.aggregate(
-      [
-        {
-          $match: {
-            timestamp: {
-              $gte: startTimestamp,
-              $lt: endTimestamp,
-            },
-            event_type: 'user_message',
-          },
-        },
-        {
-          $group: { _id: null, parrot_counts: { $sum: '$parrot_count' } },
-        },
-      ],
-      (err, res) => {
-        const parrotCounts = res[0] ? res[0].parrot_counts : 0;
-        Statistics.find({
-          timestamp: {
-            $gte: startTimestamp,
-            $lt: endTimestamp,
-          },
-        }).then(res => {
-          if (res) {
-            const message = `${dateText} отправлено:\nсообщений - ${res.length}\nпэрротов - ${parrotCounts}`;
-            callback(message, {});
-          }
-        });
+
+    const result = await Statistics.find({
+      timestamp: {
+        $gte: startTimestamp,
+        $lt: endTimestamp,
       },
-    );
+    });
+
+    let messageCount = result.length;
+    let parrotCount = 0;
+
+    result.forEach(item => (parrotCount += item.parrot_count));
+
+    const message = `${dateText} отправлено:\nсообщений - ${messageCount}\nпэрротов - ${parrotCount}`;
+    callback(message, {});
   }
 }
 
