@@ -71,7 +71,13 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./statistic').changelog,
   },
-  // { msg: 'БАШ',  startFrom: false, callback: require('./bash').bash },
+  {
+    messages: ['БАШ', 'BASH', 'БАШОРГ'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./bash').bash,
+  },
   {
     messages: ['ИЛИТА', 'КТО ИЛИТА', 'КТО ИЛИТА?'],
     startFrom: false,

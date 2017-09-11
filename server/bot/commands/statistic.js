@@ -234,14 +234,15 @@ async function getStatistic(text, callback) {
         $gte: startTimestamp,
         $lt: endTimestamp,
       },
+      event_type: 'user_message',
     });
 
     let messageCount = result.length;
     let parrotCount = 0;
 
     result.forEach(item => (parrotCount += item.parrot_count));
-
     const message = `${dateText} отправлено:\nсообщений - ${messageCount}\nпэрротов - ${parrotCount}`;
+
     callback(message, {});
   }
 }
@@ -295,10 +296,29 @@ function whenFriday(text, callback) {
 
   const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
 
+  const attachment = {};
+  const imageUrl =
+    result < 0
+      ? 'http://cdn3.imgbb.ru/user/71/718372/201411/13f9ea725b0d50a309354ea6db436af8.jpg'
+      : 'http://www.netlore.ru/upload/files/1307/p17d2ggj6e189vgg519kpbr7vf512.jpg';
+
+  attachment.username = `fridaybot`;
+  attachment.icon_emoji = ':fbf:';
+  attachment.attachments = [
+    {
+      fallback: '',
+      image_url: imageUrl,
+    },
+  ];
+
   if (result < 0) {
-    callback('Сегодня пятница!:fp:', {});
+    callback('Сегодня пятница!:fp:', {}, attachment);
   } else {
-    callback(`До пятницы осталось: ${millisecToTimeStruct(result)}`, {});
+    callback(
+      `До пятницы осталось: ${millisecToTimeStruct(result)}`,
+      {},
+      attachment,
+    );
   }
 }
 
