@@ -1,6 +1,6 @@
 const SlackBot = require('./../../slackbots.js');
 const config = require('./../../config.js');
-
+const request = require('request');
 const botResponse = require('./commands');
 
 const fs = require('fs');
