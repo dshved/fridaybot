@@ -17,16 +17,14 @@ const deleteParrots = channelId => {
         });
 
         botMessagesFiltred.map(elem => {
-
-            request(
-              {
-                url: `https://slack.com/api/chat.delete?token=${config.bot
-                  .token}&channel=${channelId}&ts=${elem.ts}&pretty=1`,
-                encoding: null,
-              },
-              (err, res, body) => {},
-            );
-
+          request(
+            {
+              url: `https://slack.com/api/chat.delete?token=${config.bot
+                .token}&channel=${channelId}&ts=${elem.ts}&pretty=1`,
+              encoding: null,
+            },
+            (err, res, body) => {},
+          );
         });
       }
     },
