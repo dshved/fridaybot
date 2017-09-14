@@ -17,7 +17,7 @@ const deleteParrots = channelId => {
         });
 
         botMessagesFiltred.map(elem => {
-          setTimeout(() => {
+
             request(
               {
                 url: `https://slack.com/api/chat.delete?token=${config.bot
@@ -26,7 +26,7 @@ const deleteParrots = channelId => {
               },
               (err, res, body) => {},
             );
-          }, 1000);
+
         });
       }
     },

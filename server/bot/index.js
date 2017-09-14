@@ -403,6 +403,9 @@ bot.on('message', data => {
                           const countParrots = result.count_parrots;
                           userStatistics = `\nПользователем было отправлено:\nсообщений - ${countMessages}\nпэрротов - ${countParrots}`;
                         }
+                        if (messageParams.thread_ts) {
+                          delete messageParams['thread_ts'];
+                        }
                         bot.postMessageToChannel(
                           botParams.channelName,
                           leaveMessage + userStatistics,
@@ -472,6 +475,9 @@ bot.on('message', data => {
                         .replace(/real_name/g, data.user_profile.real_name)
                         .replace(/user_name/g, `<@${data.user_profile.name}>`)
                         .replace(/channel_name/g, `<#${botParams.channelId}>`);
+                    if (messageParams.thread_ts) {
+                      delete messageParams['thread_ts'];
+                    }
                     bot.postMessageToChannel(
                       botParams.channelName,
                       joinMessage,
