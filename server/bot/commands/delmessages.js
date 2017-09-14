@@ -5,18 +5,15 @@ const deleteParrots = channelId => {
   request(
     {
       url: `https://slack.com/api/channels.history?token=${config.bot
-        .token}&channel=${channelId}&count=100&pretty=1`,
+        .token}&channel=${channelId}&count=200&pretty=1`,
       encoding: null,
     },
     (err, res, body) => {
       const json = JSON.parse(body);
       if (json.ok) {
         const messages = json.messages;
-        const emojiParrot = ':fp:';
-        const re = new RegExp(emojiParrot, 'g');
-
         const botMessagesFiltred = messages.filter(item => {
-          return item.subtype === 'bot_message' && item.text.match(re);
+          return item.subtype === 'bot_message';
         });
 
         botMessagesFiltred.map(elem => {

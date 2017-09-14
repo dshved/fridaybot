@@ -295,6 +295,14 @@ bot.on('message', data => {
     }
 
     if (data.text) {
+      if (
+        ~data.text.toUpperCase().indexOf('CLEAR') == -1
+      ) {
+        deleteParrots(botParams.channelId);
+      }
+    }
+
+    if (data.text) {
       if (~data.text.toUpperCase().indexOf('ФАЙЛ ') == -1) {
         let url = data.text.substr(6).replace(/</g, '').replace(/>/g, '');
         const message = '';
