@@ -41,7 +41,6 @@ async function replaceMention(str) {
   const matchChannel = myRegexpChannel.exec(str);
   const matchUser = myRegexpUser.exec(str);
   let message = str;
-
   if (matchChannel) {
     message = matchChannel[1].substr(0, 1) + matchChannel[2];
     return message;
@@ -55,6 +54,7 @@ async function replaceMention(str) {
       return message.toUpperCase();
     }
   }
+  return message;
 }
 
 const replaceTextEmoji = str => {
@@ -129,6 +129,7 @@ async function sayText(text, split, maxW, away, callback) {
   }
   text = text.substr(0, text.length);
   text = await replaceMention(text);
+
   setTimeout(function() {
     const newStr = replaceTextEmoji(text);
     let replaced = false;
