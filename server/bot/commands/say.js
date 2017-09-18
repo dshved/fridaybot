@@ -34,29 +34,28 @@ const replaseEmoji = (value, message) => {
   return message;
 };
 
-const replaceMention = (str, resolve) => {
+async function replaceMention(str) {
   const myRegexpChannel = /(#\w+)\|(\w+)/g;
   const myRegexpUser = /@\w+/g;
 
   const matchChannel = myRegexpChannel.exec(str);
   const matchUser = myRegexpUser.exec(str);
   let message = str;
-
   if (matchChannel) {
     message = matchChannel[1].substr(0, 1) + matchChannel[2];
-    resolve(message);
+    return message;
   }
 
   if (matchUser) {
     const userId = matchUser[0].substr(1, matchUser[0].length);
-    UserMessages.findOne({ user_id: userId }).then(result => {
-      if (result) {
-        message = `@${result.user_name}`;
-        resolve(message);
-      }
-    });
+    const result = await UserMessages.findOne({ user_id: userId });
+    if (result) {
+      message = `@${result.user_name}`;
+      return message.toUpperCase();
+    }
   }
-};
+  return message;
+}
 
 const replaceTextEmoji = str => {
   const myRegexpEmoji = /^(:\w+:)|(:[-\w]+:)/g;
@@ -111,7 +110,7 @@ const getRandomEmoji = cb => {
   );
 };
 
-const sayText = (text, split, maxW, away, callback) => {
+async function sayText(text, split, maxW, away, callback) {
   let newLetterArray = [];
   let newArray = [];
   let sendMessage = '';
@@ -129,9 +128,8 @@ const sayText = (text, split, maxW, away, callback) => {
     text = text.substr(7);
   }
   text = text.substr(0, text.length);
-  replaceMention(text, function(message) {
-    text = message;
-  });
+  text = await replaceMention(text);
+
   setTimeout(function() {
     const newStr = replaceTextEmoji(text);
     let replaced = false;
@@ -145,7 +143,6 @@ const sayText = (text, split, maxW, away, callback) => {
         replacedBg = newStr.emoji[1];
       }
     }
-
     if (text.length > maxW) {
       callback('', {
         message: `, ты просишь слишком много... Я могу сказать не больше ${maxW} символов!`,
@@ -163,7 +160,6 @@ const sayText = (text, split, maxW, away, callback) => {
         });
       }
     }
-
     newLetterArray.forEach(item => {
       const newArray = [];
       item.forEach(itm => {
@@ -220,8 +216,8 @@ const sayText = (text, split, maxW, away, callback) => {
     } else {
       callback(newMessage, {});
     }
-  }, 500);
-};
+  }, 1000);
+}
 
 const sayEmoji = (text, split, maxW, callback) => {
   if (text.length > maxW) {
@@ -264,7 +260,10 @@ const sayBorderText = (text, split, maxW, callback) => {
     .replace(/&AMP;/g, '&')
     .replace(/&LT;/g, '<')
     .replace(/&GT;/g, '>');
-  userText.replace(/&AMP;/g, '&').replace(/&LT;/g, '<').replace(/&GT;/g, '>');
+  userText
+    .replace(/&AMP;/g, '&')
+    .replace(/&LT;/g, '<')
+    .replace(/&GT;/g, '>');
   replaceMention(userText, message => {
     userText = message;
   });
