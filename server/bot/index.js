@@ -1,6 +1,6 @@
 const SlackBot = require('./../../slackbots.js');
 const config = require('./../../config.js');
-
+const request = require('request');
 const botResponse = require('./commands');
 
 const fs = require('fs');
@@ -295,6 +295,14 @@ bot.on('message', data => {
     }
 
     if (data.text) {
+      if (
+        ~data.text.toUpperCase().indexOf('CLEAR') == -1
+      ) {
+        deleteParrots(botParams.channelId);
+      }
+    }
+
+    if (data.text) {
       if (~data.text.toUpperCase().indexOf('ФАЙЛ ') == -1) {
         let url = data.text.substr(6).replace(/</g, '').replace(/>/g, '');
         const message = '';
@@ -395,6 +403,9 @@ bot.on('message', data => {
                           const countParrots = result.count_parrots;
                           userStatistics = `\nПользователем было отправлено:\nсообщений - ${countMessages}\nпэрротов - ${countParrots}`;
                         }
+                        if (messageParams.thread_ts) {
+                          delete messageParams['thread_ts'];
+                        }
                         bot.postMessageToChannel(
                           botParams.channelName,
                           leaveMessage + userStatistics,
@@ -464,6 +475,9 @@ bot.on('message', data => {
                         .replace(/real_name/g, data.user_profile.real_name)
                         .replace(/user_name/g, `<@${data.user_profile.name}>`)
                         .replace(/channel_name/g, `<#${botParams.channelId}>`);
+                    if (messageParams.thread_ts) {
+                      delete messageParams['thread_ts'];
+                    }
                     bot.postMessageToChannel(
                       botParams.channelName,
                       joinMessage,

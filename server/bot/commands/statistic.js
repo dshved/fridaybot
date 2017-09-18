@@ -300,7 +300,7 @@ function whenFriday(text, callback) {
   const imageUrl =
     result < 0
       ? 'http://cdn3.imgbb.ru/user/71/718372/201411/13f9ea725b0d50a309354ea6db436af8.jpg'
-      : 'http://www.netlore.ru/upload/files/1307/p17d2ggj6e189vgg519kpbr7vf512.jpg';
+      : 'http://memepedia.ru/wp-content/uploads/2017/06/%D0%BC%D1%83%D0%B6%D0%B8%D0%BA-%D1%81-%D0%BF%D0%B5%D1%81%D0%BA%D0%BE%D0%BC-%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD.jpg';
 
   attachment.username = `fridaybot`;
   attachment.icon_emoji = ':fbf:';
