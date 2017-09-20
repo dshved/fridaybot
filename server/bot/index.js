@@ -449,7 +449,7 @@ bot.on('message', data => {
           saveLog(data);
         }
       });
-      getSticker(data.text, att => {
+      getSticker(data, att => {
         const attr = isThread(data, att);
         bot.postMessageToChannel(botParams.channelName, '', attr);
       });

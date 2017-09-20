@@ -1,6 +1,7 @@
 'use strict';
-
+const request = require('request');
 const Sticker = require('./../../models/sticker').Sticker;
+const config = require('./../../../config');
 
 function randomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -8,21 +9,33 @@ function randomInteger(min, max) {
   return rand;
 }
 
-function getSticker(emoji, callback) {
-  Sticker.find({ emoji: emoji }).then(result => {
+function getSticker(data, callback) {
+  Sticker.find({ emoji: data.text }).then(result => {
     if (result.length) {
-      const randomEmoji = randomInteger(0, result.length - 1);
-      const attachment = {};
-      const domainURL = 'http://fridaybot.tk';
-      attachment.username = 'fridaybot';
-      attachment.icon_emoji = ':fbf:';
-      attachment.attachments = [
+      request(
         {
-          fallback: '',
-          image_url: `${domainURL}${result[randomEmoji].image_url}`,
+          url: `https://slack.com/api/users.info?token=${config.bot
+            .token}&user=${data.user}&pretty=1`,
+          encoding: null,
         },
-      ];
-      callback(attachment);
+        (err, res, body) => {
+          const json = JSON.parse(body);
+          if (json.ok) {
+            const randomEmoji = randomInteger(0, result.length - 1);
+            const attachment = {};
+            const domainURL = 'http://fridaybot.tk';
+            attachment.username = json.user.name;
+            attachment.icon_url = json.user.profile.image_72;
+            attachment.attachments = [
+              {
+                fallback: '',
+                image_url: `${domainURL}${result[randomEmoji].image_url}`,
+              },
+            ];
+            callback(attachment);
+          }
+        },
+      );
     }
   });
 }
