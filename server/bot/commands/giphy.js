@@ -18,7 +18,7 @@ const getGiphy = (text, callback) => {
           {
             fallback: 'Giphy',
             color: '#36a64f',
-            title: 'Giphy',
+            title: `Giphy/${text}`,
             image_url: json.data.image_url,
           },
         ];
