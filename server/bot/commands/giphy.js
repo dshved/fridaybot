@@ -13,7 +13,7 @@ const getGiphy = (text, callback) => {
       const attachment = {};
       attachment.username = `giphy`;
       attachment.icon_emoji = ':giphy:';
-      if (json.meta.status == 200) {
+      if (json.meta.status == 200 && Object.keys(json.data).length) {
         attachment.attachments = [
           {
             fallback: 'Giphy',
