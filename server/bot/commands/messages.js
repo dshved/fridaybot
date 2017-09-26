@@ -227,6 +227,20 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./say').goAway,
   },
+  {
+    messages: ['GIPHY '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./giphy').getGiphy,
+  },
+  {
+    messages: ['GIPHY'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./giphy').getGiphy,
+  },
 ];
 
 module.exports = { messages };

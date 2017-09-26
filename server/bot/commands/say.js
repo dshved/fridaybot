@@ -264,9 +264,7 @@ const sayBorderText = (text, split, maxW, callback) => {
     .replace(/&AMP;/g, '&')
     .replace(/&LT;/g, '<')
     .replace(/&GT;/g, '>');
-  replaceMention(userText, message => {
-    userText = message;
-  });
+  replaceMention(userText).then(mes => (userText = mes));
   setTimeout(() => {
     userText = userText.toUpperCase();
     const newStr = replaceTextEmoji(userText);
