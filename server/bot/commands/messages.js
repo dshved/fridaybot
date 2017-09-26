@@ -242,7 +242,7 @@ const messages = [
     callback: require('./giphy').getGiphy,
   },
   {
-    messages: ['ФРАЙДАЧ ПОЗНОВАТЕЛЬНЫЙ'],
+    messages: ['ФРАЙДАЧ ПОЗНАВАТЕЛЬНЫЙ'],
     startFrom: false,
     entrance: false,
     channels: ['test', 'friday', 'direct'],
