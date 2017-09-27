@@ -300,7 +300,7 @@ function whenFriday(text, callback) {
   const imageUrl =
     result < 0
       ? 'http://cdn3.imgbb.ru/user/71/718372/201411/13f9ea725b0d50a309354ea6db436af8.jpg'
-      : 'https://www.film.ru/sites/default/files/styles/thumb_724x380/public/mem6.jpg';
+      : 'https://cs.pikabu.ru/images/big_size_comm/2013-11_4/13847157274087.jpg';
 
   attachment.username = `fridaybot`;
   attachment.icon_emoji = ':fbf:';
