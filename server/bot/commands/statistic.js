@@ -299,7 +299,7 @@ function whenFriday(text, callback) {
   const attachment = {};
   const imageUrl =
     result < 0
-      ? 'http://cdn3.imgbb.ru/user/71/718372/201411/13f9ea725b0d50a309354ea6db436af8.jpg'
+      ? 'http://s55.radikal.ru/i150/1110/3c/4a7b35d2da7b.jpg'
       : 'https://cs.pikabu.ru/images/big_size_comm/2013-11_4/13847157274087.jpg';
 
   attachment.username = `fridaybot`;
