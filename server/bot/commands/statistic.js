@@ -300,7 +300,7 @@ function whenFriday(text, callback) {
   const imageUrl =
     result < 0
       ? 'http://memok.net/uploads/2014/01/26/52e4f0c4c579a.jpg'
-      : 'https://artchive.ru/res/media/img/oy1200/work/8c0/104792.jpg';
+      : 'https://i.ytimg.com/vi/hqcWAPh-pvM/maxresdefault.jpg';
 
   attachment.username = `fridaybot`;
   attachment.icon_emoji = ':fbf:';
