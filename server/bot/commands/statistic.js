@@ -302,8 +302,8 @@ function whenFriday(text, callback) {
       ? 'http://www.lexium.ru/images/2010/08/patnicco-410x612.jpg'
       : 'https://i.ytimg.com/vi/hqcWAPh-pvM/maxresdefault.jpg';
 
-  attachment.username = `fridaybot`;
-  attachment.icon_emoji = ':fbf:';
+  attachment.username = `ФРАААЙДАЧ`;
+  attachment.icon_emoji = ':kwat:';
   attachment.attachments = [
     {
       fallback: '',
