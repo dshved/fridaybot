@@ -299,11 +299,11 @@ function whenFriday(text, callback) {
   const attachment = {};
   const imageUrl =
     result < 0
-      ? 'http://www.lexium.ru/images/2010/08/patnicco-410x612.jpg'
-      : 'https://i.ytimg.com/vi/hqcWAPh-pvM/maxresdefault.jpg';
+      ? 'http://memok.net/uploads/2014/01/26/52e4f0c4c579a.jpg'
+      : 'https://i2.wp.com/picsmine.com/wp-content/uploads/2017/02/Sad-Memes-man-crying-front-of-computer.png';
 
-  attachment.username = `ФРАААЙДАЧ`;
-  attachment.icon_emoji = ':kwat:';
+  attachment.username = `fridaybot`;
+  attachment.icon_emoji = ':fbf:';
   attachment.attachments = [
     {
       fallback: '',
