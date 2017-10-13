@@ -299,7 +299,7 @@ function whenFriday(text, callback) {
   const attachment = {};
   const imageUrl =
     result < 0
-      ? 'http://memok.net/uploads/2014/01/26/52e4f0c4c579a.jpg'
+      ? 'http://www.lexium.ru/images/2010/08/patnicco-410x612.jpg'
       : 'https://i.ytimg.com/vi/hqcWAPh-pvM/maxresdefault.jpg';
 
   attachment.username = `fridaybot`;
