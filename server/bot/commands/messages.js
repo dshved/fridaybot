@@ -241,6 +241,13 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./giphy').getGiphy,
   },
+  {
+    messages: ['ФРАЙДАЧ ПОЗНАВАТЕЛЬНЫЙ'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./wikipedia').wiki,
+  },
 ];
 
 module.exports = { messages };

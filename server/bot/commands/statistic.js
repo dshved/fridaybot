@@ -299,8 +299,8 @@ function whenFriday(text, callback) {
   const attachment = {};
   const imageUrl =
     result < 0
-      ? 'http://cdn3.imgbb.ru/user/71/718372/201411/13f9ea725b0d50a309354ea6db436af8.jpg'
-      : 'https://www.film.ru/sites/default/files/styles/thumb_724x380/public/mem6.jpg';
+      ? 'http://memok.net/uploads/2014/01/26/52e4f0c4c579a.jpg'
+      : 'https://i2.wp.com/picsmine.com/wp-content/uploads/2017/02/Sad-Memes-man-crying-front-of-computer.png';
 
   attachment.username = `fridaybot`;
   attachment.icon_emoji = ':fbf:';
