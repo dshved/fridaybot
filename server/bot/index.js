@@ -189,7 +189,7 @@ bot.on('message', data => {
       const message = '';
       const attachment = {};
       attachment.username = 'fridaybot';
-      attachment.icon_emoji = ':fbf:';
+      attachment.icon_emoji = ':fridaybot_new:';
       attachment.attachments = [
         {
           fallback: '',
@@ -311,7 +311,7 @@ bot.on('message', data => {
         const message = '';
         const attachment = {};
         attachment.username = 'fridaybot';
-        attachment.icon_emoji = ':fbf:';
+        attachment.icon_emoji = ':fridaybot_new:';
         attachment.attachments = [
           {
             fallback: '',

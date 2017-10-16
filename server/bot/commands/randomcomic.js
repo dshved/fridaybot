@@ -24,7 +24,7 @@ function getRandomComic(text, callback) {
 
       const attachment = {};
       attachment.username = `fridaybot`;
-      attachment.icon_emoji = ':fbf:';
+      attachment.icon_emoji = ':fridaybot_new:';
       if (imageSrc) {
         imageSrc = imageSrc.substr(2);
         attachment.attachments = [
