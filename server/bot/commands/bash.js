@@ -2,13 +2,22 @@
 const request = require('request');
 const cheerio = require('cheerio');
 const iconv = require('iconv-lite');
+const _ = require('lodash');
 
 function getBashPost(text, callback) {
+  let isYear = /\d{4}$/.test(text);
+  let year;
+  if (isYear && text >= 2004 && text <= 2017) {
+    year = text;
+  } else {
+    year = _.random(2017, 2004);
+  }
+
   let bashArray = [];
-  const randomBashId = Math.floor(Math.random() * (50 - 1 + 1)) + 1;
+  const randomBashId = _.random(1, 50);
   request(
     {
-      url: 'http://bash.im/random',
+      url: `http://bash.im/bestyear/{year}`,
       encoding: null,
     },
     (err, res, body) => {
@@ -26,7 +35,7 @@ function getBashPost(text, callback) {
           .replace(/&lt;/g, '<')
           .replace(/&gt;/g, '>');
       });
-      callback(bashArray[randomBashId], {});
+      callback(`${year} год\n ${bashArray[randomBashId]}`, {});
     },
   );
 }
