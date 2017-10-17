@@ -1,5 +1,6 @@
 'use strict';
 const request = require('request');
+const _ = require('lodash');
 const aParrots = require('./../../../alphabet_parrots.js');
 const aEpilepsy = require('./../../../alphabet_epilepsy.js');
 const config = require('./../../../config.js');
@@ -84,11 +85,6 @@ const replaceTextEmoji = str => {
   }
 };
 
-function randomInteger(min, max) {
-  var rand = min + Math.random() * (max + 1 - min);
-  rand = Math.floor(rand);
-  return rand;
-}
 const getRandomEmoji = cb => {
   request(
     {
@@ -101,9 +97,8 @@ const getRandomEmoji = cb => {
       if (json.ok) {
         const randomEmoji = [];
         const emojiList = Object.keys(json.emoji);
-
-        randomEmoji.push(emojiList[randomInteger(1, emojiList.length)]);
-        randomEmoji.push(emojiList[randomInteger(1, emojiList.length)]);
+        randomEmoji.push(emojiList[_.random(1, emojiList.length)]);
+        randomEmoji.push(emojiList[_.random(1, emojiList.length)]);
         cb(randomEmoji);
       }
     },
