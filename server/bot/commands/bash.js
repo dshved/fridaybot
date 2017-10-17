@@ -15,9 +15,10 @@ function getBashPost(text, callback) {
 
   let bashArray = [];
   const randomBashId = _.random(1, 50);
+  const randomMonth = _.random(1, 12);
   request(
     {
-      url: `http://bash.im/bestyear/{year}`,
+      url: `http://bash.im/bestyear/${year}/${randomMonth}`,
       encoding: null,
     },
     (err, res, body) => {
