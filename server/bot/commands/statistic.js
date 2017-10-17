@@ -303,7 +303,7 @@ function whenFriday(text, callback) {
       : 'https://i2.wp.com/picsmine.com/wp-content/uploads/2017/02/Sad-Memes-man-crying-front-of-computer.png';
 
   attachment.username = `fridaybot`;
-  attachment.icon_emoji = ':fbf:';
+  attachment.icon_emoji = ':fridaybot_new:';
   attachment.attachments = [
     {
       fallback: '',

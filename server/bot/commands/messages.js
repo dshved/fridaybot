@@ -79,6 +79,13 @@ const messages = [
     callback: require('./bash').bash,
   },
   {
+    messages: ['БАШ ', 'BASH ', 'БАШОРГ '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./bash').bash,
+  },
+  {
     messages: ['ИЛИТА', 'КТО ИЛИТА', 'КТО ИЛИТА?'],
     startFrom: false,
     entrance: false,

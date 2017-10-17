@@ -25,7 +25,7 @@ function getSticker(data, callback) {
             const attachment = {};
             const domainURL = 'http://fridaybot.tk';
             attachment.username = json.user.name;
-            attachment.icon_emoji = ':fbf:';
+            attachment.icon_emoji = ':fridaybot_new:';
             attachment.attachments = [
               {
                 fallback: '',
