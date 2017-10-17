@@ -59,9 +59,11 @@ async function replaceMention(str) {
       let result = await UserMessages.findOne({ user_id: userId });
       if (result) {
         message = message.replace(`<${matchUser[i]}>`, `@${result.user_name}`);
+        message = message.replace(`${matchUser[i]}`, `@${result.user_name}`);
       }
     }
   }
+
   return message.toUpperCase();
 }
 
@@ -248,7 +250,7 @@ const sayEmoji = (text, split, maxW, callback) => {
   }, 1000);
 };
 
-const sayBorderText = (text, split, maxW, callback) => {
+async function sayBorderText(text, split, maxW, callback) {
   if (text.length > maxW) {
     callback('', {
       message: `, ты просишь слишком много... Я могу сказать не больше ${maxW} символов!`,
@@ -266,7 +268,7 @@ const sayBorderText = (text, split, maxW, callback) => {
     .replace(/&AMP;/g, '&')
     .replace(/&LT;/g, '<')
     .replace(/&GT;/g, '>');
-  replaceMention(userText).then(mes => (userText = mes));
+  userText = await replaceMention(userText);
   setTimeout(() => {
     userText = userText.toUpperCase();
     const newStr = replaceTextEmoji(userText);
@@ -330,7 +332,7 @@ const sayBorderText = (text, split, maxW, callback) => {
     callback(newMessage, {});
     sendMessage = '';
   }, 1000);
-};
+}
 
 module.exports = {
   inRow: function(text, callback) {
