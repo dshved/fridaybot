@@ -39,23 +39,30 @@ async function replaceMention(str) {
   const myRegexpChannel = /(#\w+)\|(\w+)/g;
   const myRegexpUser = /@\w+/g;
 
-  const matchChannel = myRegexpChannel.exec(str);
-  const matchUser = myRegexpUser.exec(str);
-  let message = str;
-  if (matchChannel) {
-    message = matchChannel[1].substr(0, 1) + matchChannel[2];
-    return message;
+  const matchUser = [];
+  let match;
+  while ((match = myRegexpUser.exec(str)) != null) {
+    matchUser.push(match[0]);
   }
 
-  if (matchUser) {
-    const userId = matchUser[0].substr(1, matchUser[0].length);
-    const result = await UserMessages.findOne({ user_id: userId });
-    if (result) {
-      message = `@${result.user_name}`;
-      return message.toUpperCase();
+  const matchChannel = myRegexpChannel.exec(str);
+
+  let message = str;
+  if (matchChannel) {
+    let channel = matchChannel[1].substr(0, 1) + matchChannel[2];
+    message = message.replace(`<${matchChannel[0]}>`, channel);
+  }
+
+  if (matchUser.length) {
+    for (let i = 0; i < matchUser.length; i++) {
+      let userId = matchUser[i].substr(1, matchUser[0].length);
+      let result = await UserMessages.findOne({ user_id: userId });
+      if (result) {
+        message = message.replace(`<${matchUser[i]}>`, `@${result.user_name}`);
+      }
     }
   }
-  return message;
+  return message.toUpperCase();
 }
 
 const replaceTextEmoji = str => {
