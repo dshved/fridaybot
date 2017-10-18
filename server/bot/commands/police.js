@@ -97,7 +97,8 @@ async function getPolice(text, callback, msg) {
           if (!res.user_police_img) {
             request(
               {
-                url: `https://slack.com/api/users.info?token=${config.bot.token}&user=${userId}&pretty=1`,
+                url: `https://slack.com/api/users.info?token=${config.bot
+                  .token}&user=${userId}&pretty=1`,
                 encoding: null,
               },
               (err, res, body) => {

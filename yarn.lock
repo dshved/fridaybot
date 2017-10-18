@@ -1882,7 +1882,7 @@ mongodb@2.2.33, mongodb@^2.0.36:
     mongodb-core "2.1.17"
     readable-stream "2.2.7"
 
-mongoose@^4.12.3:
+mongoose@^4.10.8:
   version "4.12.3"
   resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.12.3.tgz#7099bf8ce4945150001f4c2462e56c9e958ddcb9"
   dependencies:
