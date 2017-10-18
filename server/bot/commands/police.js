@@ -17,7 +17,7 @@ function promiseRequest(url) {
         reject(err);
       }
       resolve(body);
-    })
+    });
   });
 }
 
@@ -44,27 +44,33 @@ async function convertImage(url, userName) {
   try {
     const path = './public/uploads/police/';
     const ext = /\.png$/.test(url) ? 'png' : 'jpg';
-    const file = await promiseRequest(url);
-    await writeFileAsync(`${path}${userName}.${ext}`, file);
+    const file = await promiseRequest({
+      url: url,
+      encoding: null,
+    });
+    await writeFileAsync(`${path}${userName}.${ext}`, file, 'binary');
     const image = PImage.make(192, 192);
     const ctx = image.getContext('2d');
     const METHOD = ext === 'png' ? 'PNG' : 'JPEG';
-    const img = await PImage[`decode${METHOD}FromStream`](fs.createReadStream(`${path}${userName}.${ext}`));
+    const img = await PImage[`decode${METHOD}FromStream`](
+      fs.createReadStream(`${path}${userName}.${ext}`),
+    );
     draw(ctx, img);
-    await PImage[`encode${METHOD}ToStream`](image, fs.createWriteStream(`${path}${userName}_police.${ext}`));
+    await PImage[`encode${METHOD}ToStream`](
+      image,
+      fs.createWriteStream(`${path}${userName}_police.${ext}`),
+    );
     await unlinkAsync(`${path}${userName}.${ext}`);
     return `/uploads/police/${userName}_police.${ext}`;
-  }
-  catch (err) {
+  } catch (err) {
     console.error(err);
   }
 }
 
-
 async function getPolice(text, callback, msg) {
   const attachment = {
     username: 'милиция',
-    icon_emoji: ':warneng:'
+    icon_emoji: ':warneng:',
   };
   const myRegexpUser = /@\w+/g;
   const matchUser = text.match(myRegexpUser);
@@ -80,7 +86,7 @@ async function getPolice(text, callback, msg) {
   }
   //if we have only one user we may not care about unique
   if (matchUser.length === 1) {
-    const userId = users[0].substr(1, users[0].length);
+    const userId = matchUser[0].substr(1, matchUser[0].length);
     const res = await UserMessages.findOne({ user_id: userId });
     if (!res) {
       return;
@@ -97,12 +103,13 @@ async function getPolice(text, callback, msg) {
       return callback(message, {}, attachment);
     }
     const response = await promiseRequest({
-        url: `https://slack.com/api/users.info?token=${config.bot.token}&user=${userId}&pretty=1`,
-        encoding: null,
+      url: `https://slack.com/api/users.info?token=${config.bot
+        .token}&user=${userId}&pretty=1`,
+      encoding: null,
     });
     const { user, ok } = JSON.parse(response);
     if (!ok) {
-      console.log(err, 'something went wrong with request');
+      console.error(err, 'something went wrong with request');
       return;
     }
     const userName = user.name;
@@ -117,7 +124,7 @@ async function getPolice(text, callback, msg) {
       {
         fallback: message,
         color: '#ff0000',
-        image_url: `https://fridaybot.tk/${path}`,
+        image_url: `https://fridaybot.tk/${imagePath}`,
       },
     ];
     return callback(message, {}, attachment);
