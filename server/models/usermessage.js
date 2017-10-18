@@ -23,6 +23,10 @@ const userMessages = new Schema({
     type: Number,
     required: true,
   },
+  user_police_img: {
+    type: String,
+    required: false,
+  },
 });
 
 const UserMessages = mongoose.model('UserMessages', userMessages);
