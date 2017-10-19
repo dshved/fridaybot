@@ -191,7 +191,6 @@ bot.on('message', data => {
         { parrot_counts: botParams.parrotCount },
       ).then();
       global.io.emit('parrot count', botParams.parrotCount);
-
       const user = data.user ? data.user : data.bot_id;
       const statistic = new Statistics({
         event_type: 'user_message',
