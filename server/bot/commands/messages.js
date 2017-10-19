@@ -132,7 +132,7 @@ const messages = [
     startFrom: false,
     entrance: true,
     channels: ['test', 'friday', 'direct'],
-    callback: require('./police').police,
+    callback: require('./police'),
   },
   {
     messages: ['СТАТИСТИКА ЗА '],
