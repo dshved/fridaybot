@@ -87,46 +87,49 @@ async function getPolice(text, callback, msg) {
   //if we have only one user we may not care about unique
   if (matchUser.length === 1) {
     const userId = matchUser[0].substr(1, matchUser[0].length);
-    const res = await UserMessages.findOne({ user_id: userId });
-    if (!res) {
-      return;
-    }
-    if (res.user_police_img) {
-      const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse: ${res.user_name}\nВы окружены!!!\n`;
-      attachment.attachments = [
-        {
-          fallback: message,
-          color: '#ff0000',
-          image_url: `https://fridaybot.tk/${res.user_police_img}`,
-        },
-      ];
-      return callback(message, {}, attachment);
-    }
-    const response = await promiseRequest({
-      url: `https://slack.com/api/users.info?token=${config.bot
-        .token}&user=${userId}&pretty=1`,
-      encoding: null,
-    });
-    const { user, ok } = JSON.parse(response);
-    if (!ok) {
-      console.error(err, 'something went wrong with request');
-      return;
-    }
-    const userName = user.name;
-    const imageURL = user.profile.image_192;
-    const imagePath = await convertImage(imageURL, userName);
-    await UserMessages.findOneAndUpdate(
-      { user_id: userId },
-      { user_police_img: imagePath },
-    );
-    const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse: ${userName}\nВы окружены!!!\n`;
+    // const res = await UserMessages.findOne({ user_id: userId });
+    // if (!res) {
+    //   return;
+    // }
+    // if (res.user_police_img) {
+    //   const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse: ${res.user_name}\nВы окружены!!!\n`;
+    //   attachment.attachments = [
+    //     {
+    //       fallback: message,
+    //       color: '#ff0000',
+    //       image_url: `https://fridaybot.tk/${res.user_police_img}`,
+    //     },
+    //   ];
+    //   return callback(message, {}, attachment);
+    // }
+    // const response = await promiseRequest({
+    //   url: `https://slack.com/api/users.info?token=${config.bot
+    //     .token}&user=${userId}&pretty=1`,
+    //   encoding: null,
+    // });
+    // const { user, ok } = JSON.parse(response);
+    // if (!ok) {
+    //   console.error(err, 'something went wrong with request');
+    //   return;
+    // }
+    // const userName = user.name;
+    // const imageURL = user.profile.image_192;
+    // const imagePath = await convertImage(imageURL, userName);
+    // await UserMessages.findOneAndUpdate(
+    //   { user_id: userId },
+    //   { user_police_img: imagePath },
+    // );
+    // const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse: ${userName}\nВы окружены!!!\n`;
+    const message =
+      ':drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:';
     attachment.attachments = [
       {
         fallback: message,
         color: '#ff0000',
-        image_url: `https://fridaybot.tk/${imagePath}`,
+        image_url: `https://fridaybot.tk/police/${userId}`,
       },
     ];
+    console.log(attachment);
     return callback(message, {}, attachment);
   }
 

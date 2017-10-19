@@ -70,8 +70,8 @@ router.get('/police/:id', (req, res, next) => {
       return;
     }
     const baseImg = await Jimp.read('./public/images/police/mask_1.png');
-    let temp = await getImage(user.profile.image_48);
-    baseImg.composite(temp, 100, 90);
+    let temp = await getImage(user.profile.image_192);
+    baseImg.composite(temp, 404, 357);
     const endImg = await Jimp.read('./public/images/police/mask_1.png');
     baseImg.composite(endImg, 0, 0);
     baseImg.getBase64(Jimp.MIME_PNG, function(err, base) {
