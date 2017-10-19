@@ -38,6 +38,13 @@ function draw(ctx, img) {
   ctx.lineTo(192, 162);
 
   ctx.stroke();
+  
+  strDataURI = `https://avatanplus.com/files/resources/mid/5952a2d9f23eb15ceacc2388.png`;
+  var img = new Image;
+  img.onload = function(){
+    ctx.drawImage(img,0,60,192,192);
+  };
+  img.src = strDataURI;
 }
 
 async function convertImage(url, userName) {
