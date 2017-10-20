@@ -75,18 +75,18 @@ async function getPolice(text, callback, msg) {
       },
       3: {
         imagePath: './public/images/police/mask_3-5.png',
-        imagePositions: [[518, 249], [730, 249], [985, 249]],
+        imagePositions: [[518, 249], [730, 249], [958, 249]],
       },
       4: {
         imagePath: './public/images/police/mask_3-5.png',
-        imagePositions: [[518, 249], [730, 249], [985, 249], [1175, 249]],
+        imagePositions: [[518, 249], [730, 249], [958, 249], [1175, 249]],
       },
       5: {
         imagePath: './public/images/police/mask_3-5.png',
         imagePositions: [
           [518, 249],
           [730, 249],
-          [985, 249],
+          [958, 249],
           [1175, 249],
           [1398, 249],
         ],
