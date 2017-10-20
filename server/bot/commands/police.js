@@ -113,7 +113,10 @@ async function getPolice(text, callback, msg) {
     }
     const endImg = await Jimp.read(imgInfo[countUser].imagePath);
     baseImg.composite(endImg, 0, 0);
-    baseImg.write(`./public/uploads/police/${imageId}.jpg`);
+    baseImg
+      .resize(800, Jimp.AUTO)
+      .quality(60)
+      .write(`./public/uploads/police/${imageId}.jpg`);
     const newPoliceImg = new Police({
       image_id: imageId,
       image_url: `/uploads/police/${imageId}.jpg`,
