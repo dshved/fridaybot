@@ -1,13 +1,12 @@
 'use strict';
 const request = require('request');
 const { promisify } = require('util');
+const { random } = require('lodash');
 const fs = require('fs');
 const unlinkAsync = promisify(fs.unlink);
 const writeFileAsync = promisify(fs.writeFile);
 const Jimp = require('jimp');
-const { sayBorderText } = require('./say');
-const { UserMessages } = require('./../../models/usermessage');
-const { Police } = require('./../../models/police');
+const GIFEncoder = require('gifencoder');
 const config = require('./../../../config.js');
 
 function promiseRequest(url) {
@@ -51,89 +50,119 @@ async function getPolice(text, callback, msg) {
 
   const imageId = users.join('-').replace(/@/g, '');
   const userArray = imageId.split('-');
-  const res = await Police.findOne({ image_id: imageId });
-  if (res) {
-    const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:`;
-    attachment.attachments = [
-      {
-        fallback: message,
-        color: '#ff0000',
-        image_url: `https://fridaybot.tk/${res.image_url}`,
-      },
-    ];
 
-    return callback(message, {}, attachment);
-  } else {
-    const imgInfo = {
-      1: {
-        imagePath: './public/images/police/mask_1.png',
-        imagePositions: [[404, 357]],
-      },
-      2: {
-        imagePath: './public/images/police/mask_2.png',
-        imagePositions: [[352, 354], [652, 354]],
-      },
-      3: {
-        imagePath: './public/images/police/mask_3-5.png',
-        imagePositions: [[518, 249], [730, 249], [958, 249]],
-      },
-      4: {
-        imagePath: './public/images/police/mask_3-5.png',
-        imagePositions: [[518, 249], [730, 249], [958, 249], [1175, 249]],
-      },
-      5: {
-        imagePath: './public/images/police/mask_3-5.png',
-        imagePositions: [
-          [518, 249],
-          [730, 249],
-          [958, 249],
-          [1175, 249],
-          [1398, 249],
-        ],
-      },
-    };
-    const countUser = userArray.length;
-    const baseImg = await Jimp.read(imgInfo[countUser].imagePath);
+  const imgInfo = {
+    1: {
+      imageNames: ['mask_1-1.png', 'mask_1-2.png', 'mask_1-3.png'],
+      imagePositions: [[404, 357]],
+    },
+    2: {
+      imageNames: ['mask_2-1.png', 'mask_2-2.png', 'mask_2-3.png'],
+      imagePositions: [[352, 354], [652, 354]],
+    },
+    3: {
+      imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
+      imagePositions: [[518, 249], [730, 249], [958, 249]],
+    },
+    4: {
+      imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
+      imagePositions: [[518, 249], [730, 249], [958, 249], [1175, 249]],
+    },
+    5: {
+      imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
+      imagePositions: [
+        [518, 249],
+        [730, 249],
+        [958, 249],
+        [1175, 249],
+        [1398, 249],
+      ],
+    },
+  };
+  const countUser = userArray.length;
+  const randomName = `${imageId}-${Math.random()
+    .toString(36)
+    .substring(2)}`;
+  const baseImg = await Jimp.read(
+    `./public/images/police/${imgInfo[countUser].imageNames[0]}`,
+  );
+  const { width, height } = baseImg.bitmap;
+  const encoder = new GIFEncoder(width, height);
+  encoder
+    .createReadStream()
+    .pipe(fs.createWriteStream(`./public/uploads/police/${randomName}.gif`));
+  encoder.start();
+  encoder.setRepeat(0);
+  encoder.setDelay(100);
+  encoder.setQuality(5);
 
-    for (let i = 0; i < userArray.length; i++) {
-      const response = await promiseRequest({
-        url: `https://slack.com/api/users.info?token=${config.bot
-          .token}&user=${userArray[i]}&pretty=1`,
-        encoding: null,
-      });
-      const { user, ok } = JSON.parse(response);
-      if (!ok) {
-        return;
-      }
-
-      let temp = await Jimp.read(user.profile.image_192);
-      let x = imgInfo[countUser].imagePositions[i][0];
-      let y = imgInfo[countUser].imagePositions[i][1];
-      baseImg.composite(temp, x, y);
-    }
-    const endImg = await Jimp.read(imgInfo[countUser].imagePath);
-    baseImg.composite(endImg, 0, 0);
-    baseImg
-      .resize(800, Jimp.AUTO)
-      .quality(60)
-      .write(`./public/uploads/police/${imageId}.jpg`);
-    const newPoliceImg = new Police({
-      image_id: imageId,
-      image_url: `/uploads/police/${imageId}.jpg`,
+  let template = new Jimp(width, height);
+  let clear = new Jimp(width, height, 0xffffffff);
+  let ava = new Jimp(width, height);
+  let wastedText = await Jimp.read('./public/images/police/wasted.png');
+  wastedText.rotate(random(-15, 15));
+  for (let i = 0; i < userArray.length; i++) {
+    const response = await promiseRequest({
+      url: `https://slack.com/api/users.info?token=${config.bot
+        .token}&user=${userArray[i]}&pretty=1`,
+      encoding: null,
     });
-    newPoliceImg.save();
+    const { user, ok } = JSON.parse(response);
+    if (!ok) {
+      return;
+    }
 
-    const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:`;
-    attachment.attachments = [
-      {
-        fallback: message,
-        color: '#ff0000',
-        image_url: `https://fridaybot.tk/uploads/police/${imageId}.jpg`,
-      },
-    ];
-
-    return callback(message, {}, attachment);
+    let temp = await Jimp.read(user.profile.image_192);
+    let x = imgInfo[countUser].imagePositions[i][0];
+    let y = imgInfo[countUser].imagePositions[i][1];
+    ava.composite(temp, x, y);
   }
+  //переписать эту простыню
+  template.composite(clear, 0, 0);
+  template.composite(ava, 0, 0);
+  template.composite(baseImg, 0, 0);
+  template.composite(wastedText, 100, height - wastedText.bitmap.height - 100);
+
+  encoder.addFrame(template.bitmap.data);
+
+  let frame = await Jimp.read(
+    `./public/images/police/${imgInfo[countUser].imageNames[1]}`,
+  );
+
+  template.composite(clear, 0, 0);
+  template.composite(ava, 0, 12);
+  template.composite(frame, 0, 0);
+  template.composite(wastedText, 100, height - wastedText.bitmap.height - 100);
+  encoder.addFrame(template.bitmap.data);
+
+  let frame2 = await Jimp.read(
+    `./public/images/police/${imgInfo[countUser].imageNames[2]}`,
+  );
+
+  template.composite(clear, 0, 0);
+  template.composite(ava, 0, 24);
+  template.composite(frame2, 0, 0);
+  template.composite(wastedText, 100, height - wastedText.bitmap.height - 100);
+  encoder.addFrame(template.bitmap.data);
+
+  template.composite(clear, 0, 0);
+  template.composite(ava, 0, 12);
+  template.composite(frame, 0, 0);
+  template.composite(wastedText, 100, height - wastedText.bitmap.height - 100);
+  encoder.addFrame(template.bitmap.data);
+
+  encoder.finish();
+
+  const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:`;
+  attachment.attachments = [
+    {
+      fallback: message,
+      color: '#ff0000',
+      image_url: `https://fridaybot.tk/uploads/police/${randomName}.jpg`,
+    },
+  ];
+
+  return callback(message, {}, attachment);
 }
 
 module.exports = getPolice;
