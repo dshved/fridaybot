@@ -158,7 +158,7 @@ async function getPolice(text, callback, msg) {
     {
       fallback: message,
       color: '#ff0000',
-      image_url: `https://fridaybot.tk/uploads/police/${randomName}.jpg`,
+      image_url: `https://fridaybot.tk/uploads/police/${randomName}.gif`,
     },
   ];
 
