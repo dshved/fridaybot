@@ -79,6 +79,24 @@ async function getPolice(text, callback, msg) {
       ],
     },
   };
+
+  const imgDesc = {
+    1: [
+      '228.png',
+      'badcoder.png',
+      'mastercommit.png',
+      'wasted.png',
+      'wastedrus.png',
+    ],
+    2: [
+      '228.png',
+      'badcoders.png',
+      'mastercommits.png',
+      'wasted.png',
+      'wastedrus.png',
+    ],
+  };
+
   const countUser = userArray.length;
   const randomName = `${imageId}-${Math.random()
     .toString(36)
@@ -99,7 +117,11 @@ async function getPolice(text, callback, msg) {
   let template = new Jimp(width, height);
   let clear = new Jimp(width, height, 0xffffffff);
   let ava = new Jimp(width, height);
-  let wastedText = await Jimp.read('./public/images/police/wasted.png');
+  let textName =
+    countUser > 1
+      ? imgDesc[2][random(imgDesc[2].length)]
+      : imgDesc[1][random(imgDesc[1].length)];
+  let wastedText = await Jimp.read(`./public/images/police/${textName}`);
   wastedText.rotate(random(-15, 15));
   for (let i = 0; i < userArray.length; i++) {
     const response = await promiseRequest({
