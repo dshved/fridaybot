@@ -119,8 +119,8 @@ async function getPolice(text, callback, msg) {
   let ava = new Jimp(width, height);
   let textName =
     countUser > 1
-      ? imgDesc[2][random(imgDesc[2].length)]
-      : imgDesc[1][random(imgDesc[1].length)];
+      ? imgDesc[2][random(imgDesc[2].length) - 1]
+      : imgDesc[1][random(imgDesc[1].length) - 1];
   let wastedText = await Jimp.read(`./public/images/police/${textName}`);
   wastedText.rotate(random(-15, 15));
   for (let i = 0; i < userArray.length; i++) {
