@@ -98,6 +98,35 @@ async function getPolice(text, callback, msg, { channel }) {
     },
   };
 
+  const imgEscape = {
+    1: {
+      imageName: 'escape-1.png',
+      imagePositions: [[359, 192]],
+    },
+    2: {
+      imageName: 'escape-2.png',
+      imagePositions: [[359, 192], [192, 257]],
+    },
+    3: {
+      imageName: 'escape-3.png',
+      imagePositions: [[359, 192], [192, 257], [40, 270]],
+    },
+    4: {
+      imageName: 'escape-4.png',
+      imagePositions: [[359, 192], [192, 257], [40, 270], [551, 257]],
+    },
+    5: {
+      imageName: 'escape-5.png',
+      imagePositions: [
+        [359, 192],
+        [192, 257],
+        [40, 270],
+        [551, 257],
+        [134, 111],
+      ],
+    },
+  };
+
   const imgDesc = {
     1: [
       '228.png',
@@ -121,9 +150,19 @@ async function getPolice(text, callback, msg, { channel }) {
   const randomName = `${imageId}-${Math.random()
     .toString(36)
     .substring(2)}`;
-  const baseImg = await Jimp.read(
-    `./public/images/police/${imgInfo[countUser].imageNames[0]}`,
-  );
+  const policeEscape = random(5) === 5 ? true : false;
+
+  let baseImg;
+  if (!policeEscape) {
+    baseImg = await Jimp.read(
+      `./public/images/police/${imgInfo[countUser].imageNames[0]}`,
+    );
+  } else {
+    baseImg = await Jimp.read(
+      `./public/images/police/${imgEscape[countUser].imageName}`,
+    );
+  }
+
   const { width, height } = baseImg.bitmap;
   const encoder = new GIFEncoder(width, height);
   encoder
@@ -156,11 +195,38 @@ async function getPolice(text, callback, msg, { channel }) {
 
     let temp = await Jimp.read(user.profile.image_192);
     temp.resize(128, Jimp.AUTO);
-    let x = imgInfo[countUser].imagePositions[i][0];
-    let y = imgInfo[countUser].imagePositions[i][1];
+    let x, y;
+    if (!policeEscape) {
+      x = imgInfo[countUser].imagePositions[i][0];
+      y = imgInfo[countUser].imagePositions[i][1];
+    } else {
+      x = imgEscape[countUser].imagePositions[i][0];
+      y = imgEscape[countUser].imagePositions[i][1];
+    }
+
     ava.composite(temp, x, y);
   }
+  if (policeEscape) {
+    template.composite(clear, 0, 0);
+    template.composite(ava, 0, 0);
+    template.composite(baseImg, 0, 0);
+    encoder.addFrame(template.bitmap.data);
+    encoder.finish();
 
+    const message = `Не в этот раз, господин полицейский!!!`;
+    attachment.username = 'Азаза';
+    attachment.icon_emoji = ':trollface:';
+
+    attachment.attachments = [
+      {
+        fallback: message,
+        color: '#ff0000',
+        image_url: `https://fridaybot.tk/uploads/police/${randomName}.gif`,
+      },
+    ];
+    delPrePolice(preMessageData);
+    return callback(message, {}, attachment);
+  }
   //переписать эту простыню
   template.composite(clear, 0, 0);
   template.composite(ava, 0, 0);
