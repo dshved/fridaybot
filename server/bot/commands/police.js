@@ -20,7 +20,25 @@ function promiseRequest(url) {
   });
 }
 
-async function getPolice(text, callback, msg) {
+async function delPrePolice({ ts, channel }) {
+  const url = `https://slack.com/api/chat.delete?token=${config.bot
+    .token}&channel=${channel}&ts=${ts}`;
+  const result = await promiseRequest(url);
+}
+
+async function prePoliceQuery(channel) {
+  const url =
+    'https://slack.com/api/chat.postMessage?token=' +
+    config.bot.token +
+    '&channel=' +
+    channel +
+    '&text=%D0%92%D1%8B%D0%B7%D0%BE%D0%B2%20%D0%BF%D1%80%D0%B8%D0%BD%D1%8F%D1%82' +
+    '&attachments=%5B%7B%22text%22%3A%20%22%22%2C%22fallback%22%3A%20%22Youme%22%2C%20%22color%22%3A%20%22%233AA3E3%22%2C%22image_url%22%3A%20%22https%3A%2F%2Ffridaybot.tk%2Fuploads%2Fpolice%2Fpremessage.jpg%20%22%2C%7D%5D&icon_emoji=%3Awarneng%3A&username=%D0%BC%D0%B8%D0%BB%D0%B8%D1%86%D0%B8%D1%8F&pretty=1';
+  const result = await promiseRequest(url);
+  return JSON.parse(result);
+}
+
+async function getPolice(text, callback, msg, { channel }) {
   const attachment = {
     username: 'милиция',
     icon_emoji: ':warneng:',
@@ -97,6 +115,8 @@ async function getPolice(text, callback, msg) {
     ],
   };
 
+  const preMessageData = await prePoliceQuery(channel);
+
   const countUser = userArray.length;
   const randomName = `${imageId}-${Math.random()
     .toString(36)
@@ -119,8 +139,8 @@ async function getPolice(text, callback, msg) {
   let ava = new Jimp(width, height);
   let textName =
     countUser > 1
-      ? imgDesc[2][random(imgDesc[2].length) - 1]
-      : imgDesc[1][random(imgDesc[1].length) - 1];
+      ? imgDesc[2][random(imgDesc[2].length - 1)]
+      : imgDesc[1][random(imgDesc[1].length - 1)];
   let wastedText = await Jimp.read(`./public/images/police/${textName}`);
   wastedText.rotate(random(-15, 15));
   for (let i = 0; i < userArray.length; i++) {
@@ -184,7 +204,7 @@ async function getPolice(text, callback, msg) {
       image_url: `https://fridaybot.tk/uploads/police/${randomName}.gif`,
     },
   ];
-
+  delPrePolice(preMessageData);
   return callback(message, {}, attachment);
 }
 
