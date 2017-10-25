@@ -54,28 +54,28 @@ async function getPolice(text, callback, msg) {
   const imgInfo = {
     1: {
       imageNames: ['mask_1-1.png', 'mask_1-2.png', 'mask_1-3.png'],
-      imagePositions: [[404, 357]],
+      imagePositions: [[240, 214]],
     },
     2: {
       imageNames: ['mask_2-1.png', 'mask_2-2.png', 'mask_2-3.png'],
-      imagePositions: [[352, 354], [652, 354]],
+      imagePositions: [[214, 214], [403, 218]],
     },
     3: {
       imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
-      imagePositions: [[518, 249], [730, 249], [958, 249]],
+      imagePositions: [[328, 155], [467, 155], [612, 155]],
     },
     4: {
       imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
-      imagePositions: [[518, 249], [730, 249], [958, 249], [1175, 249]],
+      imagePositions: [[328, 155], [467, 155], [612, 155], [754, 155]],
     },
     5: {
       imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
       imagePositions: [
-        [518, 249],
-        [730, 249],
-        [958, 249],
-        [1175, 249],
-        [1398, 249],
+        [328, 155],
+        [467, 155],
+        [612, 155],
+        [754, 155],
+        [892, 155],
       ],
     },
   };
@@ -135,10 +135,12 @@ async function getPolice(text, callback, msg) {
     }
 
     let temp = await Jimp.read(user.profile.image_192);
+    temp.resize(128, Jimp.AUTO);
     let x = imgInfo[countUser].imagePositions[i][0];
     let y = imgInfo[countUser].imagePositions[i][1];
     ava.composite(temp, x, y);
   }
+
   //переписать эту простыню
   template.composite(clear, 0, 0);
   template.composite(ava, 0, 0);
@@ -146,7 +148,6 @@ async function getPolice(text, callback, msg) {
   template.composite(wastedText, 100, height - wastedText.bitmap.height - 100);
 
   encoder.addFrame(template.bitmap.data);
-
   let frame = await Jimp.read(
     `./public/images/police/${imgInfo[countUser].imageNames[1]}`,
   );
