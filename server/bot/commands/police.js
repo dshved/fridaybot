@@ -1,13 +1,13 @@
 'use strict';
 const request = require('request');
-const PImage = require('pureimage');
 const { promisify } = require('util');
 const fs = require('fs');
 const unlinkAsync = promisify(fs.unlink);
 const writeFileAsync = promisify(fs.writeFile);
-
+const Jimp = require('jimp');
 const { sayBorderText } = require('./say');
 const { UserMessages } = require('./../../models/usermessage');
+const { Police } = require('./../../models/police');
 const config = require('./../../../config.js');
 
 function promiseRequest(url) {
@@ -19,52 +19,6 @@ function promiseRequest(url) {
       resolve(body);
     });
   });
-}
-
-function draw(ctx, img) {
-  ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 192, 192);
-  ctx.beginPath();
-  ctx.lineWidth = 20;
-  ctx.moveTo(30, 0);
-  ctx.lineTo(30, 192);
-
-  ctx.moveTo(162, 0);
-  ctx.lineTo(162, 192);
-
-  ctx.moveTo(0, 40);
-  ctx.lineTo(192, 40);
-
-  ctx.moveTo(0, 162);
-  ctx.lineTo(192, 162);
-
-  ctx.stroke();
-}
-
-async function convertImage(url, userName) {
-  try {
-    const path = './public/uploads/police/';
-    const ext = /\.png$/.test(url) ? 'png' : 'jpg';
-    const file = await promiseRequest({
-      url: url,
-      encoding: null,
-    });
-    await writeFileAsync(`${path}${userName}.${ext}`, file, 'binary');
-    const image = PImage.make(192, 192);
-    const ctx = image.getContext('2d');
-    const METHOD = ext === 'png' ? 'PNG' : 'JPEG';
-    const img = await PImage[`decode${METHOD}FromStream`](
-      fs.createReadStream(`${path}${userName}.${ext}`),
-    );
-    draw(ctx, img);
-    await PImage[`encode${METHOD}ToStream`](
-      image,
-      fs.createWriteStream(`${path}${userName}_police.${ext}`),
-    );
-    await unlinkAsync(`${path}${userName}.${ext}`);
-    return `/uploads/police/${userName}_police.${ext}`;
-  } catch (err) {
-    console.error(err);
-  }
 }
 
 async function getPolice(text, callback, msg) {
@@ -84,51 +38,6 @@ async function getPolice(text, callback, msg) {
       attachment,
     );
   }
-  //if we have only one user we may not care about unique
-  if (matchUser.length === 1) {
-    const userId = matchUser[0].substr(1, matchUser[0].length);
-    const res = await UserMessages.findOne({ user_id: userId });
-    if (!res) {
-      return;
-    }
-    if (res.user_police_img) {
-      const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse: ${res.user_name}\nВы окружены!!!\n`;
-      attachment.attachments = [
-        {
-          fallback: message,
-          color: '#ff0000',
-          image_url: `https://fridaybot.tk/${res.user_police_img}`,
-        },
-      ];
-      return callback(message, {}, attachment);
-    }
-    const response = await promiseRequest({
-      url: `https://slack.com/api/users.info?token=${config.bot
-        .token}&user=${userId}&pretty=1`,
-      encoding: null,
-    });
-    const { user, ok } = JSON.parse(response);
-    if (!ok) {
-      console.error(err, 'something went wrong with request');
-      return;
-    }
-    const userName = user.name;
-    const imageURL = user.profile.image_192;
-    const imagePath = await convertImage(imageURL, userName);
-    await UserMessages.findOneAndUpdate(
-      { user_id: userId },
-      { user_police_img: imagePath },
-    );
-    const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse: ${userName}\nВы окружены!!!\n`;
-    attachment.attachments = [
-      {
-        fallback: message,
-        color: '#ff0000',
-        image_url: `https://fridaybot.tk/${imagePath}`,
-      },
-    ];
-    return callback(message, {}, attachment);
-  }
 
   const users = [...new Set(matchUser)]; //unique array elements
 
@@ -140,18 +49,91 @@ async function getPolice(text, callback, msg) {
     );
   }
 
-  const asyncMultiply = user => {
-    return new Promise(resolve => {
-      sayBorderText(user, false, 100, cb => {
-        resolve(cb);
-      });
-    });
-  };
+  const imageId = users.join('-').replace(/@/g, '');
+  const userArray = imageId.split('-');
+  const res = await Police.findOne({ image_id: imageId });
+  if (res) {
+    const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:`;
+    attachment.attachments = [
+      {
+        fallback: message,
+        color: '#ff0000',
+        image_url: `https://fridaybot.tk/${res.image_url}`,
+      },
+    ];
 
-  const actions = users.map(asyncMultiply);
-  const data = await Promise.all(actions);
-  const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:\nСдавайтесь :gun_reverse:\n${data}Вы окружены!!!\n`;
-  return callback(message, {}, attachment);
+    return callback(message, {}, attachment);
+  } else {
+    const imgInfo = {
+      1: {
+        imagePath: './public/images/police/mask_1.png',
+        imagePositions: [[404, 357]],
+      },
+      2: {
+        imagePath: './public/images/police/mask_2.png',
+        imagePositions: [[352, 354], [652, 354]],
+      },
+      3: {
+        imagePath: './public/images/police/mask_3-5.png',
+        imagePositions: [[518, 249], [730, 249], [958, 249]],
+      },
+      4: {
+        imagePath: './public/images/police/mask_3-5.png',
+        imagePositions: [[518, 249], [730, 249], [958, 249], [1175, 249]],
+      },
+      5: {
+        imagePath: './public/images/police/mask_3-5.png',
+        imagePositions: [
+          [518, 249],
+          [730, 249],
+          [958, 249],
+          [1175, 249],
+          [1398, 249],
+        ],
+      },
+    };
+    const countUser = userArray.length;
+    const baseImg = await Jimp.read(imgInfo[countUser].imagePath);
+
+    for (let i = 0; i < userArray.length; i++) {
+      const response = await promiseRequest({
+        url: `https://slack.com/api/users.info?token=${config.bot
+          .token}&user=${userArray[i]}&pretty=1`,
+        encoding: null,
+      });
+      const { user, ok } = JSON.parse(response);
+      if (!ok) {
+        return;
+      }
+
+      let temp = await Jimp.read(user.profile.image_192);
+      let x = imgInfo[countUser].imagePositions[i][0];
+      let y = imgInfo[countUser].imagePositions[i][1];
+      baseImg.composite(temp, x, y);
+    }
+    const endImg = await Jimp.read(imgInfo[countUser].imagePath);
+    baseImg.composite(endImg, 0, 0);
+    baseImg
+      .resize(800, Jimp.AUTO)
+      .quality(60)
+      .write(`./public/uploads/police/${imageId}.jpg`);
+    const newPoliceImg = new Police({
+      image_id: imageId,
+      image_url: `/uploads/police/${imageId}.jpg`,
+    });
+    newPoliceImg.save();
+
+    const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:`;
+    attachment.attachments = [
+      {
+        fallback: message,
+        color: '#ff0000',
+        image_url: `https://fridaybot.tk/uploads/police/${imageId}.jpg`,
+      },
+    ];
+
+    return callback(message, {}, attachment);
+  }
 }
 
 module.exports = getPolice;
