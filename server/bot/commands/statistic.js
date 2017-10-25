@@ -5,6 +5,7 @@ const UserMessages = require('./../../models/usermessage').UserMessages;
 const Statistics = require('./../../models/statistics').Statistics;
 const Log = require('./../../models/log').Log;
 const fs = require('fs');
+const { random } = require('lodash');
 
 const commandsURL =
   'https://github.com/dshved/fridaybot/blob/master/COMMANDS.md';
@@ -310,15 +311,29 @@ function whenFriday(text, callback) {
       image_url: imageUrl,
     },
   ];
-
-  if (result < 0) {
-    callback('Сегодня пятница!:fp:', {}, attachment);
-  } else {
+  if (random(10) === 10) {
+    attachment.attachments = [
+      {
+        fallback: '',
+        image_url:
+          'http://www.biography-life.ru/uploads/posts/2016-06/1466271162_brando2.jpg',
+      },
+    ];
     callback(
-      `До пятницы осталось: ${millisecToTimeStruct(result)}`,
+      'Ты приходишь и просишь у меня сказать тебе когда пятница, но ты просишь без уважения, не предлагаешь мне дружбу, даже не называешь меня "Мистер Бот" вместо этого ты приходишь в мой чат и просишь меня сказать тебе когда пятница.',
       {},
       attachment,
     );
+  } else {
+    if (result < 0) {
+      callback('Сегодня пятница!:fp:', {}, attachment);
+    } else {
+      callback(
+        `До пятницы осталось: ${millisecToTimeStruct(result)}`,
+        {},
+        attachment,
+      );
+    }
   }
 }
 
