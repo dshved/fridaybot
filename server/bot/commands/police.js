@@ -150,7 +150,7 @@ async function getPolice(text, callback, msg, { channel }) {
   const randomName = `${imageId}-${Math.random()
     .toString(36)
     .substring(2)}`;
-  const policeEscape = random(5) === 5 ? true : false;
+  const policeEscape = random(2) === 2 ? true : false;
 
   let baseImg;
   if (!policeEscape) {
