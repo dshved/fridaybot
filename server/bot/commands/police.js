@@ -33,7 +33,7 @@ async function prePoliceQuery(channel) {
     '&channel=' +
     channel +
     '&text=%D0%92%D1%8B%D0%B7%D0%BE%D0%B2%20%D0%BF%D1%80%D0%B8%D0%BD%D1%8F%D1%82' +
-    '&attachments=%5B%7B%22text%22%3A%20%22%22%2C%22fallback%22%3A%20%22Youme%22%2C%20%22color%22%3A%20%22%233AA3E3%22%2C%22image_url%22%3A%20%22https%3A%2F%2Ffridaybot.tk%2Fuploads%2Fpolice%2Fpremessage.jpg%20%22%2C%7D%5D&icon_emoji=%3Awarneng%3A&username=%D0%BC%D0%B8%D0%BB%D0%B8%D1%86%D0%B8%D1%8F&pretty=1';
+    '&attachments=%5B%7B%22text%22%3A%20%22%22%2C%22fallback%22%3A%20%22Youme%22%2C%20%22color%22%3A%20%22%233AA3E3%22%2C%22image_url%22%3A%20%22https%3A%2F%2Ffridaybot.tk%2Fimages%2Fpolice%2Fpremessage.jpg%20%22%2C%7D%5D&icon_emoji=%3Awarneng%3A&username=%D0%BC%D0%B8%D0%BB%D0%B8%D1%86%D0%B8%D1%8F&pretty=1';
   const result = await promiseRequest(url);
   return JSON.parse(result);
 }
