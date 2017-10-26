@@ -106,7 +106,7 @@ class Bot extends EventEmitter {
      */
   async getUser(name) {
     try {
-      const { members } = await this.getUsers();
+      const members = await this.getUsers();
       const res = _.find(members, { name });
 
       console.assert(res, 'user not found');
@@ -123,7 +123,7 @@ class Bot extends EventEmitter {
      */
   async getChannel(name) {
     try {
-      const { channels } = await this.getChannels();
+      const channels = await this.getChannels();
       const res = _.find(channels, { name });
 
       console.assert(res, 'channel not found');
@@ -140,7 +140,7 @@ class Bot extends EventEmitter {
      */
   async getGroup(name) {
     try {
-      const { groups } = await this.getGroups();
+      const groups = await this.getGroups();
       const res = _.find(groups, { name });
 
       console.assert(res, 'group not found');
@@ -157,7 +157,7 @@ class Bot extends EventEmitter {
      */
   async getUserById(id) {
     try {
-      const { members } = await this.getUsers();
+      const members = await this.getUsers();
       const res = _.find(members, { id });
 
       console.assert(res, 'user not found');
@@ -174,7 +174,7 @@ class Bot extends EventEmitter {
       */
   async getChannelById(id) {
     try {
-      const { channels } = await this.getChannels();
+      const channels = await this.getChannels();
       const res = _.find(channels, { id });
 
       console.assert(res, 'channel not found');
@@ -191,7 +191,7 @@ class Bot extends EventEmitter {
      */
   async getGroupById(id) {
     try {
-      const { groups } = await this.getGroups()
+      const groups = await this.getGroups()
       const res = _.find(groups, { id });
 
       console.assert(res, 'group not found');
@@ -251,7 +251,7 @@ class Bot extends EventEmitter {
      */
   async getUserByEmail(email) {
     try {
-      const { members } = await this.getUsers();
+      const members = await this.getUsers();
       const res = _.find(members, { profile: { email } });
 
       console.assert(res, 'email not found');
