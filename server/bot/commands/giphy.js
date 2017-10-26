@@ -5,15 +5,15 @@ const getGiphy = (text, callback) => {
 
   request(
     {
-      url: url,
+      url,
       encoding: null,
     },
     (err, res, body) => {
       const json = JSON.parse(body);
       const attachment = {};
-      attachment.username = `giphy`;
+      attachment.username = 'giphy';
       attachment.icon_emoji = ':giphy:';
-      if (json.meta.status == 200 && Object.keys(json.data).length) {
+      if (json.meta.status === 200 && Object.keys(json.data).length) {
         attachment.attachments = [
           {
             fallback: 'Giphy',
