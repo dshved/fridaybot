@@ -165,11 +165,13 @@ bot.on('message', data => {
     const message = data.text;
     if (data.channel === config.bot.connect_channel) {
       const attachment = {};
-      bot.getUserById(data.user).then(res => {
-        attachment.username = `${res.name}, ${config.bot.slack_name}`;
-        attachment.icon_url = res.profile.image_512;
-        bot2.postMessage(config.bot2.connect_channel, message, attachment);
-      });
+      if (data.user) {
+        bot.getUserById(data.user).then(res => {
+          attachment.username = `${res.name}, ${config.bot.slack_name}`;
+          attachment.icon_url = res.profile.image_512;
+          bot2.postMessage(config.bot2.connect_channel, message, attachment);
+        });
+      }
     }
   }
 
