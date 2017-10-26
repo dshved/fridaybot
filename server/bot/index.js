@@ -177,7 +177,7 @@ bot.on('message', data => {
   // console.log(data);
   let countParrots = 0;
 
-  if (data.text) {
+  if (data.text && data.subtype !== 'file_comment') {
     if (data.channel === botParams.channelId) {
       const matches = data.text.match(/:fp:|parrot/g);
 
@@ -396,7 +396,8 @@ bot.on('message', data => {
     data.channel === botParams.channelId &&
     data.subtype !== 'bot_message' &&
     data.subtype !== 'channel_leave' &&
-    data.subtype !== 'message_changed'
+    data.subtype !== 'message_changed' &&
+    data.subtype !== 'file_comment'
   ) {
     BotMessages.findOne({ user_message: data.text }).then(result => {
       if (result) {
@@ -413,6 +414,7 @@ bot.on('message', data => {
       const attr = isThread(data, att);
       bot.postMessageToChannel(botParams.channelName, '', attr);
     });
+
     UserMessages.findOne({ user_id: data.user }).then(result => {
       if (!result) {
         bot.getUserById(data.user).then(d => {
