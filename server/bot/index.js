@@ -395,7 +395,8 @@ bot.on('message', data => {
     data.type === 'message' &&
     data.channel === botParams.channelId &&
     data.subtype !== 'bot_message' &&
-    data.subtype !== 'channel_leave'
+    data.subtype !== 'channel_leave' &&
+    data.subtype !== 'message_changed'
   ) {
     BotMessages.findOne({ user_message: data.text }).then(result => {
       if (result) {
