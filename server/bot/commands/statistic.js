@@ -1,10 +1,7 @@
-'use strict';
-
 const BotSettings = require('./../../models/botsetting').BotSettings;
 const UserMessages = require('./../../models/usermessage').UserMessages;
 const Statistics = require('./../../models/statistics').Statistics;
 const Log = require('./../../models/log').Log;
-const fs = require('fs');
 const { random } = require('lodash');
 
 const commandsURL =
@@ -99,7 +96,6 @@ async function getLog(text, callback) {
     message += `${i + 1}. ${result[i]._id} - ${result[i].count}\n`;
   }
   callback(message, {});
-  mes = '';
 }
 
 async function getActiveUsers(text, callback) {
@@ -238,7 +234,7 @@ async function getStatistic(text, callback) {
       event_type: 'user_message',
     });
 
-    let messageCount = result.length;
+    const messageCount = result.length;
     let parrotCount = 0;
 
     result.forEach(item => (parrotCount += item.parrot_count));
@@ -291,9 +287,6 @@ function whenFriday(text, callback) {
   }
 
   const friday = new Date(year, month, day);
-  const zero = a => {
-    return a < 10 ? `0${a}` : a;
-  };
 
   const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
 
@@ -303,7 +296,7 @@ function whenFriday(text, callback) {
       ? 'http://memok.net/uploads/2014/01/26/52e4f0c4c579a.jpg'
       : 'https://i2.wp.com/picsmine.com/wp-content/uploads/2017/02/Sad-Memes-man-crying-front-of-computer.png';
 
-  attachment.username = `fridaybot`;
+  attachment.username = 'fridaybot';
   attachment.icon_emoji = ':fridaybot_new:';
   attachment.attachments = [
     {
