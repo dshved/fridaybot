@@ -1,11 +1,10 @@
-'use strict';
 const request = require('request');
 const cheerio = require('cheerio');
 const iconv = require('iconv-lite');
 const _ = require('lodash');
 
 function getBashPost(text, callback) {
-  let isYear = /\d{4}$/.test(text);
+  const isYear = /\d{4}$/.test(text);
   let year;
   if (isYear && text >= 2004 && text <= 2017) {
     year = text;
@@ -13,7 +12,7 @@ function getBashPost(text, callback) {
     year = _.random(2017, 2004);
   }
 
-  let bashArray = [];
+  const bashArray = [];
   const randomBashId = _.random(1, 50);
   const randomMonth = _.random(1, 12);
   request(
@@ -41,8 +40,4 @@ function getBashPost(text, callback) {
   );
 }
 
-module.exports = {
-  bash: function(text, callback) {
-    getBashPost(text, callback);
-  },
-};
+module.exports = getBashPost;
