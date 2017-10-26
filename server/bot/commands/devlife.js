@@ -2,15 +2,15 @@ const cheerio = require('cheerio');
 const request = require('request');
 const iconv = require('iconv-lite');
 
-var j = request.jar();
-var cookie = request.cookie('entriesOnPage=20;types=gif');
-var url = 'https://developerslife.ru/';
+const j = request.jar();
+const cookie = request.cookie('entriesOnPage=20;types=gif');
+const url = 'https://developerslife.ru/';
 j.setCookie(cookie, url);
 
-function getEntries(url, cb) {
+function getEntries(param, cb) {
   request(
     {
-      url: `https://developerslife.ru/${url}`,
+      url: `https://developerslife.ru/${param}`,
       encoding: null,
       jar: j,
     },
@@ -19,7 +19,7 @@ function getEntries(url, cb) {
         decodeEntities: false,
       });
       const entryes = $('.entry');
-      let array = [];
+      const array = [];
       entryes.each((i, entry) => {
         array.push({
           img: $('backup_img', entry).attr('src'),
@@ -68,7 +68,7 @@ function getMonthlyEntry(text, callback) {
 
 function getSearchEntry(text, callback) {
   if (text !== 'RANDOM' && text !== 'HOT') {
-    let searchText = encodeURIComponent(text);
+    const searchText = encodeURIComponent(text);
     getEntries(`search?x=0&y=0&phrase=${searchText}`, array => {
       getEntry(text, array, callback);
     });
@@ -76,13 +76,13 @@ function getSearchEntry(text, callback) {
 }
 
 module.exports = {
-  devlifeSearch: (text, callback, msg) => {
+  devlifeSearch: (text, callback) => {
     getSearchEntry(text, callback);
   },
-  devlifeRandom: (text, callback, msg) => {
+  devlifeRandom: (text, callback) => {
     getRandomEntry(text, callback);
   },
-  devlifeHot: (text, callback, msg) => {
+  devlifeHot: (text, callback) => {
     getMonthlyEntry(text, callback);
   },
 };
