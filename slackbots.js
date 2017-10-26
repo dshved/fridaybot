@@ -90,7 +90,7 @@ class Bot extends EventEmitter {
      * Get groups
      * @returns {Promise<object>}
      */
-  getGroups() {
+  async getGroups() {
     if (this.groups) {
       return Promise.resolve(this.groups);
     }
