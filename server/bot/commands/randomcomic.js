@@ -1,18 +1,19 @@
 const cheerio = require('cheerio');
 const request = require('request');
 const iconv = require('iconv-lite');
+const { random } = require('lodash');
 
 function getRandomComic(text, callback) {
-  let randomComic = Math.floor(Math.random() * (4650 - 1000 + 1) + 1000);
-  let randomValue = Math.round(Math.random() * 1);
+  const randomComic = random(1000, 4650);
+  const randomValue = random(1);
 
-  let url = randomValue
+  const url = randomValue
     ? `http://explosm.net/comics/${randomComic}/`
     : 'http://explosm.net/rcg/';
 
   request(
     {
-      url: url,
+      url,
       encoding: null,
     },
     (err, res, body) => {
@@ -23,7 +24,7 @@ function getRandomComic(text, callback) {
       let imageSrc = image.attr('src');
 
       const attachment = {};
-      attachment.username = `fridaybot`;
+      attachment.username = 'fridaybot';
       attachment.icon_emoji = ':fridaybot_new:';
       if (imageSrc) {
         imageSrc = imageSrc.substr(2);
@@ -42,7 +43,7 @@ function getRandomComic(text, callback) {
 }
 
 module.exports = {
-  randomComic: (text, callback, msg) => {
+  randomComic: (text, callback) => {
     getRandomComic(text, callback);
   },
 };

@@ -91,8 +91,8 @@ bot.on('start', () => {
     }
   });
 
-  bot.getChannels().then(res => {
-    res.channels.forEach(item => {
+  bot.getChannels().then(channels => {
+    channels.forEach(item => {
       channelsList.push({ id: item.id, name: item.name });
     });
   });

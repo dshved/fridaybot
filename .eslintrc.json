@@ -1,5 +1,9 @@
 {
   "extends": [
-    "prettier"
-  ]
+    "prettier",
+    "airbnb"
+  ],
+  "rules": {
+    "arrow-parens": ["error", "as-needed"]
+  }
 }

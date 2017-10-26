@@ -1,7 +1,5 @@
 const getBotEmoji = array => {
-  const commandIndex = array.findIndex(command => {
-    return command === '-e';
-  });
+  const commandIndex = array.findIndex(command => command === '-e');
   if (commandIndex !== -1) {
     return array[commandIndex + 1];
   }
@@ -9,9 +7,7 @@ const getBotEmoji = array => {
 };
 
 const getBotName = array => {
-  const commandIndex = array.findIndex(command => {
-    return command === '-n';
-  });
+  const commandIndex = array.findIndex(command => command === '-n');
   if (commandIndex !== -1) {
     return array[commandIndex + 1];
   }
@@ -19,17 +15,9 @@ const getBotName = array => {
 };
 
 const getBotText = array => {
-  const emojiIndex = array.findIndex(command => {
-    return command === '-e';
-  });
-
-  const nameIndex = array.findIndex(command => {
-    return command === '-n';
-  });
-
-  const textIndex = array.findIndex(command => {
-    return command === '-t';
-  });
+  const emojiIndex = array.findIndex(command => command === '-e');
+  const nameIndex = array.findIndex(command => command === '-n');
+  const textIndex = array.findIndex(command => command === '-t');
 
   if (textIndex !== -1 && nameIndex !== -1 && emojiIndex !== -1) {
     const text = [];
@@ -41,7 +29,7 @@ const getBotText = array => {
     }
 
     if (textIndex < emojiIndex && textIndex < nameIndex) {
-      let n = emojiIndex < nameIndex ? emojiIndex : nameIndex;
+      const n = emojiIndex < nameIndex ? emojiIndex : nameIndex;
       for (let i = textIndex + 1; i < n; i++) {
         text.push(array[i]);
       }

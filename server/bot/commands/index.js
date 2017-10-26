@@ -28,7 +28,7 @@ const execResponse = (
   expr.forEach(msg => {
     if (access) {
       if (entrance) {
-        func(text, callback, msg);
+        func(text, callback, msg, data);
       } else if (startFrom && text.startsWith(msg)) {
         const newLog = data;
         newLog.text = msg;

@@ -1,10 +1,8 @@
-'use strict';
-
 const BotSettings = require('./../../models/botsetting').BotSettings;
 const UserMessages = require('./../../models/usermessage').UserMessages;
 const Statistics = require('./../../models/statistics').Statistics;
 const Log = require('./../../models/log').Log;
-const fs = require('fs');
+const { random } = require('lodash');
 
 const commandsURL =
   'https://github.com/dshved/fridaybot/blob/master/COMMANDS.md';
@@ -98,7 +96,6 @@ async function getLog(text, callback) {
     message += `${i + 1}. ${result[i]._id} - ${result[i].count}\n`;
   }
   callback(message, {});
-  mes = '';
 }
 
 async function getActiveUsers(text, callback) {
@@ -237,7 +234,7 @@ async function getStatistic(text, callback) {
       event_type: 'user_message',
     });
 
-    let messageCount = result.length;
+    const messageCount = result.length;
     let parrotCount = 0;
 
     result.forEach(item => (parrotCount += item.parrot_count));
@@ -290,9 +287,6 @@ function whenFriday(text, callback) {
   }
 
   const friday = new Date(year, month, day);
-  const zero = a => {
-    return a < 10 ? `0${a}` : a;
-  };
 
   const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
 
@@ -302,7 +296,7 @@ function whenFriday(text, callback) {
       ? 'http://memok.net/uploads/2014/01/26/52e4f0c4c579a.jpg'
       : 'https://i2.wp.com/picsmine.com/wp-content/uploads/2017/02/Sad-Memes-man-crying-front-of-computer.png';
 
-  attachment.username = `fridaybot`;
+  attachment.username = 'fridaybot';
   attachment.icon_emoji = ':fridaybot_new:';
   attachment.attachments = [
     {
@@ -310,15 +304,29 @@ function whenFriday(text, callback) {
       image_url: imageUrl,
     },
   ];
-
-  if (result < 0) {
-    callback('Сегодня пятница!:fp:', {}, attachment);
-  } else {
+  if (random(10) === 10) {
+    attachment.attachments = [
+      {
+        fallback: '',
+        image_url:
+          'http://www.biography-life.ru/uploads/posts/2016-06/1466271162_brando2.jpg',
+      },
+    ];
     callback(
-      `До пятницы осталось: ${millisecToTimeStruct(result)}`,
+      'Ты приходишь и просишь у меня сказать тебе когда пятница, но ты просишь без уважения, не предлагаешь мне дружбу, даже не называешь меня "Мистер Бот" вместо этого ты приходишь в мой чат и просишь меня сказать тебе когда пятница.',
       {},
       attachment,
     );
+  } else {
+    if (result < 0) {
+      callback('Сегодня пятница!:fp:', {}, attachment);
+    } else {
+      callback(
+        `До пятницы осталось: ${millisecToTimeStruct(result)}`,
+        {},
+        attachment,
+      );
+    }
   }
 }
 

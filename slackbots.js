@@ -2,10 +2,9 @@
 
 const _ = require('lodash');
 const request = require('request');
-const Vow = require('vow');
 const extend = require('extend');
 const WebSocket = require('ws');
-const EventEmitter = require('events').EventEmitter;
+const { EventEmitter } = require('events');
 
 class Bot extends EventEmitter {
   /**
@@ -25,25 +24,23 @@ class Bot extends EventEmitter {
   /**
      * Starts a Real Time Messaging API session
      */
-  login() {
-    this._api('rtm.start')
-      .then(data => {
-        this.wsUrl = data.url;
-        this.self = data.self;
-        this.team = data.team;
-        this.channels = data.channels;
-        this.users = data.users;
-        this.ims = data.ims;
-        this.groups = data.groups;
+  async login() {
+    try {
+      const response = await this._api('rtm.start');
+      this.wsUrl = response.url;
+      this.self = response.self;
+      this.team = response.team;
+      this.channels = response.channels;
+      this.users = response.users;
+      this.ims = response.ims;
+      this.groups = response.groups;
 
-        this.emit('start');
+      this.emit('start');
 
-        this.connect();
-      })
-      .fail(data => {
-        this.emit('error', new Error(data.error ? data.error : data));
-      })
-      .done();
+      this.connect();
+    } catch (data) {
+      this.emit('error', new Error(data.error ? data.error : data));
+    }
   }
 
   /**
@@ -52,15 +49,14 @@ class Bot extends EventEmitter {
   connect() {
     this.ws = new WebSocket(this.wsUrl);
 
-    this.ws.on('open', data => {
+    this.ws
+    .on('open', data => {
       this.emit('open', data);
-    });
-
-    this.ws.on('close', data => {
+    })
+    .on('close', data => {
       this.emit('close', data);
-    });
-
-    this.ws.on('message', data => {
+    })
+    .on('message', data => {
       try {
         this.emit('message', JSON.parse(data));
       } catch (e) {
@@ -71,190 +67,225 @@ class Bot extends EventEmitter {
 
   /**
      * Get channels
-     * @returns {vow.Promise}
+     * @returns {Promise<object>}
      */
-  getChannels() {
+  async getChannels() {
     if (this.channels) {
-      return Vow.fulfill({ channels: this.channels });
+      return Promise.resolve(this.channels);
     }
-    return this._api('channels.list');
+    const { channels } = await this._api('channels.list');
+    return channels;
   }
 
   /**
      * Get users
-     * @returns {vow.Promise}
+     * @returns {Promise<object>}
      */
-  getUsers() {
-    // if (this.users) {
-    //     return Vow.fulfill({ members: this.users });
-    // }
-
-    return this._api('users.list');
+  async getUsers() {
+    const { members } = await this._api('users.list');
+    return members;
   }
 
   /**
      * Get groups
-     * @returns {vow.Promise}
+     * @returns {Promise<object>}
      */
-  getGroups() {
+  async getGroups() {
     if (this.groups) {
-      return Vow.fulfill({ groups: this.groups });
+      return Promise.resolve(this.groups);
     }
 
-    return this._api('groups.list');
+    const { groups } = await this._api('groups.list');
+    return groups;
   }
 
   /**
      * Get user by name
      * @param {string} name
-     * @returns {object}
+     * @returns {Promise<object>}
      */
-  getUser(name) {
-    return this.getUsers().then(data => {
-      const res = _.find(data.members, { name });
+  async getUser(name) {
+    try {
+      const members = await this.getUsers();
+      const res = _.find(members, { name });
 
       console.assert(res, 'user not found');
       return res;
-    });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
      * Get channel by name
      * @param {string} name
-     * @returns {object}
+     * @returns {Promise<object>}
      */
-  getChannel(name) {
-    return this.getChannels().then(data => {
-      const res = _.find(data.channels, { name });
+  async getChannel(name) {
+    try {
+      const channels = await this.getChannels();
+      const res = _.find(channels, { name });
 
       console.assert(res, 'channel not found');
       return res;
-    });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
      * Get group by name
      * @param {string} name
-     * @returns {object}
+     * @returns {Promise<object>}
      */
-  getGroup(name) {
-    return this.getGroups().then(data => {
-      const res = _.find(data.groups, { name });
+  async getGroup(name) {
+    try {
+      const groups = await this.getGroups();
+      const res = _.find(groups, { name });
 
       console.assert(res, 'group not found');
       return res;
-    });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
      * Get user by id
      * @param {string} id
-     * @returns {object}
+     * @returns {Promise<object>}
      */
-  // getUserById(id) {
-  //     return this.getUsers().then(function(data) {
-  //         var res = _.find(data.members, { id: id });
+  async getUserById(id) {
+    try {
+      const members = await this.getUsers();
+      const res = _.find(members, { id });
 
-  //         console.assert(res, 'user not found');
-  //         return res;
-  //     });
-  // }
-  getUserById(id) {
-    return this.getUsers()
-      .then(data => {
-        const res = _.find(data.members, { id });
-
-        // console.assert(res, 'user not found');
-        return res;
-      })
-      .catch(data => console.log(data));
+      console.assert(res, 'user not found');
+      return res;
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
       * Get channel by id
       * @param {string} id
-      * @returns {object}
+      * @returns {Promise<object>}
       */
-  getChannelById(id) {
-    return this.getChannels().then(data => {
-      const res = _.find(data.channels, { id });
+  async getChannelById(id) {
+    try {
+      const channels = await this.getChannels();
+      const res = _.find(channels, { id });
 
       console.assert(res, 'channel not found');
       return res;
-    });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
       * Get group by id
       * @param {string} id
-      * @returns {object}
+      * @returns {Promise<object>}
      */
-  getGroupById(id) {
-    return this.getGroups().then(data => {
-      const res = _.find(data.groups, { id });
+  async getGroupById(id) {
+    try {
+      const groups = await this.getGroups()
+      const res = _.find(groups, { id });
 
       console.assert(res, 'group not found');
       return res;
-    });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
      * Get channel ID
      * @param {string} name
-     * @returns {string}
+     * @returns {Promise<string>}
      */
-  getChannelId(name) {
-    return this.getChannel(name).then(channel => channel.id);
+  async getChannelId(name) {
+    try {
+      const { id } = await this.getChannel(name);
+      return id;
+    }
+    catch (err) {
+      console.error(err);
+    }
   }
 
   /**
      * Get group ID
      * @param {string} name
-     * @returns {string}
+     * @returns {Promise<string>}
      */
-  getGroupId(name) {
-    return this.getGroup(name).then(group => group.id);
+  async getGroupId(name) {
+    try {
+      const { id } = await this.getGroup(name);
+      return id;
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
      * Get user ID
      * @param {string} name
-     * @returns {string}
+     * @returns {Promise<string>}
      */
-  getUserId(name) {
-    return this.getUser(name).then(user => user.id);
+  async getUserId(name) {
+    try {
+      const { id } = await this.getUser(name);
+      return id;
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
      * Get user by email
      * @param {string} email
-     * @returns {object}
+     * @returns {Promise<object>}
      */
-  getUserByEmail(email) {
-    return this.getUsers().then(data =>
-      _.find(data.members, { profile: { email } }),
-    );
+  async getUserByEmail(email) {
+    try {
+      const members = await this.getUsers();
+      const res = _.find(members, { profile: { email } });
+
+      console.assert(res, 'email not found');
+      return res;
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
      * Get "direct message" channel ID
      * @param {string} name
-     * @returns {vow.Promise}
+     * @returns {Promise<string>}
      */
-  getChatId(name) {
-    return this.getUser(name)
-      .then(data => {
-        const chatId = _.find(this.ims, { user: data.id });
-
-        return (chatId && chatId.id) || this.openIm(data.id);
-      })
-      .then(data => (typeof data === 'string' ? data : data.channel.id));
+  async getChatId(name) {
+    try {
+      const { id, channel } = await this.getUser(name);
+      const chatId = _.find(this.ims, { user: id });
+      //need to investigate wtf this construction is
+      const something = (chatId && chatId.id) || this.openIm(id);
+      if (typeof something === 'string'){
+        return something
+      } else {
+        return something.channel.id;
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
      * Opens a "direct message" channel with another member of your Slack team
      * @param {string} userId
-     * @returns {vow.Promise}
+     * @returns {Promise<object>}
      */
   openIm(userId) {
     return this._api('im.open', { user: userId });
@@ -265,9 +296,10 @@ class Bot extends EventEmitter {
      * @param {string} id - channel ID
      * @param {string} text
      * @param {object} params
-     * @returns {vow.Promise}
+     * @returns {Promise<object>}
      */
   postMessage(id, text, params) {
+    //since this doesn't use deep option set to true i am not sure do we need this
     params = extend(
       {
         text,
@@ -286,7 +318,7 @@ class Bot extends EventEmitter {
       * @param {string} ts - timestamp
       * @param {string} text
       * @param {object} params
-      * @returns {vow.Promise}
+      * @returns {Promise<object>}
       */
   updateMessage(id, ts, text, params) {
     params = extend(
@@ -308,7 +340,7 @@ class Bot extends EventEmitter {
      * @param {string} text
      * @param {object} params
      * @param {function} cb
-     * @returns {vow.Promise}
+     * @returns {Promise<object>}
      */
   postMessageToUser(name, text, params, cb) {
     return this._post(
@@ -326,7 +358,7 @@ class Bot extends EventEmitter {
      * @param {string} text
      * @param {object} params
      * @param {function} cb
-     * @returns {vow.Promise}
+     * @returns {Promise<object>}
      */
   postMessageToChannel(name, text, params, cb) {
     return this._post('channel', name, text, params, cb);
@@ -338,7 +370,7 @@ class Bot extends EventEmitter {
      * @param {string} text
      * @param {object} params
      * @param {function} cb
-     * @returns {vow.Promise}
+     * @returns {Promise<object>}
      */
   postMessageToGroup(name, text, params, cb) {
     return this._post('group', name, text, params, cb);
@@ -351,29 +383,29 @@ class Bot extends EventEmitter {
      * @param {string} text
      * @param {object} params
      * @param {function} cb
-     * @returns {vow.Promise}
+     * @returns {Promise}
      * @private
      */
-  _post(type, name, text, params, cb) {
-    const method = {
-      group: 'getGroupId',
-      channel: 'getChannelId',
-      user: 'getChatId',
-      slackbot: 'getUserId',
-    }[type];
+  async _post(type, name, text, params, cb) {
+    try {
+      const method = {
+        group: 'getGroupId',
+        channel: 'getChannelId',
+        user: 'getChatId',
+        slackbot: 'getUserId',
+      }[type];
 
-    if (typeof params === 'function') {
-      cb = params;
-      params = null;
+      if (typeof params === 'function') {
+        cb = params;
+        params = null;
+      }
+
+      const itemId = await this[method](name);
+      const { _value } = await this.postMessage(itemId, text, params);
+      return cb?cb(_value):'';
+    } catch (err) {
+      console.error(err);
     }
-
-    return this[method](name)
-      .then(itemId => this.postMessage(itemId, text, params))
-      .always(data => {
-        if (cb) {
-          cb(data._value);
-        }
-      });
   }
 
   /**
@@ -382,27 +414,25 @@ class Bot extends EventEmitter {
      * @param {string} text
      * @param {object} params
      * @param {function} cb
-     * @returns {vow.Promise}
+     * @returns {Promise}
      */
-  postTo(name, text, params, cb) {
-    return Vow.all([
+  async postTo(name, text, params, cb) {
+    const all = await Promise.all([
       this.getChannels(),
       this.getUsers(),
       this.getGroups(),
-    ]).then(data => {
-      const all = [].concat(data[0].channels, data[1].members, data[2].groups);
-      const result = _.find(all, { name });
+    ]);
+    const result = _.find(all, { name });
 
-      console.assert(result, 'wrong name');
+    console.assert(result, 'wrong name');
 
-      if (result['is_channel']) {
-        return this.postMessageToChannel(name, text, params, cb);
-      } else if (result['is_group']) {
-        return this.postMessageToGroup(name, text, params, cb);
-      } else {
-        return this.postMessageToUser(name, text, params, cb);
-      }
-    });
+    if (result['is_channel']) {
+      return this.postMessageToChannel(name, text, params, cb);
+    } else if (result['is_group']) {
+      return this.postMessageToGroup(name, text, params, cb);
+    } else {
+      return this.postMessageToUser(name, text, params, cb);
+    }
   }
 
   /**
@@ -429,7 +459,7 @@ class Bot extends EventEmitter {
      * Send request to API method
      * @param {string} methodName
      * @param {object} params
-     * @returns {vow.Promise}
+     * @returns {Promise}
      * @private
      */
   _api(methodName, params) {
@@ -438,7 +468,7 @@ class Bot extends EventEmitter {
       form: this._preprocessParams(params),
     };
 
-    return new Vow.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       request.post(data, (err, request, body) => {
         if (err) {
           reject(err);

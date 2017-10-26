@@ -1,14 +1,12 @@
-'use strict';
-
 const request = require('request');
+const { random } = require('lodash');
 
 function getHotPost(text, callback) {
   const redditUrl = 'https://www.reddit.com/r/all/top/.json?sort=top&t=day';
   request({ url: redditUrl }, (err, res, body) => {
     const json = JSON.parse(body);
     const reddits = json.data.children;
-    const randomReddit =
-      Math.floor(Math.random() * (reddits.length - 1 + 1)) + 1;
+    const randomReddit = random(1, reddits.length - 1);
     if (reddits[randomReddit].data) {
       const currentReddit = reddits[randomReddit].data;
       const attachment = {};
@@ -45,8 +43,7 @@ function getJsPost(text, callback) {
   request({ url: redditUrl }, (err, res, body) => {
     const json = JSON.parse(body);
     const reddits = json.data.children;
-    const randomReddit =
-      Math.floor(Math.random() * (reddits.length - 1 + 1)) + 1;
+    const randomReddit = random(1, reddits.length - 1);
     if (reddits[randomReddit].data) {
       const currentReddit = reddits[randomReddit].data;
       const attachment = {};
@@ -89,9 +86,7 @@ function getSubPost(text, callback) {
     if (!json.error) {
       const reddits = json.data.children;
       if (reddits.length > 0) {
-        const randomReddit = Math.floor(
-          Math.random() * (reddits.length - 1 + 1),
-        );
+        const randomReddit = random(1, reddits.length - 1);
         if (reddits[randomReddit].data) {
           const currentReddit = reddits[randomReddit].data;
           const attachment = {};
@@ -131,13 +126,13 @@ function getSubPost(text, callback) {
 }
 
 module.exports = {
-  redditHot: function(text, callback) {
+  redditHot: (text, callback) => {
     getHotPost(text, callback);
   },
-  redditJs: function(text, callback) {
+  redditJs: (text, callback) => {
     getJsPost(text, callback);
   },
-  redditSub: function(text, callback) {
+  redditSub: (text, callback) => {
     getSubPost(text, callback);
   },
 };
