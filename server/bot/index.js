@@ -165,11 +165,13 @@ bot.on('message', data => {
     const message = data.text;
     if (data.channel === config.bot.connect_channel) {
       const attachment = {};
-      bot.getUserById(data.user).then(res => {
-        attachment.username = `${res.name}, ${config.bot.slack_name}`;
-        attachment.icon_url = res.profile.image_512;
-        bot2.postMessage(config.bot2.connect_channel, message, attachment);
-      });
+      if (data.user) {
+        bot.getUserById(data.user).then(res => {
+          attachment.username = `${res.name}, ${config.bot.slack_name}`;
+          attachment.icon_url = res.profile.image_512;
+          bot2.postMessage(config.bot2.connect_channel, message, attachment);
+        });
+      }
     }
   }
 
@@ -177,7 +179,7 @@ bot.on('message', data => {
   // console.log(data);
   let countParrots = 0;
 
-  if (data.text) {
+  if (data.text && data.subtype !== 'file_comment') {
     if (data.channel === botParams.channelId) {
       const matches = data.text.match(/:fp:|parrot/g);
 
@@ -395,7 +397,9 @@ bot.on('message', data => {
     data.type === 'message' &&
     data.channel === botParams.channelId &&
     data.subtype !== 'bot_message' &&
-    data.subtype !== 'channel_leave'
+    data.subtype !== 'channel_leave' &&
+    data.subtype !== 'message_changed' &&
+    data.subtype !== 'file_comment'
   ) {
     BotMessages.findOne({ user_message: data.text }).then(result => {
       if (result) {
@@ -412,31 +416,33 @@ bot.on('message', data => {
       const attr = isThread(data, att);
       bot.postMessageToChannel(botParams.channelName, '', attr);
     });
-    UserMessages.findOne({ user_id: data.user }).then(result => {
-      if (!result) {
-        bot.getUserById(data.user).then(d => {
-          const newMessage = new UserMessages({
-            user_id: d.id,
-            user_name: d.name,
-            user_full_name: d.real_name,
-            count_messages: 1,
-            count_parrots: 0,
+    if (data.user) {
+      UserMessages.findOne({ user_id: data.user }).then(result => {
+        if (!result) {
+          bot.getUserById(data.user).then(d => {
+            const newMessage = new UserMessages({
+              user_id: d.id,
+              user_name: d.name,
+              user_full_name: d.real_name,
+              count_messages: 1,
+              count_parrots: 0,
+            });
+            newMessage.save(d.id);
           });
-          newMessage.save(d.id);
-        });
-      } else {
-        const newCountParrots = result.count_parrots + countParrots;
-        const newCountMessages = result.count_messages + 1;
+        } else {
+          const newCountParrots = result.count_parrots + countParrots;
+          const newCountMessages = result.count_messages + 1;
 
-        UserMessages.findOneAndUpdate(
-          { user_id: data.user },
-          {
-            count_parrots: newCountParrots,
-            count_messages: newCountMessages,
-          },
-        ).then();
-      }
-    });
+          UserMessages.findOneAndUpdate(
+            { user_id: data.user },
+            {
+              count_parrots: newCountParrots,
+              count_messages: newCountMessages,
+            },
+          ).then();
+        }
+      });
+    }
   }
 });
 
