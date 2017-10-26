@@ -416,32 +416,33 @@ bot.on('message', data => {
       const attr = isThread(data, att);
       bot.postMessageToChannel(botParams.channelName, '', attr);
     });
-
-    UserMessages.findOne({ user_id: data.user }).then(result => {
-      if (!result) {
-        bot.getUserById(data.user).then(d => {
-          const newMessage = new UserMessages({
-            user_id: d.id,
-            user_name: d.name,
-            user_full_name: d.real_name,
-            count_messages: 1,
-            count_parrots: 0,
+    if (data.user) {
+      UserMessages.findOne({ user_id: data.user }).then(result => {
+        if (!result) {
+          bot.getUserById(data.user).then(d => {
+            const newMessage = new UserMessages({
+              user_id: d.id,
+              user_name: d.name,
+              user_full_name: d.real_name,
+              count_messages: 1,
+              count_parrots: 0,
+            });
+            newMessage.save(d.id);
           });
-          newMessage.save(d.id);
-        });
-      } else {
-        const newCountParrots = result.count_parrots + countParrots;
-        const newCountMessages = result.count_messages + 1;
+        } else {
+          const newCountParrots = result.count_parrots + countParrots;
+          const newCountMessages = result.count_messages + 1;
 
-        UserMessages.findOneAndUpdate(
-          { user_id: data.user },
-          {
-            count_parrots: newCountParrots,
-            count_messages: newCountMessages,
-          },
-        ).then();
-      }
-    });
+          UserMessages.findOneAndUpdate(
+            { user_id: data.user },
+            {
+              count_parrots: newCountParrots,
+              count_messages: newCountMessages,
+            },
+          ).then();
+        }
+      });
+    }
   }
 });
 
