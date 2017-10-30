@@ -12,6 +12,14 @@ const MongoStore = require('connect-mongo')(session);
 mongoose.Promise = global.Promise;
 mongoose.connect(config.db.path);
 
+logger.token(
+  'remote-addr',
+  req =>
+    req.headers['x-real-ip'] ||
+    req.headers['x-forwarded-for'] ||
+    req.connection.remoteAddress,
+);
+
 const app = express();
 const router = require('./server/routers/router');
 const api = require('./server/routers/api');
