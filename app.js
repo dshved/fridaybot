@@ -12,6 +12,14 @@ const MongoStore = require('connect-mongo')(session);
 mongoose.Promise = global.Promise;
 mongoose.connect(config.db.path);
 
+logger.token(
+  'remote-addr',
+  req =>
+    req.headers['x-real-ip'] ||
+    req.headers['x-forwarded-for'] ||
+    req.connection.remoteAddress,
+);
+
 const app = express();
 const router = require('./server/routers/router');
 const api = require('./server/routers/api');
@@ -36,7 +44,11 @@ app.use((req, res, next) => {
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+app.use(
+  logger(
+    ':remote-addr - :method :url :status :response-time ms - :res[content-length]',
+  ),
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

@@ -211,6 +211,7 @@ bot.on('message', data => {
       const att = isThread(data, messageParams);
       bot.postMessageToChannel(botParams.channelName, userText, att);
       accessBotPost = true;
+      saveLog(data);
     }
   }
 

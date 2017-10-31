@@ -85,4 +85,8 @@ router.get('/police/:id', (req, res, next) => {
   draw();
 });
 
+router.get('/donate', (req, res) => {
+  res.render('donate');
+});
+
 module.exports = router;

@@ -537,12 +537,12 @@ a.ui-button:active,
   z-index: -1;
 }
 
-.inputfile + label {
+.inputfile+label {
   display: block;
   cursor: pointer;
 }
 
-.inputfile + label > i {
+.inputfile+label>i {
   font-size: 16px;
   display: inline-block;
   padding: 10px 25px;
@@ -554,7 +554,7 @@ a.ui-button:active,
   font-style: normal;
 }
 
-.inputfile + label * {
+.inputfile+label * {
   pointer-events: none;
 }
 
@@ -568,13 +568,64 @@ a.ui-button:active,
 .stickers__item:hover .stickers__delete {
   display: block;
 }
+
 .date {
   text-align: center;
 }
+
 .date input {
   padding: 5px;
   margin: 10px;
 }
+
 .sending {
   text-align: center;
+}
+
+.donate-text {
+  max-width: 320px;
+  margin: 0 auto;
+  text-transform: uppercase;
+  text-align: center;
+  padding:  10px 0;
+}
+
+.donate-text a {
+  color:  #f32a2a;
+  text-decoration: none;
+  font-weight: bold;
+
+}
+.donate-text a:hover {
+  text-decoration: underline;
+}
+
+.donane {
+  max-width: 420px;
+  margin: 0 auto;
+}
+.donate__frame {
+  width: 420px;
+  margin: 0 auto;
+}
+.donate__header {
+  text-align: center;
+  font-size: 18px;
+}
+.donate__footer {
+  margin-bottom: 10px;
+}
+.donate__footer a {
+  color:#1DB379;
+}
+.donate__list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  margin-bottom: 10px;
+}
+.donate__item-image img {
+  max-width: 100%;
+  width: 18px;
+  height: auto;
 }
