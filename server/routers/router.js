@@ -3,6 +3,7 @@ const router = express.Router();
 const Auth = require('../middlewares/auth');
 const BotMessages = require('../models/botmessage').BotMessages;
 const BotSettings = require('../models/botsetting').BotSettings;
+const Donate = require('../models/donate');
 const Stickers = require('../models/sticker').Sticker;
 const Jimp = require('jimp');
 const config = require('./../../config.js');
@@ -86,7 +87,26 @@ router.get('/police/:id', (req, res, next) => {
 });
 
 router.get('/donate', (req, res) => {
-  res.render('donate');
+  Donate.find({}).then(data => {
+    res.render('donate', { data });
+  });
+});
+
+router.get('/donate/parrot', (req, res) => {
+  res.render('donate-add');
+});
+
+router.post('/donate/parrot', (req, res) => {
+  const newDonate = new Donate({
+    user: req.body.user,
+  });
+  newDonate.save(err => {
+    if (!err) {
+      res.render('donate-add');
+    } else {
+      res.send(503);
+    }
+  });
 });
 
 module.exports = router;

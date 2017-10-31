@@ -1,0 +1,8 @@
+extends layouts/main
+
+block content
+  .bg
+  .donane
+    form.donate__form(action="/donate/parrot" method="post" id="addDonateUser")
+      input.donate__input(type="text" name="user" placeholder="Имя пользователя")
+      button.donate__submit.button.button_primary(type="submit") Добавить

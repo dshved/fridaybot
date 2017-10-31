@@ -255,6 +255,13 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./wikipedia').wiki,
   },
+  {
+    messages: ['ДОНАТЕРЫ', 'НЯШИ'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./donate'),
+  },
 ];
 
 module.exports = { messages };
