@@ -83,8 +83,8 @@ async function getPolice(text, callback, msg, { channel }) {
       imagePositions: [[328, 155], [467, 155], [612, 155]],
     },
     4: {
-      imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
-      imagePositions: [[328, 155], [467, 155], [612, 155], [754, 155]],
+      imageNames: ['mask_4-1.png', 'mask_4-2.png', 'mask_4-3.png'],
+      imagePositions: [[255, 116], [380, 116], [506, 116], [634, 116]],
     },
     5: {
       imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
