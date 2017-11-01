@@ -74,16 +74,6 @@ const draw = async (mask, text, callback) => {
   }
 };
 
-// const checkFilter = text => {
-//   if (text === 'SMILE2') {
-//     return 'smile_2';
-//   } else if (text === 'FEMALE2') {
-//     return 'female_2';
-//   } else {
-//     return text.toLowerCase();
-//   }
-// };
-
 function checkFilter(array) {
   const filterList = [
     'no-filter',
@@ -127,8 +117,8 @@ const combo = async (text, callback) => {
   if (matchUser) {
     arr = arr.slice(0, -1);
     arr = checkFilter(arr);
-    if (arr.length > 3) {
-      arr = arr.slice(0, 3);
+    if (arr.length > 4) {
+      arr = arr.slice(0, 4);
     }
 
     const userId = matchUser[0].substring(1);
