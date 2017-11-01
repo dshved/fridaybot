@@ -37,25 +37,23 @@ const draw = async (mask, text, callback) => {
     const randomName = `${userId}-${mask}-${Math.random()
       .toString(36)
       .substring(2)}.jpg`;
-    const response = await promiseRequest({
-      url: `https://slack.com/api/users.info?token=${config.bot
-        .token}&user=${userId}&pretty=1`,
-      encoding: null,
-    });
-    const { user, ok } = JSON.parse(response);
-    if (!ok) {
-      return;
-    }
-    const userImageUrl = getBigImageUrl(user.profile);
-    let bufferImage;
-    let image;
     try {
-      bufferImage = await promiseRequest({ url: userImageUrl, encoding: null });
-    } catch (err) {
-      return;
-    }
-    try {
-      image = await faceapp.process(bufferImage, mask);
+      const response = await promiseRequest({
+        url: `https://slack.com/api/users.info?token=${config.bot
+          .token}&user=${userId}&pretty=1`,
+        encoding: null,
+      });
+      const { user, ok } = JSON.parse(response);
+      if (!ok) {
+        return;
+      }
+      const userImageUrl = getBigImageUrl(user.profile);
+
+      const bufferImage = await promiseRequest({
+        url: userImageUrl,
+        encoding: null,
+      });
+      const image = await faceapp.process(bufferImage, mask);
 
       await writeFileAsync(`./public/uploads/mask/${randomName}`, image);
       const attachment = {
