@@ -402,6 +402,13 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./faceapp').drawMakeup,
   },
+  {
+    messages: ['COMBO '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawCombo,
+  },
 ];
 
 module.exports = { messages };
