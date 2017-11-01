@@ -17,6 +17,18 @@ function promiseRequest(url) {
   });
 }
 
+function gerBigImageUrl(data) {
+  let url;
+  if ('image_1024' in data) {
+    url = data.image_1024;
+  } else if ('image_512' in data) {
+    url = data.image_512;
+  } else {
+    url = data.image_192;
+  }
+  return url;
+}
+
 const draw = async (mask, text, callback) => {
   const myRegexpUser = /@\w+/;
   const matchUser = text.match(myRegexpUser);
@@ -34,7 +46,7 @@ const draw = async (mask, text, callback) => {
     if (!ok) {
       return;
     }
-    const userImageUrl = user.profile.image_192;
+    const userImageUrl = gerBigImageUrl(user.profile);
     let bufferImage;
     let image;
     try {
@@ -57,7 +69,7 @@ const draw = async (mask, text, callback) => {
           },
         ],
       };
-      callback(mask, {}, attachment);
+      callback('', {}, attachment);
     } catch (err) {
       callback(err.message, {});
     }
