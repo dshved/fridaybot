@@ -117,8 +117,8 @@ const combo = async (text, callback) => {
   if (matchUser) {
     arr = arr.slice(0, -1);
     arr = checkFilter(arr);
-    if (arr.length > 4) {
-      arr = arr.slice(0, 4);
+    if (arr.length > 7) {
+      arr = arr.slice(0, 7);
     }
 
     const userId = matchUser[0].substring(1);
