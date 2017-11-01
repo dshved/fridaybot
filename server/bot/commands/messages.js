@@ -346,6 +346,62 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./faceapp').drawHeisenberg,
   },
+  {
+    messages: ['IMPRESSION '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawImpression,
+  },
+  {
+    messages: ['LION '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawLion,
+  },
+  {
+    messages: ['GOATEE '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawGoatee,
+  },
+  {
+    messages: ['HIPSTER '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawHipster,
+  },
+  {
+    messages: ['BANGS '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawBangs,
+  },
+  {
+    messages: ['GLASSES '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawGlasses,
+  },
+  {
+    messages: ['WAVE '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawWave,
+  },
+  {
+    messages: ['MAKEUP '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawMakeup,
+  },
 ];
 
 module.exports = { messages };

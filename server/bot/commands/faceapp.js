@@ -111,4 +111,28 @@ module.exports = {
   drawHeisenberg: (text, callback) => {
     draw('heisenberg', text, callback);
   },
+  drawImpression: (text, callback) => {
+    draw('impression', text, callback);
+  },
+  drawLion: (text, callback) => {
+    draw('lion', text, callback);
+  },
+  drawGoatee: (text, callback) => {
+    draw('goatee', text, callback);
+  },
+  drawHipster: (text, callback) => {
+    draw('hipster', text, callback);
+  },
+  drawBangs: (text, callback) => {
+    draw('bangs', text, callback);
+  },
+  drawGlasses: (text, callback) => {
+    draw('glasses', text, callback);
+  },
+  drawWave: (text, callback) => {
+    draw('wave', text, callback);
+  },
+  drawMakeup: (text, callback) => {
+    draw('makeup', text, callback);
+  },
 };
