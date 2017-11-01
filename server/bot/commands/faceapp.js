@@ -17,7 +17,7 @@ function promiseRequest(url) {
   });
 }
 
-function gerBigImageUrl(data) {
+function getBigImageUrl(data) {
   let url;
   if ('image_1024' in data) {
     url = data.image_1024;
@@ -46,7 +46,7 @@ const draw = async (mask, text, callback) => {
     if (!ok) {
       return;
     }
-    const userImageUrl = gerBigImageUrl(user.profile);
+    const userImageUrl = getBigImageUrl(user.profile);
     let bufferImage;
     let image;
     try {
