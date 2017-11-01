@@ -34,9 +34,7 @@ const draw = async (mask, text, callback) => {
     if (!ok) {
       return;
     }
-    const userImageUrl = user.profile.image_192
-      .replace(/192\./, '1024.')
-      .replace(/=192/, '=1024.');
+    const userImageUrl = user.profile.image_192;
     let bufferImage;
     let image;
     try {
