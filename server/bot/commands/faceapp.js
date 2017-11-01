@@ -105,4 +105,10 @@ module.exports = {
   drawHitman: (text, callback) => {
     draw('hitman', text, callback);
   },
+  drawHollywood: (text, callback) => {
+    draw('hollywood', text, callback);
+  },
+  drawHeisenberg: (text, callback) => {
+    draw('heisenberg', text, callback);
+  },
 };

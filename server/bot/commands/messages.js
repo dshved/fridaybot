@@ -332,6 +332,20 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./faceapp').drawHitman,
   },
+  {
+    messages: ['HOLLYWOOD '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawHollywood,
+  },
+  {
+    messages: ['HEISENBERG '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawHeisenberg,
+  },
 ];
 
 module.exports = { messages };
