@@ -1,19 +1,18 @@
 extends layouts/main
 
 block content
-  -var users = ['@lekzd', '@t.doomheim', '@leksar','аноним', '@gopard', '@katia']
   .bg
   .donane
     .donate__frame
       iframe(src='https://money.yandex.ru/quickpay/shop-widget?writer=seller&targets=%D0%9F%D0%BE%D0%B4%D0%B4%D0%B5%D1%80%D0%B6%D0%BA%D0%B0%20%D1%8D%D0%BD%D1%82%D1%83%D0%B7%D0%B8%D0%B0%D0%B7%D0%BC%D0%B0%20%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D0%B0&targets-hint=&default-sum=100&button-text=14&payment-type-choice=on&comment=on&hint=Slack%20username&successURL=https%3A%2F%2Ffridaybot.tk&quickpay=shop&account=41001185887824', width='450', height='270', frameborder='0', allowtransparency='true', scrolling='no')
     .donate__header Уже помогли
     ul.donate__list
-      -for(var i = 0;i < users.length; i++)
+      -for(var i = 0;i < data.length; i++)
         li.donate__item
           span.donate__item-image
             img(src="http://cultofthepartyparrot.com/parrots/hd/parrot.gif", alt="parrot")
-          span.donate__item-text= users[i]
+          span.donate__item-text= data[i].user
 
     .donate__footer
-      |Если вы сделали пожертвование, но вас нет в списке, то просьба написать 
+      |Если вы сделали пожертвование, но вас нет в списке, то просьба написать
       a(href="mailto:dshved@hotmail.com") разработчику
