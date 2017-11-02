@@ -115,8 +115,8 @@ async function checkImage(str) {
   return { ok: false };
 }
 
-const combo = async (text, callback, msg, data) => {
-  let arr = data.text.replace(/\s{2,}/g, ' ').split(' ');
+const combo = async (text, callback) => {
+  let arr = text.replace(/\s{2,}/g, ' ').split(' ');
   const { ok, bufferImage, fileName } = await checkImage(arr[arr.length - 1]);
 
   if (ok) {
@@ -162,8 +162,8 @@ const getFilterList = (text, callback) => {
 };
 
 module.exports = {
-  drawCombo: (text, callback, msg, data) => {
-    combo(text, callback, msg, data);
+  drawCombo: (text, callback) => {
+    combo(text, callback);
   },
   getFilterList: (text, callback) => {
     getFilterList(text, callback);

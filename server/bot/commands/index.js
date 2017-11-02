@@ -29,7 +29,7 @@ const execResponse = (
     if (access) {
       if (entrance) {
         func(text, callback, msg, data);
-      } else if (startFrom && text.startsWith(msg)) {
+      } else if (startFrom && text.toUpperCase().startsWith(msg)) {
         const newLog = data;
         newLog.text = msg;
         saveLog(newLog);
@@ -37,7 +37,7 @@ const execResponse = (
         if (userText) {
           func(userText, callback, msg, data, text);
         }
-      } else if (!startFrom && text === msg) {
+      } else if (!startFrom && text.toUpperCase() === msg) {
         const newLog = data;
         newLog.text = msg;
         saveLog(newLog);
@@ -48,7 +48,8 @@ const execResponse = (
 };
 
 const userMessageRes = (data, channel, callback) => {
-  const messageText = data.text.toUpperCase();
+  // const messageText = data.text.toUpperCase();
+  const messageText = data.text;
   msgs.forEach(msg => {
     execResponse(
       data,

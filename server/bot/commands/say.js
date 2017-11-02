@@ -115,6 +115,7 @@ const getRandomEmoji = cb => {
 };
 
 async function sayText(text, split, maxW, away, callback) {
+  text = text.toUpperCase();
   let newLetterArray = [];
   let newArray = [];
   let sendMessage = '';
