@@ -29,6 +29,30 @@ function getBigImageUrl(data) {
   return url;
 }
 
+const filterList = [
+  'no-filter',
+  'smile',
+  'smile_2',
+  'hot',
+  'old',
+  'young',
+  'hollywood',
+  'hitman',
+  'pan',
+  'heisenberg',
+  'female',
+  'female_2',
+  'male',
+  'impression',
+  'lion',
+  'goatee',
+  'hipster',
+  'bangs',
+  'glasses',
+  'wave',
+  'makeup',
+];
+
 const draw = async (mask, text, callback) => {
   const myRegexpUser = /@\w+/;
   const matchUser = text.match(myRegexpUser);
@@ -75,29 +99,6 @@ const draw = async (mask, text, callback) => {
 };
 
 function checkFilter(array) {
-  const filterList = [
-    'no-filter',
-    'smile',
-    'smile_2',
-    'hot',
-    'old',
-    'young',
-    'hollywood',
-    'hitman',
-    'pan',
-    'heisenberg',
-    'female',
-    'female_2',
-    'male',
-    'impression',
-    'lion',
-    'goatee',
-    'hipster',
-    'bangs',
-    'glasses',
-    'wave',
-    'makeup',
-  ];
   const newArray = [];
   array.forEach(filterName => {
     const filtred = filterList.filter(
@@ -166,7 +167,14 @@ const combo = async (text, callback) => {
       callback(err.message, {});
     }
   }
-  // console.log(matchUser);
+};
+
+const getFilterList = (text, callback) => {
+  let message = '';
+  filterList.forEach(item => {
+    message += `${item.replace('_', '')}\n`;
+  });
+  callback(message, {});
 };
 
 module.exports = {
@@ -232,5 +240,8 @@ module.exports = {
   },
   drawCombo: (text, callback) => {
     combo(text, callback);
+  },
+  getFilterList: (text, callback) => {
+    getFilterList(text, callback);
   },
 };

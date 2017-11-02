@@ -409,6 +409,20 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./faceapp').drawCombo,
   },
+  {
+    messages: ['FACE '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').drawCombo,
+  },
+  {
+    messages: ['FACE LIST'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./faceapp').getFilterList,
+  },
 ];
 
 module.exports = { messages };
