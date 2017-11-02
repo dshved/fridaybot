@@ -35,7 +35,7 @@ const execResponse = (
         saveLog(newLog);
         const userText = text.substr(msg.length);
         if (userText) {
-          func(userText, callback);
+          func(userText, callback, msg, data, text);
         }
       } else if (!startFrom && text === msg) {
         const newLog = data;

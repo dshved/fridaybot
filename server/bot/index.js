@@ -292,7 +292,7 @@ bot.on('message', data => {
   }
 
   if (data.text) {
-    data.text = data.text.toUpperCase();
+    // data.text = data.text.toUpperCase();
 
     const channel = channelName(data);
     const user = data.user ? data.user : data.bot_id;
@@ -314,11 +314,11 @@ bot.on('message', data => {
   }
 
   if (data.text) {
-    data.text = data.text.toUpperCase();
+    // data.text = data.text.toUpperCase();
   }
 
   if (data.text) {
-    if (~data.text.indexOf('UPTIME') == -1) {
+    if (~data.text.toUpperCase().indexOf('UPTIME') == -1) {
       var millisecToTimeStruct = function(millisec) {
         var days, hours, minutes, seconds;
         if (isNaN(millisec)) {
@@ -380,7 +380,11 @@ bot.on('message', data => {
     accessBotPost &&
     data.subtype !== 'channel_leave'
   ) {
-    BotMessages.findOne({ user_message: data.text }).then(result => {
+    let mes;
+    if (data.text) {
+      mes = data.text.toUpperCase();
+    }
+    BotMessages.findOne({ user_message: mes }).then(result => {
       if (result) {
         const att = isThread(data, messageParams);
         bot.postMessageToChannel(
@@ -402,7 +406,11 @@ bot.on('message', data => {
     data.subtype !== 'message_changed' &&
     data.subtype !== 'file_comment'
   ) {
-    BotMessages.findOne({ user_message: data.text }).then(result => {
+    let mes;
+    if (data.text) {
+      mes = data.text.toUpperCase();
+    }
+    BotMessages.findOne({ user_message: mes }).then(result => {
       if (result) {
         const att = isThread(data, messageParams);
         bot.postMessageToChannel(

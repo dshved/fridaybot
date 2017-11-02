@@ -53,51 +53,6 @@ const filterList = [
   'makeup',
 ];
 
-const draw = async (mask, text, callback) => {
-  const myRegexpUser = /@\w+/;
-  const matchUser = text.match(myRegexpUser);
-  if (matchUser) {
-    const userId = matchUser[0].substring(1);
-    const randomName = `${userId}-${mask}-${Math.random()
-      .toString(36)
-      .substring(2)}.jpg`;
-    try {
-      const response = await promiseRequest({
-        url: `https://slack.com/api/users.info?token=${config.bot
-          .token}&user=${userId}&pretty=1`,
-        encoding: null,
-      });
-      const { user, ok } = JSON.parse(response);
-      if (!ok) {
-        return;
-      }
-      const userImageUrl = getBigImageUrl(user.profile);
-
-      const bufferImage = await promiseRequest({
-        url: userImageUrl,
-        encoding: null,
-      });
-      const image = await faceapp.process(bufferImage, mask);
-
-      await writeFileAsync(`./public/uploads/mask/${randomName}`, image);
-      const attachment = {
-        username: 'fridaybot',
-        icon_emoji: ':fridaybot_new:',
-        attachments: [
-          {
-            fallback: 'Faceapp',
-            color: '#ff0000',
-            image_url: `https://fridaybot.tk/uploads/mask/${randomName}`,
-          },
-        ],
-      };
-      callback('', {}, attachment);
-    } catch (err) {
-      callback(err.message, {});
-    }
-  }
-};
-
 function checkFilter(array) {
   const newArray = [];
   array.forEach(filterName => {
@@ -111,37 +66,66 @@ function checkFilter(array) {
   return newArray;
 }
 
-const combo = async (text, callback) => {
-  let arr = text.replace(/\s{2,}/g, ' ').split(' ');
+async function getImage(url) {
+  const obj = {};
+  try {
+    obj.bufferImage = await promiseRequest({
+      url,
+      encoding: null,
+    });
+    obj.ok = true;
+  } catch (err) {
+    obj.ok = false;
+    obj.message = err.message;
+  }
+  return obj;
+}
+
+async function checkImage(str) {
   const myRegexpUser = /@\w+/;
-  const matchUser = text.match(myRegexpUser);
+  const matchUser = str.match(myRegexpUser);
+  const url = str.substring(1, str.length - 1);
+  const matchUrl = /^(ftp|http|https):\/\/[^ "]+$/.test(url);
+
+  const randomName = `${Math.random()
+    .toString(36)
+    .substring(2)}.jpg`;
+  let result;
   if (matchUser) {
+    const userId = matchUser[0].substring(1);
+    const response = await promiseRequest({
+      url: `https://slack.com/api/users.info?token=${config.bot
+        .token}&user=${userId}&pretty=1`,
+      encoding: null,
+    });
+    const { user, ok } = JSON.parse(response);
+    if (!ok) {
+      return;
+    }
+    const userImageUrl = getBigImageUrl(user.profile);
+    result = await getImage(userImageUrl);
+
+    result.fileName = randomName;
+    return result;
+  } else if (matchUrl) {
+    result = await getImage(url);
+    result.fileName = randomName;
+    return result;
+  }
+  return { ok: false };
+}
+
+const combo = async (text, callback, msg, data) => {
+  let arr = data.text.replace(/\s{2,}/g, ' ').split(' ');
+  const { ok, bufferImage, fileName } = await checkImage(arr[arr.length - 1]);
+
+  if (ok) {
     arr = arr.slice(0, -1);
     arr = checkFilter(arr);
     if (arr.length > 7) {
       arr = arr.slice(0, 7);
     }
-
-    const userId = matchUser[0].substring(1);
-    const randomName = `${userId}-${Math.random()
-      .toString(36)
-      .substring(2)}.jpg`;
     try {
-      const response = await promiseRequest({
-        url: `https://slack.com/api/users.info?token=${config.bot
-          .token}&user=${userId}&pretty=1`,
-        encoding: null,
-      });
-      const { user, ok } = JSON.parse(response);
-      if (!ok) {
-        return;
-      }
-      const userImageUrl = getBigImageUrl(user.profile);
-
-      const bufferImage = await promiseRequest({
-        url: userImageUrl,
-        encoding: null,
-      });
       let image = await faceapp.process(bufferImage, arr[0]);
 
       if (arr.length > 1) {
@@ -149,7 +133,7 @@ const combo = async (text, callback) => {
           image = await faceapp.process(image, arr[i]);
         }
       }
-      await writeFileAsync(`./public/uploads/mask/${randomName}`, image);
+      await writeFileAsync(`./public/uploads/mask/${fileName}`, image);
 
       const attachment = {
         username: 'fridaybot',
@@ -158,7 +142,7 @@ const combo = async (text, callback) => {
           {
             fallback: 'Faceapp',
             color: '#ff0000',
-            image_url: `https://fridaybot.tk/uploads/mask/${randomName}`,
+            image_url: `https://fridaybot.tk/uploads/mask/${fileName}`,
           },
         ],
       };
@@ -178,68 +162,8 @@ const getFilterList = (text, callback) => {
 };
 
 module.exports = {
-  drawSmile: (text, callback) => {
-    draw('smile', text, callback);
-  },
-  drawSmile2: (text, callback) => {
-    draw('smile_2', text, callback);
-  },
-  drawHot: (text, callback) => {
-    draw('hot', text, callback);
-  },
-  drawOld: (text, callback) => {
-    draw('old', text, callback);
-  },
-  drawYoung: (text, callback) => {
-    draw('young', text, callback);
-  },
-  drawFemale2: (text, callback) => {
-    draw('female_2', text, callback);
-  },
-  drawFemale: (text, callback) => {
-    draw('female', text, callback);
-  },
-  drawMale: (text, callback) => {
-    draw('male', text, callback);
-  },
-  drawPan: (text, callback) => {
-    draw('pan', text, callback);
-  },
-  drawHitman: (text, callback) => {
-    draw('hitman', text, callback);
-  },
-  drawHollywood: (text, callback) => {
-    draw('hollywood', text, callback);
-  },
-  drawHeisenberg: (text, callback) => {
-    draw('heisenberg', text, callback);
-  },
-  drawImpression: (text, callback) => {
-    draw('impression', text, callback);
-  },
-  drawLion: (text, callback) => {
-    draw('lion', text, callback);
-  },
-  drawGoatee: (text, callback) => {
-    draw('goatee', text, callback);
-  },
-  drawHipster: (text, callback) => {
-    draw('hipster', text, callback);
-  },
-  drawBangs: (text, callback) => {
-    draw('bangs', text, callback);
-  },
-  drawGlasses: (text, callback) => {
-    draw('glasses', text, callback);
-  },
-  drawWave: (text, callback) => {
-    draw('wave', text, callback);
-  },
-  drawMakeup: (text, callback) => {
-    draw('makeup', text, callback);
-  },
-  drawCombo: (text, callback) => {
-    combo(text, callback);
+  drawCombo: (text, callback, msg, data) => {
+    combo(text, callback, msg, data);
   },
   getFilterList: (text, callback) => {
     getFilterList(text, callback);
