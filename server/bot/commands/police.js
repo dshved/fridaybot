@@ -45,9 +45,9 @@ async function getPolice(text, callback, msg, { channel }) {
   };
   const myRegexpUser = /@\w+/g;
   const matchUser = text.match(myRegexpUser);
-  if (!text.startsWith(msg)) {
-    return;
-  }
+  // if (!text.startsWith(msg)) {
+  //   return;
+  // }
   if (!matchUser) {
     return callback(
       ':drudgesiren:Господин полицейский всегда на страже закона.:drudgesiren:\nЕсли у вас жалоба на конкретного человека, то повторите команду и укажите его @username',
@@ -274,4 +274,8 @@ async function getPolice(text, callback, msg, { channel }) {
   return callback(message, {}, attachment);
 }
 
-module.exports = getPolice;
+module.exports = {
+  getPolice: (text, callback, msg, data) => {
+    getPolice(text, callback, msg, data);
+  },
+};
