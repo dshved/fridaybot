@@ -349,6 +349,8 @@ async function getOnlineUsers(text, callback, mes, { channel }) {
         .filter(obj => obj.presence === 'active')
         .filter(obj => channelMembers.includes(obj.id));
       callback(`Всего онлайн: ${onlineUsers.length}`, {});
+    } else {
+      callback(`Что-то пошло не так (`, {});
     }
   } catch (e) {
     callback(`Что-то пошло не так (`, {});
