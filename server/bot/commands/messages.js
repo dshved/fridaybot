@@ -276,6 +276,13 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./faceapp').getFilterList,
   },
+  {
+    messages: ['ОНЛАЙН', 'КТО ОНЛАЙН', 'КТО ОНЛАЙН?', 'ONLINE'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./statistic').online,
+  },
 ];
 
 module.exports = { messages };

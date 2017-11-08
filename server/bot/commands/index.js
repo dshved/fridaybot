@@ -41,7 +41,7 @@ const execResponse = (
         const newLog = data;
         newLog.text = msg;
         saveLog(newLog);
-        func(text, callback);
+        func(text, callback, msg, data, text);
       }
     }
   });

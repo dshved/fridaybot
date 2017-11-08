@@ -3,6 +3,8 @@ const UserMessages = require('./../../models/usermessage').UserMessages;
 const Statistics = require('./../../models/statistics').Statistics;
 const Log = require('./../../models/log').Log;
 const { random } = require('lodash');
+const axios = require('axios');
+const config = require('./../../../config');
 
 const commandsURL =
   'https://github.com/dshved/fridaybot/blob/master/COMMANDS.md';
@@ -330,6 +332,29 @@ function whenFriday(text, callback) {
   }
 }
 
+async function getOnlineUsers(text, callback, mes, { channel }) {
+  try {
+    const { data: channelInfo } = await axios(
+      `https://slack.com/api/channels.info?token=${config.bot
+        .token}&channel=${channel}`,
+    );
+    const { data: usersList } = await axios(
+      `https://slack.com/api/users.list?token=${config.bot
+        .token}&presence=true`,
+    );
+    if (channelInfo.ok && usersList.ok) {
+      const channelMembers = channelInfo.channel.members;
+      const teamMembers = usersList.members;
+      const onlineUsers = teamMembers
+        .filter(obj => obj.presence === 'active')
+        .filter(obj => channelMembers.includes(obj.id));
+      callback(`Всего онлайн: ${onlineUsers.length}`, {});
+    }
+  } catch (e) {
+    callback(`Что-то пошло не так (`, {});
+  }
+}
+
 module.exports = {
   parrotCount: (text, callback) => {
     getParrotCount(text, callback);
@@ -363,5 +388,8 @@ module.exports = {
   },
   friday: (text, callback) => {
     whenFriday(text, callback);
+  },
+  online: (text, callback, mes, data) => {
+    getOnlineUsers(text, callback, mes, data);
   },
 };
