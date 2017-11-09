@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Layout from '../components/layout';
 import axios from 'axios';
+import Layout from '../components/layout';
 
 const getBotSettings = async () => {
   const result = await axios.get(
