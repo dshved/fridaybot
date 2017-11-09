@@ -64,6 +64,20 @@ export default class Home extends Component {
   }
 
   handleSubmit(event) {
+    const message = {
+      id: this.state._id,
+      params: {
+        user_join: {
+          active: this.state.joinActive,
+          message: this.state.joinMessage,
+        },
+        user_leave: {
+          active: this.state.leaveActive,
+          message: this.state.leaveMessage,
+        },
+      },
+    };
+    axios.post(`${global.window.location.origin}/api/editBotSettings`, message);
     event.preventDefault();
   }
 
