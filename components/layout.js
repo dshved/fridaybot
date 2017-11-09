@@ -12,15 +12,15 @@ export default ({ children, title = 'This is the default title' }) => (
     <header>
       <nav>
         <Link prefetch href="/">
-          <a>Start</a>
+          <a>Login</a>
         </Link>{' '}
         |
-        <Link prefetch href="/home">
-          <a>Home</a>
+        <Link prefetch href="/stickers">
+          <a>Stickers</a>
         </Link>{' '}
         |
-        <Link prefetch href="/contact">
-          <a>Contact</a>
+        <Link prefetch href="/settings">
+          <a>Settings</a>
         </Link>
       </nav>
     </header>
