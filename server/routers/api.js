@@ -62,8 +62,9 @@ const addSticker = (req, res, next) => {
         files.image[0].originalFilename;
       fs.writeFile(path, data, error => {
         if (error) return next(err);
-        const imageURL = `/uploads/stickers/${randomName}-${files.image[0]
-          .originalFilename}`;
+        const imageURL = `/uploads/stickers/${randomName}-${
+          files.image[0].originalFilename
+        }`;
         const newSticker = new Sticker({
           emoji: newEmoji,
           image_url: imageURL,
@@ -262,7 +263,7 @@ router.post('/addSticker', addSticker);
 router.post('/removeSticker', removeSticker);
 router.post('/slack/test', testSlackCommand);
 router.get('/getStatistics', getStatistics);
-router.use(auth);
+// router.use(auth);
 
 router.get('/getBotMessages', getBotMessages);
 router.post('/addBotMessage', addBotMessage);

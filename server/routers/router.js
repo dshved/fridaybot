@@ -9,15 +9,15 @@ const Jimp = require('jimp');
 const config = require('./../../config.js');
 const request = require('request');
 
-router.get('/', (req, res, next) => {
-  if (!req.session.token) {
-    res.render('index');
-  } else {
-    res.redirect('/home');
-  }
+// router.get('/', (req, res, next) => {
+//   if (!req.session.token) {
+//     res.render('index');
+//   } else {
+//     res.redirect('/home');
+//   }
 
-  // res.render('index', { title: 'Express' });
-});
+//   // res.render('index', { title: 'Express' });
+// });
 
 router.get('/home', Auth, (req, res, next) => {
   const data = {};
@@ -61,8 +61,9 @@ router.get('/police/:id', (req, res, next) => {
 
   async function draw() {
     const response = await promiseRequest({
-      url: `https://slack.com/api/users.info?token=${config.bot
-        .token}&user=${req.params.id}&pretty=1`,
+      url: `https://slack.com/api/users.info?token=${config.bot.token}&user=${
+        req.params.id
+      }&pretty=1`,
       encoding: null,
     });
     const { user, ok } = JSON.parse(response);
