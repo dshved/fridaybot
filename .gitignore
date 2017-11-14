@@ -8,3 +8,4 @@ server/bot2.js
 public/uploads/
 package-lock.json
 .next/
+static/uploads/

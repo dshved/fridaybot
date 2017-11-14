@@ -1,6 +1,17 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Layout from '../components/layout';
+import {
+  Container,
+  Form,
+  Grid,
+  Message,
+  Transition,
+  TextArea,
+  Loader,
+  Dimmer,
+} from 'semantic-ui-react';
+import { setTimeout } from 'timers';
 
 const getBotSettings = async () => {
   const result = await axios.get(
@@ -26,10 +37,14 @@ export default class Home extends Component {
       iconUrl: '',
       iconEmoji: '',
       name: '',
+      success: null,
+      error: null,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onSuccess = this.onSuccess.bind(this);
+    this.onError = this.onError.bind(this);
   }
   async componentWillMount() {
     const { data } = await getBotSettings();
@@ -77,15 +92,32 @@ export default class Home extends Component {
         },
       },
     };
-    axios.post(`${global.window.location.origin}/api/editBotSettings`, message);
+    axios
+      .post(`${global.window.location.origin}/api/editBotSettings`, message)
+      .then(response => {
+        response.data.msg === 'success' ? this.onSuccess() : this.onError();
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
     event.preventDefault();
   }
-
+  onSuccess() {
+    this.setState({ success: true });
+    setTimeout(() => {
+      this.setState({ success: false });
+    }, 1000);
+  }
+  onError() {}
   renderError() {
     return <div>Ой: {this.state.error.message}</div>;
   }
   renderLoading() {
-    return <div>Загрузка....</div>;
+    return (
+      <Dimmer active>
+        <Loader>Загрузка</Loader>
+      </Dimmer>
+    );
   }
 
   renderSettings() {
@@ -94,101 +126,99 @@ export default class Home extends Component {
     }
     const config = this.state;
     return (
-      <form onSubmit={this.handleSubmit} className="settings">
-        <div className="settings__item">
-          <div className="settings__item-col">
-            <label htmlFor="bot_name">Имя бота</label>
-          </div>
-          <div className="settings__item-col">
-            <input
-              disabled="disabled"
-              type="text"
-              name="bot_name"
-              id="bot_name"
-              value={config.name}
-              className="input settings__input"
-            />
-          </div>
-        </div>
-        <div className="settings__item">
-          <div className="settings__item-col">
-            <label htmlFor="bot_name">Канал</label>
-          </div>
-          <div className="settings__item-col">
-            <input
-              disabled="disabled"
-              type="text"
-              name="bot_name"
-              id="bot_name"
-              value={config.channelName}
-              className="input settings__input"
-            />
-          </div>
-        </div>
-        <div className="settings__item">
-          <div className="settings__item-col">
-            <label htmlFor="bot_name">Изображение</label>
-          </div>
-          <div className="settings__item-col">
-            <input
-              disabled="disabled"
-              type="text"
-              name="bot_name"
-              id="bot_name"
-              value={config.name}
-              className="input settings__input"
-            />
-          </div>
-        </div>
-        <div className="settings__item">
-          <div className="settings__item-col">
-            <label htmlFor="join_active">Привественное сообщение</label>
-            <input
-              id="joinActive"
-              type="checkbox"
-              checked={config.joinActive}
-              className="input settings__checkbox"
-              onChange={this.handleInputChange}
-            />
-          </div>
-          <div className="settings__item-col">
-            <textarea
-              name="user_join"
-              id="joinMessage"
-              className="textarea settings__textarea"
-              value={config.joinMessage}
-              onChange={this.handleChange}
-            />
-          </div>
-        </div>
-        <div className="settings__item">
-          <div className="settings__item-col">
-            <label htmlFor="leave_active">Прощальное сообщение</label>
-            <input
-              id="leaveActive"
-              type="checkbox"
-              checked={config.leaveActive}
-              className="input settings__checkbox"
-              onChange={this.handleInputChange}
-            />
-          </div>
-          <div className="settings__item-col">
-            <textarea
-              name="user_leave"
-              id="leaveMessage"
-              className="textarea settings__textarea"
-              value={config.leaveMessage}
-              onChange={this.handleChange}
-            />
-          </div>
-        </div>
-        <div className="settings__save">
-          <div className="settings__message" />
-          <button data-bot-id={config._id} className="button button_primary">
-            Сохранить
-          </button>
-        </div>
-      </form>
+      <Container>
+        <Grid style={{ height: '100%', marginTop: 30 }} verticalAlign="middle">
+          <Grid.Column style={{ maxWidth: 600, margin: '0 auto' }}>
+            <Form
+              success={this.state.success}
+              size="large"
+              onSubmit={this.handleSubmit}
+              className="settings"
+            >
+              <Transition
+                visible={this.state.success}
+                animation="scale"
+                duration={500}
+              >
+                <Message success header="Настройки успешно сохранены" />
+              </Transition>
+              <Form.Input
+                // disabled
+                label="Имя бота"
+                type="text"
+                name="bot_name"
+                id="bot_name"
+                value={config.name}
+                className="input settings__input"
+              />
+              <Form.Input
+                // disabled
+                label="Канал"
+                type="text"
+                name="bot_name"
+                id="bot_name"
+                value={config.channelName}
+                className="input settings__input"
+              />
+
+              <Form.Input
+                // disabled
+                label="Изображение"
+                type="text"
+                name="bot_name"
+                id="bot_name"
+                value={config.name}
+                className="input settings__input"
+              />
+
+              <Form.Checkbox
+                label="Показывать привественное сообщение"
+                id="joinActive"
+                type="checkbox"
+                checked={config.joinActive}
+                className="input settings__checkbox"
+                onChange={this.handleInputChange}
+              />
+
+              <TextArea
+                style={{ marginBottom: '1em' }}
+                autoHeight
+                name="user_join"
+                id="joinMessage"
+                className="textarea settings__textarea"
+                value={config.joinMessage}
+                onChange={this.handleChange}
+              />
+
+              <Form.Checkbox
+                label="Показывать прощальное сообщение"
+                id="leaveActive"
+                type="checkbox"
+                checked={config.leaveActive}
+                className="input settings__checkbox"
+                onChange={this.handleInputChange}
+              />
+              <TextArea
+                style={{ marginBottom: '1em' }}
+                autoHeight
+                name="user_leave"
+                id="leaveMessage"
+                className="textarea settings__textarea"
+                value={config.leaveMessage}
+                onChange={this.handleChange}
+              />
+              <Form.Button
+                data-bot-id={config._id}
+                inverted
+                color="green"
+                floated="right"
+              >
+                Сохранить
+              </Form.Button>
+            </Form>
+          </Grid.Column>
+        </Grid>
+      </Container>
     );
   }
   render() {
