@@ -136,7 +136,7 @@ async function sendAmnisty(filename, channel) {
     const result = await promiseRequest(
       `https://slack.com/api/chat.postMessage?${querystring.stringify(url)}`,
     );
-  }, 60000);
+  }, 30000);
 }
 
 async function delPrePolice({ ts, channel }) {
@@ -195,13 +195,12 @@ async function getPolice(text, callback, msg, { channel }) {
   const policeEscape = random(2) === 2 ? true : false;
 
   let baseImg;
-  let baseAmnestyImg;
+  let baseAmnestyImg = await Jimp.read(
+    `./public/images/police/${imgAmnesty[countUser].imageNames[0]}`,
+  );
   if (!policeEscape) {
     baseImg = await Jimp.read(
       `./public/images/police/${imgInfo[countUser].imageNames[0]}`,
-    );
-    baseAmnestyImg = await Jimp.read(
-      `./public/images/police/${imgAmnesty[countUser].imageNames[0]}`,
     );
   } else {
     baseImg = await Jimp.read(
@@ -251,13 +250,13 @@ async function getPolice(text, callback, msg, { channel }) {
 
       x1 = imgAmnesty[countUser].imagePositions[i][0];
       y1 = imgAmnesty[countUser].imagePositions[i][1];
+      amnestyAva.composite(temp, x1, y1);
     } else {
       x = imgEscape[countUser].imagePositions[i][0];
       y = imgEscape[countUser].imagePositions[i][1];
     }
 
     ava.composite(temp, x, y);
-    amnestyAva.composite(temp, x1, y1);
   }
   if (policeEscape) {
     template.composite(clear, 0, 0);
