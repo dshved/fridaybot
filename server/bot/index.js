@@ -260,14 +260,25 @@ bot.on('message', data => {
   }
 
   if (data.text) {
-    if (~data.text.toUpperCase().indexOf('СОВЕРШИТЬ БОЛЬШУЮ ГЛУПОСТЬ') == -1) {
-      deleteParrots(botParams.channelId);
-    }
-  }
-
-  if (data.text) {
     if (~data.text.toUpperCase().indexOf('CLEAR') == -1) {
-      deleteParrots(botParams.channelId);
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      let day = now.getDate();
+
+      while (new Date(year, month, day).getDay() != 5) {
+        day++;
+      }
+
+      const friday = new Date(year, month, day);
+
+      const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
+      if (result < 0) {
+        deleteParrots(botParams.channelId);
+      } else {
+        const message = 'В этот светлый день я не могу удалять попугаев!';
+        bot.postMessageToChannel(botParams.channelName, message, {});
+      }
     }
   }
 
