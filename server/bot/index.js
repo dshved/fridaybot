@@ -274,10 +274,10 @@ bot.on('message', data => {
 
       const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
       if (result < 0) {
-        deleteParrots(botParams.channelId);
-      } else {
         const message = 'В этот светлый день я не могу удалять попугаев!';
         bot.postMessageToChannel(botParams.channelName, message, {});
+      } else {
+        deleteParrots(botParams.channelId);
       }
     }
   }
