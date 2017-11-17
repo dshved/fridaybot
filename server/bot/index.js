@@ -274,8 +274,11 @@ bot.on('message', data => {
 
       const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
       if (result < 0) {
+        const attachment = {};
+        attachment.username = 'fridaybot';
+        attachment.icon_emoji = ':fridaybot_new:';
         const message = 'В этот светлый день я не могу удалять попугаев!';
-        bot.postMessageToChannel(botParams.channelName, message, {});
+        bot.postMessageToChannel(botParams.channelName, message, attachment);
       } else {
         deleteParrots(botParams.channelId);
       }
