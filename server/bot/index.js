@@ -389,11 +389,6 @@ bot.on('message', data => {
     statistic.save();
   }
 
-  if (data.subtype === 'channel_join' && data.channel !== botParams.channelId) {
-    const message = '+1 в #public';
-    bot.postMessageToChannel(botParams.channelName, message, messageParams);
-  }
-
   if (
     data.type === 'message' &&
     data.channel === botParams.channelId &&
