@@ -1,36 +1,69 @@
 <p align="center"><img src="images/bg-git.jpg"></p>
 
-# fridaybot
+# Fridaybot
 
 > Бот для slack-канала #friday [SPB Front-end](http://spb-frontend.slack.com)
 
-[Web site](http://fridaybot.tk)
+[Website](http://fridaybot.tk)
 
 ## Что умеет бот?
-- Приветствовать новых пользователей:
+### Список некоторых команд
+<details>
+<summary>- Приветствовать новых пользователей:</summary>
+<br>
 <img src="images/join.gif">
+</details>
 
-- Прощаться с ушедшими пользователями:
+<details>
+<summary>- Прощаться с ушедшими пользователями:</summary>
+<br>
 <img src="images/leave.gif">
+</details>
 
-- Писать текст из попугаев:
+<details>
+<summary>- Писать текст из попугаев:</summary>
+<br>
 <img src="images/hi.gif">
+</details>
 
-- Писать текст из любых emoji:
+<details>
+<summary>- Писать текст из любых emoji:</summary>
+<br>
 <img src="images/cop.gif">
 <img src="images/friday.gif">
+</details>
 
-- Считать количество отправленных сообщений:
+<details>
+<summary>- Считать количество отправленных сообщений:</summary>
+<br>
 <img src="images/live.gif">
+</details>
 
-- Считать количество отправленных пэрротов:
+<details>
+<summary>- Считать количество отправленных пэрротов:</summary>
+<br>
 <img src="images/count.gif">
+</details>
 
-- Показывать кто больше всех отправляет пэрротов:
+<details>
+<summary>- Показывать кто больше всех отправляет пэрротов:</summary>
+<br>
 <img src="images/elite.gif">
-
-- Показывать PPM:
-<img src="images/ppm.gif">
+</details>
 
 #### Получить полный список команд:
 - commands
+
+## Автор
+
+* **Dmitriy Shved** - [dshved](https://github.com/dshved)
+
+Посмотреть всех [контрибьюторов](https://github.com/dshved/fridaybot/contributors)
+
+## Помощь
+
+Пожалуйста прочитайте [CONTRIBUTING.md](CONTRIBUTING.md) для получения подробной информации.
+
+## Лицензия
+
+Этот проект разрабатывается под лицензией - [MIT](LICENSE.md)

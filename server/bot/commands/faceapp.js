@@ -116,7 +116,10 @@ async function checkImage(str) {
 }
 
 const combo = async (text, callback) => {
-  let arr = text.replace(/\s{2,}/g, ' ').split(' ');
+  let arr = text
+    .trim()
+    .replace(/\s{2,}/g, ' ')
+    .split(' ');
   const { ok, bufferImage, fileName } = await checkImage(arr[arr.length - 1]);
 
   if (ok) {

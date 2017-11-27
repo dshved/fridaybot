@@ -388,6 +388,7 @@ bot.on('message', data => {
 
     statistic.save();
   }
+
   if (
     data.type === 'message' &&
     data.channel === botParams.channelId &&
