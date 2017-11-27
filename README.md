@@ -60,6 +60,10 @@
 
 Посмотреть всех [контрибьюторов](https://github.com/dshved/fridaybot/contributors)
 
-## License
+## Помощь
+
+Пожалуйста прочитайте [CONTRIBUTING.md](CONTRIBUTING.md]) для получения подробной информации.
+
+## Лицензия
 
 Этот проект разрабатывается под лицензией - [MIT](LICENSE.md)
