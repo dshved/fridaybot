@@ -66,7 +66,7 @@
 ### Получить случайную запись с Reddit/subreddit
 `reddit [subreddit]`
 
-### Получить случайтую запись с subreddit/javascript
+### Получить случайную запись с subreddit/javascript
 `rdt`
 
 ### Получить статистику отправленных сообщений и пэрротов:
