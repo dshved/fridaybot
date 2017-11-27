@@ -51,14 +51,15 @@
 <img src="images/elite.gif">
 </details>
 
-#### Получить полный список команд:
-- commands
+#### Посмотреть полный список [команд](COMMANDS.md)
 
 ## Автор
 
 * **Dmitriy Shved** - [dshved](https://github.com/dshved)
 
 Посмотреть всех [контрибьюторов](https://github.com/dshved/fridaybot/contributors)
+
+### Поддеражать разработчика [donate](https://fridaybot.tk/donate)
 
 ## Помощь
 
