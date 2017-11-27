@@ -51,8 +51,7 @@
 <img src="images/elite.gif">
 </details>
 
-#### Получить полный список команд:
-- commands
+#### Посмотреть полный список [команд](COMMANDS.md)
 
 ## Автор
 
