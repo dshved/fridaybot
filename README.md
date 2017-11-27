@@ -59,7 +59,7 @@
 
 Посмотреть всех [контрибьюторов](https://github.com/dshved/fridaybot/contributors)
 
-### Поддеражать разработчика [donate](https://fridaybot.tk/donate)
+### Поддержать разработчика [donate](https://fridaybot.tk/donate)
 
 ## Помощь
 
