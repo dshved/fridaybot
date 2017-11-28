@@ -192,7 +192,7 @@ async function getPolice(text, callback, msg, { channel }) {
   const randomName = `${imageId}-${Math.random()
     .toString(36)
     .substring(2)}`;
-  const policeEscape = random(2) === 2 ? true : false;
+  const policeEscape = random(3) === 3 ? true : false;
 
   let baseImg;
   let baseAmnestyImg = await Jimp.read(
