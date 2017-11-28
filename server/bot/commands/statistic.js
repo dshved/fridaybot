@@ -5,6 +5,12 @@ const Log = require('./../../models/log').Log;
 const { random } = require('lodash');
 const axios = require('axios');
 const config = require('./../../../config');
+const GoogleImages = require('google-images');
+
+const client = new GoogleImages(
+  '001346344263575798591:zegx-w5mjn0',
+  'AIzaSyDscQc0ULi1FtFwWG6W4AJhdNtLxsjsmDg',
+);
 
 const commandsURL =
   'https://github.com/dshved/fridaybot/blob/master/COMMANDS.md';
@@ -278,7 +284,14 @@ function millisecToTimeStruct(millisec) {
   return `${~~days} д. ${~~hours} ч. ${~~minutes} м. ${~~seconds} с.`;
 }
 
-function whenFriday(text, callback) {
+async function searchImage(query) {
+  const randomPage = random(1, 5);
+  const data = await client.search(query, { page: randomPage });
+  const randomImageUrl = data[random(0, data.length)].url;
+  return randomImageUrl;
+}
+
+async function whenFriday(text, callback) {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
@@ -296,7 +309,7 @@ function whenFriday(text, callback) {
   const imageUrl =
     result < 0
       ? 'http://memok.net/uploads/2014/01/26/52e4f0c4c579a.jpg'
-      : 'https://i2.wp.com/picsmine.com/wp-content/uploads/2017/02/Sad-Memes-man-crying-front-of-computer.png';
+      : await searchImage('sad cat');
 
   attachment.username = 'fridaybot';
   attachment.icon_emoji = ':fridaybot_new:';

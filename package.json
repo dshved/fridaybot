@@ -24,6 +24,7 @@
     "express-session": "^1.15.6",
     "faceapp": "https://github.com/dshved/faceapp.js.git",
     "gifencoder": "^1.1.0",
+    "google-images": "^2.1.0",
     "iconv-lite": "^0.4.19",
     "jimp": "^0.2.28",
     "jsonwebtoken": "^7.3.0",
