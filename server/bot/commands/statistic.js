@@ -198,7 +198,8 @@ function parseDate(str) {
   return m ? `${m[3]}/${m[2]}/${m[1]}` : null;
 }
 
-async function getStatistic(text, callback) {
+async function getStatistic(msg, callback) {
+  const text = msg.toUpperCase();
   let dateOffset;
   let dateText = 0;
   let date;
