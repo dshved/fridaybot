@@ -310,7 +310,7 @@ async function whenFriday(text, callback) {
   const imageUrl =
     result < 0
       ? 'http://memok.net/uploads/2014/01/26/52e4f0c4c579a.jpg'
-      : await searchImage('sad cat');
+      : 'https://i.ytimg.com/vi/hqcWAPh-pvM/maxresdefault.jpg';
 
   attachment.username = 'fridaybot';
   attachment.icon_emoji = ':fridaybot_new:';
