@@ -4,7 +4,6 @@ const Statistics = require('./../../models/statistics').Statistics;
 const Log = require('./../../models/log').Log;
 const { random } = require('lodash');
 const axios = require('axios');
-const config = require('./../../../config');
 const GoogleImages = require('google-images');
 
 const client = new GoogleImages(
@@ -310,7 +309,7 @@ async function whenFriday(text, callback) {
   const imageUrl =
     result < 0
       ? 'http://memok.net/uploads/2014/01/26/52e4f0c4c579a.jpg'
-      : await searchImage('sad cat');
+      : 'https://i.ytimg.com/vi/hqcWAPh-pvM/maxresdefault.jpg';
 
   attachment.username = 'fridaybot';
   attachment.icon_emoji = ':fridaybot_new:';
@@ -349,12 +348,10 @@ async function whenFriday(text, callback) {
 async function getOnlineUsers(text, callback, mes, { channel }) {
   try {
     const { data: channelInfo } = await axios(
-      `https://slack.com/api/channels.info?token=${config.bot
-        .token}&channel=${channel}`,
+      `https://slack.com/api/channels.info?token=${global.BOT_TOKEN}&channel=${channel}`,
     );
     const { data: usersList } = await axios(
-      `https://slack.com/api/users.list?token=${config.bot
-        .token}&presence=true`,
+      `https://slack.com/api/users.list?token=${global.BOT_TOKEN}&presence=true`,
     );
     if (channelInfo.ok && usersList.ok) {
       const channelMembers = channelInfo.channel.members;

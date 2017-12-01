@@ -2,7 +2,6 @@ const request = require('request');
 const BotSettings = require('./../../models/botsetting').BotSettings;
 const UserMessages = require('./../../models/usermessage').UserMessages;
 const sayText = require('./../commands/say').sayText;
-const config = require('./../../../config');
 
 async function userLeave(data, botParams, cb) {
   const settings = await BotSettings.findOne();
@@ -15,8 +14,7 @@ async function userLeave(data, botParams, cb) {
       .replace(/name/g, `<@${data.user_profile.name}>`);
     request(
       {
-        url: `https://slack.com/api/channels.info?token=${config.bot
-          .token}&channel=${botParams.channelId}`,
+        url: `https://slack.com/api/channels.info?token=${global.BOT_TOKEN}&channel=${botParams.channelId}`,
         encoding: null,
       },
       (err, res, body) => {

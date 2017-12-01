@@ -3,7 +3,6 @@ const request = require('request');
 const _ = require('lodash');
 const aParrots = require('./../../../alphabet_parrots.js');
 const aEpilepsy = require('./../../../alphabet_epilepsy.js');
-const config = require('./../../../config.js');
 const UserMessages = require('./../../models/usermessage').UserMessages;
 
 const replaseEmoji = (value, message) => {
@@ -97,8 +96,7 @@ const replaceTextEmoji = str => {
 const getRandomEmoji = cb => {
   request(
     {
-      url: `https://slack.com/api/emoji.list?token=${config.bot
-        .token}&pretty=1`,
+      url: `https://slack.com/api/emoji.list?token=${global.BOT_TOKEN}&pretty=1`,
       encoding: null,
     },
     (err, res, body) => {
