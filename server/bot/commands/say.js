@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 const request = require('request');
 const _ = require('lodash');
 const aParrots = require('./../../../alphabet_parrots.js');
@@ -352,3 +352,5 @@ module.exports = {
   sayBorderText,
   sayText,
 };
+
+/* eslint-enable */

@@ -2,6 +2,7 @@ const request = require('request');
 const fs = require('fs');
 const faceapp = require('faceapp');
 const { promisify } = require('util');
+
 const writeFileAsync = promisify(fs.writeFile);
 
 function promiseRequest(url) {
@@ -79,6 +80,7 @@ async function getImage(url) {
   return obj;
 }
 
+/* eslint-disable */
 async function checkImage(str) {
   const myRegexpUser = /@\w+/;
   const matchUser = str.match(myRegexpUser);
@@ -152,7 +154,7 @@ const combo = async (text, callback) => {
     }
   }
 };
-
+/* eslint-enable */
 const getFilterList = (text, callback) => {
   let message = '';
   filterList.forEach(item => {

@@ -39,7 +39,7 @@ async function userLeave(data, botParams, cb) {
 }
 
 module.exports = {
-  userLeave: function(data, botParams, cb) {
+  userLeave: (data, botParams, cb) => {
     userLeave(data, botParams, cb);
   },
 };

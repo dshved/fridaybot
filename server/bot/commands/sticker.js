@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 const request = require('request');
 const Sticker = require('./../../models/sticker').Sticker;
 
@@ -41,3 +41,5 @@ function getSticker(data, callback) {
 module.exports = {
   getSticker,
 };
+
+/* eslint-enable */

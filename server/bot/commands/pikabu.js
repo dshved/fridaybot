@@ -1,5 +1,4 @@
-'use strict';
-
+/* eslint-disable */
 const cheerio = require('cheerio');
 const request = require('request');
 const iconv = require('iconv-lite');
@@ -15,7 +14,9 @@ function getStory(body, array) {
   const stories = $('.story');
   stories.each((i, story) => {
     array.push({
-      rating: $('.story__rating-count', story).text().trim(),
+      rating: $('.story__rating-count', story)
+        .text()
+        .trim(),
       title: $('.story__title-link', story).text(),
       link: $('.story__title-link', story).attr('href'),
       text: $('.b-story-block__content', story)
@@ -120,3 +121,4 @@ module.exports = {
     // getPost('new', pikabuBestStory, callback);
   },
 };
+/* eslint-enable */

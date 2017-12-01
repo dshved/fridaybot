@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
   res.redirect('/');
   // res.json({ message: 'Welcome to the cooest API on earth!' });
 });
-
+/* eslint-disable */
 router.post('/', (req, res, next) => {
   console.log(req.body);
   const name = req.body.name;
@@ -71,3 +71,4 @@ router.get('/users', (req, res) => {
 });
 
 module.exports = router;
+/* eslint-enable */

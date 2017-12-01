@@ -1,5 +1,3 @@
-'use strict';
-
 const msgs = require('./messages').messages;
 const Log = require('./../../models/log').Log;
 

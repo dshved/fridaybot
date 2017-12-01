@@ -1,3 +1,4 @@
+/* eslint-disable */
 const BotSettings = require('../models/botsetting').BotSettings;
 
 io.on('connection', () => {
@@ -9,3 +10,4 @@ io.on('connection', () => {
 });
 
 module.exports = io;
+/* eslint-enable */

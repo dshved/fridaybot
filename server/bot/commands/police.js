@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 const request = require('request');
 const { promisify } = require('util');
 const { random } = require('lodash');
@@ -360,3 +360,4 @@ module.exports = {
     getPolice(text, callback, msg, data);
   },
 };
+/* eslint-disable */

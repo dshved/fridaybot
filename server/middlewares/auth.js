@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-
-const auth = function(req, res, next) {
+/* eslint-disable */
+const auth = (req, res, next) => {
   const token =
     req.session.token ||
     req.body.token ||
@@ -26,3 +26,4 @@ const auth = function(req, res, next) {
 };
 
 module.exports = auth;
+/* eslint-enable */

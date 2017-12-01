@@ -1,3 +1,4 @@
+/* eslint-disable */
 const parrotRus = num => {
   num = Math.abs(num);
   num %= 100;
@@ -25,8 +26,12 @@ socket.on('parrot count', function(data) {
 $(document).ready(function() {
   $('#login').submit(function(e) {
     e.preventDefault();
-    const username = $('#username').val().toLowerCase();
-    const password = $('#password').val().toLowerCase();
+    const username = $('#username')
+      .val()
+      .toLowerCase();
+    const password = $('#password')
+      .val()
+      .toLowerCase();
     if (username === '' || password === '') {
       $('input[type="text"],input[type="password"]').css(
         'border',
@@ -144,8 +149,12 @@ $(document).ready(function() {
     if (e.target === this) {
       $(this).css('display', 'none');
 
-      $(this).find('input').val('');
-      $(this).find('textarea').val('');
+      $(this)
+        .find('input')
+        .val('');
+      $(this)
+        .find('textarea')
+        .val('');
       $('body').css('overflow', '');
     }
   });
@@ -273,8 +282,10 @@ $(document).ready(function() {
     input.addEventListener('change', function(e) {
       let fileName = '';
       if (this.files && this.files.length > 1) {
-        fileName = (this.getAttribute('data-multiple-caption') || '')
-          .replace('{count}', this.files.length);
+        fileName = (this.getAttribute('data-multiple-caption') || '').replace(
+          '{count}',
+          this.files.length,
+        );
       } else {
         fileName = e.target.value.split('\\').pop();
       }
@@ -454,3 +465,4 @@ $(document).ready(function() {
 
   autosize($('.messages__textarea'));
 });
+/* eslint-disable */

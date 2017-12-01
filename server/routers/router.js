@@ -1,3 +1,4 @@
+/* eslint-disable */
 const express = require('express');
 const router = express.Router();
 const Auth = require('../middlewares/auth');
@@ -109,3 +110,4 @@ router.post('/donate/parrot', (req, res) => {
 });
 
 module.exports = router;
+/* eslint-enable */

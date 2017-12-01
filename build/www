@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-
+/* eslint-disable */
 const app = require('../app').app;
 const debug = require('debug')('exp:server');
 const http = require('http');
@@ -88,3 +88,5 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+/* eslint-enable */
