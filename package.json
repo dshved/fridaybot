@@ -5,7 +5,8 @@
   "version": "0.1.1",
   "scripts": {
     "start": "node ./build/www",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "lint-staged": {
     "*.js": [

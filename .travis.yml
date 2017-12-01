@@ -3,4 +3,4 @@ node_js:
   - "8.9.1"
 script:
   - npm install
-  - npm start
+  - npm run test
