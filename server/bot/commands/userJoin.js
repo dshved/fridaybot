@@ -33,7 +33,7 @@ async function userJoin(data, botParams, cb) {
 }
 
 module.exports = {
-  userJoin: function(data, botParams, cb) {
+  userJoin: (data, botParams, cb) => {
     userJoin(data, botParams, cb);
   },
 };

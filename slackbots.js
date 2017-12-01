@@ -1,3 +1,4 @@
+/* eslint-disable */
 'use strict';
 
 const _ = require('lodash');
@@ -50,19 +51,19 @@ class Bot extends EventEmitter {
     this.ws = new WebSocket(this.wsUrl);
 
     this.ws
-    .on('open', data => {
-      this.emit('open', data);
-    })
-    .on('close', data => {
-      this.emit('close', data);
-    })
-    .on('message', data => {
-      try {
-        this.emit('message', JSON.parse(data));
-      } catch (e) {
-        console.log(e);
-      }
-    });
+      .on('open', data => {
+        this.emit('open', data);
+      })
+      .on('close', data => {
+        this.emit('close', data);
+      })
+      .on('message', data => {
+        try {
+          this.emit('message', JSON.parse(data));
+        } catch (e) {
+          console.log(e);
+        }
+      });
   }
 
   /**
@@ -191,7 +192,7 @@ class Bot extends EventEmitter {
      */
   async getGroupById(id) {
     try {
-      const groups = await this.getGroups()
+      const groups = await this.getGroups();
       const res = _.find(groups, { id });
 
       console.assert(res, 'group not found');
@@ -210,8 +211,7 @@ class Bot extends EventEmitter {
     try {
       const { id } = await this.getChannel(name);
       return id;
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
     }
   }
@@ -272,8 +272,8 @@ class Bot extends EventEmitter {
       const chatId = _.find(this.ims, { user: id });
       //need to investigate wtf this construction is
       const something = (chatId && chatId.id) || this.openIm(id);
-      if (typeof something === 'string'){
-        return something
+      if (typeof something === 'string') {
+        return something;
       } else {
         return something.channel.id;
       }
@@ -402,7 +402,7 @@ class Bot extends EventEmitter {
 
       const itemId = await this[method](name);
       const { _value } = await this.postMessage(itemId, text, params);
-      return cb?cb(_value):'';
+      return cb ? cb(_value) : '';
     } catch (err) {
       console.error(err);
     }
@@ -495,3 +495,4 @@ class Bot extends EventEmitter {
 }
 
 module.exports = Bot;
+/* eslint-enable */

@@ -1,6 +1,6 @@
 <p align="center"><img src="images/bg-git.jpg"></p>
 
-# Fridaybot
+# Fridaybot  [![Build Status](https://travis-ci.org/dshved/fridaybot.svg?branch=master)](https://travis-ci.org/dshved/fridaybot)
 
 > Бот для slack-канала #friday [SPB Front-end](http://spb-frontend.slack.com)
 

@@ -3,14 +3,11 @@ const SlackBot = require('./../../slackbots.js');
 const request = require('request');
 const botResponse = require('./commands');
 
-const fs = require('fs');
-
 const UserMessages = require('./../models/usermessage').UserMessages;
 const BotMessages = require('./../models/botmessage').BotMessages;
 const BotSettings = require('./../models/botsetting').BotSettings;
 const Statistics = require('./../models/statistics').Statistics;
 const getSticker = require('./commands/sticker').getSticker;
-const sayText = require('./commands/say').sayText;
 const Log = require('./../models/log').Log;
 
 const deleteParrots = require('./commands/delmessages').deleteParrots;
@@ -30,7 +27,7 @@ const messageParams = {};
 
 const botParams = {};
 
-let channelsList = [];
+const channelsList = [];
 
 const saveLog = d => {
   const newCommand = new Log({
@@ -183,7 +180,7 @@ bot.on('message', data => {
   }
 
   if (data.text && data.subtype !== 'bot_message') {
-    if (~data.text.toUpperCase().indexOf('ПОВТОРИ ') == -1) {
+    if (~data.text.toUpperCase().indexOf('ПОВТОРИ ') === -1) {
       const userText = data.text.substr(8);
       const att = isThread(data, messageParams);
       bot.postMessageToChannel(botParams.channelName, userText, att);
@@ -193,7 +190,7 @@ bot.on('message', data => {
   }
 
   if (data.text) {
-    if (~data.text.toUpperCase().indexOf('MASK ') == -1) {
+    if (~data.text.toUpperCase().indexOf('MASK ') === -1) {
       const userText = data.text.substr(5);
       const userTextArray = userText.split(' ');
       const userID = userTextArray[0].slice(2, -1);
@@ -211,8 +208,8 @@ bot.on('message', data => {
               attachment.icon_url = json.user.profile.image_72;
 
               let message = '';
-              for (var i = 1; i < userTextArray.length; i++) {
-                message += userTextArray[i] + ' ';
+              for (let i = 1; i < userTextArray.length; i++) {
+                message += `${userTextArray[i]} `;
               }
               bot.postMessageToChannel(
                 botParams.channelName,
@@ -227,22 +224,22 @@ bot.on('message', data => {
   }
 
   if (data.text) {
-    if (~data.text.toUpperCase().indexOf('МАСКА ') == -1) {
+    if (~data.text.toUpperCase().indexOf('МАСКА ') === -1) {
       const userText = data.text.substr(6);
       const say = require('./commands/sayHow').parseMessage;
-      let { message, attachment } = say(userText);
+      const { message, attachment } = say(userText);
       bot.postMessageToChannel(botParams.channelName, message, attachment);
     }
   }
 
   if (data.text) {
-    if (~data.text.toUpperCase().indexOf('CLEAR') == -1) {
+    if (~data.text.toUpperCase().indexOf('CLEAR') === -1) {
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth();
       let day = now.getDate();
 
-      while (new Date(year, month, day).getDay() != 5) {
+      while (new Date(year, month, day).getDay() !== 5) {
         day++;
       }
 
@@ -262,8 +259,8 @@ bot.on('message', data => {
   }
 
   if (data.text) {
-    if (~data.text.toUpperCase().indexOf('ФАЙЛ ') == -1) {
-      let url = data.text
+    if (~data.text.toUpperCase().indexOf('ФАЙЛ ') === -1) {
+      const url = data.text
         .substr(6)
         .replace(/</g, '')
         .replace(/>/g, '');
@@ -308,16 +305,15 @@ bot.on('message', data => {
   }
 
   if (data.text) {
-    if (~data.text.toUpperCase().indexOf('UPTIME') == -1) {
-      var millisecToTimeStruct = function(millisec) {
-        var days, hours, minutes, seconds;
+    if (~data.text.toUpperCase().indexOf('UPTIME') === -1) {
+      const millisecToTimeStruct = millisec => {
         if (isNaN(millisec)) {
           return {};
         }
-        days = millisec / (60 * 60 * 24);
-        hours = (days - ~~days) * 24;
-        minutes = (hours - ~~hours) * 60;
-        seconds = (minutes - ~~minutes) * 60;
+        const days = millisec / (60 * 60 * 24);
+        const hours = (days - ~~days) * 24;
+        const minutes = (hours - ~~hours) * 60;
+        const seconds = (minutes - ~~minutes) * 60;
         return `${~~days}:${~~hours}:${~~minutes}:${~~seconds}`;
       };
       const uptime = process.uptime();

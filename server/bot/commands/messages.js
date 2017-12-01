@@ -1,5 +1,4 @@
-'use strict';
-
+/* eslint-disable */
 const messages = [
   {
     messages: ['СКАЖИ ', 'SAY '],
@@ -286,3 +285,4 @@ const messages = [
 ];
 
 module.exports = { messages };
+/* eslint-enable */

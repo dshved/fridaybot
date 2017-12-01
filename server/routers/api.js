@@ -11,7 +11,7 @@ const Sticker = require('./../models/sticker').Sticker;
 const Statistics = require('./../models/statistics').Statistics;
 // const auth = require('./auth').auth;
 
-const getBotMessages = (req, res, next) => {
+const getBotMessages = (req, res) => {
   BotMessages.find({}).then(data => {
     if (data) {
       res.send({
@@ -24,7 +24,7 @@ const getBotMessages = (req, res, next) => {
   });
 };
 
-const addBotMessage = (req, res, next) => {
+const addBotMessage = (req, res) => {
   const newMessage = req.body;
   newMessage.last_edited = req.session.user;
   const botMessage = new BotMessages(newMessage);
@@ -39,7 +39,7 @@ const addBotMessage = (req, res, next) => {
     }
   });
 };
-
+/* eslint-disable */
 const addSticker = (req, res, next) => {
   let emoji;
   let filePath;
@@ -275,3 +275,4 @@ router.get('/getBotSettings', getBotSettings);
 router.post('/editBotSettings', editBotSettings);
 
 module.exports = router;
+/* eslint-enable */

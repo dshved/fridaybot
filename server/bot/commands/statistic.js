@@ -1,3 +1,4 @@
+/* eslint-disable */
 const BotSettings = require('./../../models/botsetting').BotSettings;
 const UserMessages = require('./../../models/usermessage').UserMessages;
 const Statistics = require('./../../models/statistics').Statistics;
@@ -406,3 +407,4 @@ module.exports = {
     getOnlineUsers(text, callback, mes, data);
   },
 };
+/* eslint-enable */

@@ -7,13 +7,15 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
-
+/* eslint-disable global-require */
+/* eslint import/no-unresolved: 0 */
 global.DB_PATH = process.env.DB_PATH || require('./config.js').db.path;
 global.BOT_TOKEN = process.env.BOT_TOKEN || require('./config.js').bot.token;
 global.BOT_NAME = process.env.BOT_NAME || require('./config.js').bot.name;
 global.BOT_SLACK_NAME =
   process.env.BOT_SLACK_NAME || require('./config.js').bot.slack_name;
 
+/* eslint-enable global-require */
 mongoose.Promise = global.Promise;
 mongoose.connect(global.DB_PATH);
 
@@ -33,10 +35,11 @@ const statistics = require('./server/routers/statistics');
 
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+
 global.io = io;
-
+/* eslint-disable */
 require('./server/middlewares/socket').io;
-
+/* eslint-enable */
 require('./server/bot');
 
 app.set('views', path.join(__dirname, 'server/views'));
@@ -87,7 +90,7 @@ app.use((req, res, next) => {
   next(err);
 });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
