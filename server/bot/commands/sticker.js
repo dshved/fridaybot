@@ -1,7 +1,6 @@
 'use strict';
 const request = require('request');
 const Sticker = require('./../../models/sticker').Sticker;
-const config = require('./../../../config');
 
 function randomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -14,8 +13,7 @@ function getSticker(data, callback) {
     if (result.length) {
       request(
         {
-          url: `https://slack.com/api/users.info?token=${config.bot
-            .token}&user=${data.user}&pretty=1`,
+          url: `https://slack.com/api/users.info?token=${global.BOT_TOKEN}&user=${data.user}&pretty=1`,
           encoding: null,
         },
         (err, res, body) => {
