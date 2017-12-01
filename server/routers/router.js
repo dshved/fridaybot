@@ -6,7 +6,6 @@ const BotSettings = require('../models/botsetting').BotSettings;
 const Donate = require('../models/donate');
 const Stickers = require('../models/sticker').Sticker;
 const Jimp = require('jimp');
-const config = require('./../../config.js');
 const request = require('request');
 
 router.get('/', (req, res, next) => {
@@ -61,8 +60,8 @@ router.get('/police/:id', (req, res, next) => {
 
   async function draw() {
     const response = await promiseRequest({
-      url: `https://slack.com/api/users.info?token=${config.bot
-        .token}&user=${req.params.id}&pretty=1`,
+      url: `https://slack.com/api/users.info?token=${global.BOT_TOKEN}&user=${req
+        .params.id}&pretty=1`,
       encoding: null,
     });
     const { user, ok } = JSON.parse(response);

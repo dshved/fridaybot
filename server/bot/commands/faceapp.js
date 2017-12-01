@@ -4,8 +4,6 @@ const faceapp = require('faceapp');
 const { promisify } = require('util');
 const writeFileAsync = promisify(fs.writeFile);
 
-const config = require('../../../config');
-
 function promiseRequest(url) {
   return new Promise((resolve, reject) => {
     request(url, (err, response, body) => {
@@ -94,8 +92,7 @@ async function checkImage(str) {
   if (matchUser) {
     const userId = matchUser[0].substring(1);
     const response = await promiseRequest({
-      url: `https://slack.com/api/users.info?token=${config.bot
-        .token}&user=${userId}&pretty=1`,
+      url: `https://slack.com/api/users.info?token=${global.BOT_TOKEN}&user=${userId}&pretty=1`,
       encoding: null,
     });
     const { user, ok } = JSON.parse(response);

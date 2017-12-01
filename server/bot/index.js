@@ -1,5 +1,5 @@
 const SlackBot = require('./../../slackbots.js');
-const config = require('./../../config.js');
+// const config = require('./../../config.js');
 const request = require('request');
 const botResponse = require('./commands');
 
@@ -17,8 +17,14 @@ const deleteParrots = require('./commands/delmessages').deleteParrots;
 const userJoin = require('./commands/userJoin').userJoin;
 const userLeave = require('./commands/userLeave').userLeave;
 
-const bot = new SlackBot(config.bot);
-const bot2 = new SlackBot(config.bot2);
+const configBot = {
+  token: global.BOT_TOKEN,
+  name: global.BOT_NAME,
+  connect_channel: global.CONNECT_CHANNEL,
+  slack_name: global.SLACK_NAME,
+};
+
+const bot = new SlackBot(configBot);
 
 const messageParams = {};
 
@@ -36,7 +42,8 @@ const saveLog = d => {
 };
 
 bot.on('start', () => {
-  bot.getUser(config.bot.name).then(res => {
+  console.log('bot started');
+  bot.getUser(configBot.name).then(res => {
     if (res) {
       botParams.botId = res.id;
     }
@@ -98,10 +105,6 @@ bot.on('start', () => {
   });
 });
 
-bot2.on('start', () => {
-  console.log('bot2 started');
-});
-
 const isThread = (data, att) => {
   if (data.thread_ts) {
     att.thread_ts = data.thread_ts;
@@ -142,38 +145,12 @@ global.io.on('connection', socket => {
 });
 
 let accessBotPost;
-bot2.on('message', data => {
-  if (data.text) {
-    const message = data.text;
-    if (data.channel === config.bot2.connect_channel) {
-      const attachment = {};
-      bot2.getUserById(data.user).then(res => {
-        attachment.username = `${res.name}, ${config.bot2.slack_name}`;
-        attachment.icon_url = res.profile.image_512;
-        bot.postMessage(config.bot.connect_channel, message, attachment);
-      });
-    }
-  }
-});
 
 bot.on('message', data => {
   // if (data.subtype === 'message_changed') {
   //   data.text = data.message.text;
   //   data.user = data.message.user;
   // }
-  if (data.text) {
-    const message = data.text;
-    if (data.channel === config.bot.connect_channel) {
-      const attachment = {};
-      if (data.user) {
-        bot.getUserById(data.user).then(res => {
-          attachment.username = `${res.name}, ${config.bot.slack_name}`;
-          attachment.icon_url = res.profile.image_512;
-          bot2.postMessage(config.bot2.connect_channel, message, attachment);
-        });
-      }
-    }
-  }
 
   global.io.emit('data', data);
   // console.log(data);
@@ -223,8 +200,7 @@ bot.on('message', data => {
       if (userID) {
         request(
           {
-            url: `https://slack.com/api/users.info?token=${config.bot
-              .token}&user=${userID}&pretty=1`,
+            url: `https://slack.com/api/users.info?token=${configBot.token}&user=${userID}&pretty=1`,
             encoding: null,
           },
           (err, res, body) => {

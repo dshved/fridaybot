@@ -7,7 +7,6 @@ const unlinkAsync = promisify(fs.unlink);
 const writeFileAsync = promisify(fs.writeFile);
 const Jimp = require('jimp');
 const GIFEncoder = require('gifencoder');
-const config = require('./../../../config.js');
 const querystring = require('querystring');
 
 const imgInfo = {
@@ -121,7 +120,7 @@ function promiseRequest(url) {
 
 async function sendAmnisty(filename, channel) {
   const url = {
-    token: config.bot.token,
+    token: global.BOT_TOKEN,
     channel: channel,
     text: 'Решение суда',
     attachments:
@@ -140,15 +139,14 @@ async function sendAmnisty(filename, channel) {
 }
 
 async function delPrePolice({ ts, channel }) {
-  const url = `https://slack.com/api/chat.delete?token=${config.bot
-    .token}&channel=${channel}&ts=${ts}`;
+  const url = `https://slack.com/api/chat.delete?token=${global.BOT_TOKEN}&channel=${channel}&ts=${ts}`;
   const result = await promiseRequest(url);
 }
 
 async function prePoliceQuery(channel) {
   const url =
     'https://slack.com/api/chat.postMessage?token=' +
-    config.bot.token +
+    global.BOT_TOKEN +
     '&channel=' +
     channel +
     '&text=%D0%92%D1%8B%D0%B7%D0%BE%D0%B2%20%D0%BF%D1%80%D0%B8%D0%BD%D1%8F%D1%82' +
@@ -231,8 +229,9 @@ async function getPolice(text, callback, msg, { channel }) {
   wastedText.rotate(random(-15, 15));
   for (let i = 0; i < userArray.length; i++) {
     const response = await promiseRequest({
-      url: `https://slack.com/api/users.info?token=${config.bot
-        .token}&user=${userArray[i]}&pretty=1`,
+      url: `https://slack.com/api/users.info?token=${global.BOT_TOKEN}&user=${userArray[
+        i
+      ]}&pretty=1`,
       encoding: null,
     });
     const { user, ok } = JSON.parse(response);
