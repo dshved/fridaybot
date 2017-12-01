@@ -8,11 +8,13 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
 /* eslint-disable global-require */
+/* eslint import/no-unresolved: 0 */
 global.DB_PATH = process.env.DB_PATH || require('./config.js').db.path;
 global.BOT_TOKEN = process.env.BOT_TOKEN || require('./config.js').bot.token;
 global.BOT_NAME = process.env.BOT_NAME || require('./config.js').bot.name;
 global.BOT_SLACK_NAME =
   process.env.BOT_SLACK_NAME || require('./config.js').bot.slack_name;
+
 /* eslint-enable global-require */
 mongoose.Promise = global.Promise;
 mongoose.connect(global.DB_PATH);
