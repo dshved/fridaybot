@@ -1,7 +1,6 @@
 const request = require('request');
 const BotSettings = require('./../../models/botsetting').BotSettings;
 const sayText = require('./../commands/say').sayText;
-const config = require('./../../../config');
 
 async function userJoin(data, botParams, cb) {
   const settings = await BotSettings.findOne();
@@ -14,8 +13,7 @@ async function userJoin(data, botParams, cb) {
 
     request(
       {
-        url: `https://slack.com/api/channels.info?token=${config.bot
-          .token}&channel=${botParams.channelId}`,
+        url: `https://slack.com/api/channels.info?token=${global.BOT_TOKEN}&channel=${botParams.channelId}`,
         encoding: null,
       },
       (err, res, body) => {

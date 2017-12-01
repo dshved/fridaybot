@@ -1,4 +1,3 @@
-const config = require('./config.js');
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
@@ -9,8 +8,17 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
 
+global.DB_PATH = process.env.DB_PATH || require('./config.js').db.path;
+global.BOT_TOKEN = process.env.BOT_TOKEN || require('./config.js').bot.token;
+global.BOT_NAME = process.env.BOT_NAME || require('./config.js').bot.name;
+global.BOT_CONNECT_CHANNEL =
+  process.env.BOT_CONNECT_CHANNEL || require('./config.js').bot.connect_channel;
+global.BOT_SLACK_NAME =
+  process.env.BOT_SLACK_NAME || require('./config.js').bot.slack_name;
+global.SECRET = process.env.SECRET || require('./config.js').secret;
+
 mongoose.Promise = global.Promise;
-mongoose.connect(config.db.path);
+mongoose.connect(global.DB_PATH);
 
 logger.token(
   'remote-addr',
@@ -59,7 +67,7 @@ app.use(
     secret: 'sdfsd3GDJD8sgahsa',
     saveUninitialized: false,
     resave: false,
-    store: new MongoStore({ url: config.db.path }),
+    store: new MongoStore({ url: global.DB_PATH }),
   }),
 );
 

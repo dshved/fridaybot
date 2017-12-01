@@ -1,5 +1,5 @@
 const SlackBot = require('./../../slackbots.js');
-const config = require('./../../config.js');
+// const config = require('./../../config.js');
 const request = require('request');
 const botResponse = require('./commands');
 
@@ -17,7 +17,14 @@ const deleteParrots = require('./commands/delmessages').deleteParrots;
 const userJoin = require('./commands/userJoin').userJoin;
 const userLeave = require('./commands/userLeave').userLeave;
 
-const bot = new SlackBot(config.bot);
+const configBot = {
+  token: global.BOT_TOKEN,
+  name: global.BOT_NAME,
+  connect_channel: global.CONNECT_CHANNEL,
+  slack_name: global.SLACK_NAME,
+};
+
+const bot = new SlackBot(configBot);
 
 const messageParams = {};
 
@@ -36,7 +43,7 @@ const saveLog = d => {
 
 bot.on('start', () => {
   console.log('bot started');
-  bot.getUser(config.bot.name).then(res => {
+  bot.getUser(configBot.name).then(res => {
     if (res) {
       botParams.botId = res.id;
     }
@@ -193,8 +200,7 @@ bot.on('message', data => {
       if (userID) {
         request(
           {
-            url: `https://slack.com/api/users.info?token=${config.bot
-              .token}&user=${userID}&pretty=1`,
+            url: `https://slack.com/api/users.info?token=${configBot.token}&user=${userID}&pretty=1`,
             encoding: null,
           },
           (err, res, body) => {
