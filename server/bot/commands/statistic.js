@@ -390,7 +390,7 @@ function whenDay(week, text, callback) {
   }
 
   const friday = new Date(Date.UTC(year, month, day));
-  const offsetDate = 0; //10800;
+  const offsetDate = 10800;
   const result =
     Math.floor(friday / 1000) - Math.floor(now / 1000) - offsetDate;
   if (result < 0) {
