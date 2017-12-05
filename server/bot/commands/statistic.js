@@ -285,12 +285,12 @@ function millisecToTimeStruct(millisec) {
   return `${~~days} д. ${~~hours} ч. ${~~minutes} м. ${~~seconds} с.`;
 }
 
-async function searchImage(query) {
-  const randomPage = random(1, 5);
-  const data = await client.search(query, { page: randomPage });
-  const randomImageUrl = data[random(0, data.length)].url;
-  return randomImageUrl;
-}
+// async function searchImage(query) {
+//   const randomPage = random(1, 5);
+//   const data = await client.search(query, { page: randomPage });
+//   const randomImageUrl = data[random(0, data.length)].url;
+//   return randomImageUrl;
+// }
 
 async function whenFriday(text, callback) {
   const now = new Date();
@@ -298,13 +298,14 @@ async function whenFriday(text, callback) {
   const month = now.getMonth();
   let day = now.getDate();
 
-  while (new Date(year, month, day).getDay() != 5) {
+  while (new Date(Date.UTC(year, month, day)).getDay() !== 5) {
     day++;
   }
 
-  const friday = new Date(year, month, day);
-
-  const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
+  const friday = new Date(Date.UTC(year, month, day));
+  const offsetDate = 10800;
+  const result =
+    Math.floor(friday / 1000) - Math.floor(now / 1000) - offsetDate;
 
   const attachment = {};
   const imageUrl =
@@ -362,11 +363,43 @@ async function getOnlineUsers(text, callback, mes, { channel }) {
         .filter(obj => channelMembers.includes(obj.id));
       callback(`Всего онлайн: ${onlineUsers.length}`, {});
     } else {
-      callback(`Что-то пошло не так (`, {});
+      callback('Что-то пошло не так (', {});
     }
   } catch (e) {
-    callback(`Что-то пошло не так (`, {});
+    callback('Что-то пошло не так (', {});
   }
+}
+
+function whenDay(week, text, callback) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  let day = now.getDate();
+  const weeksList = [
+    ['воскресенье', 'воскресенья'],
+    ['понедельник', 'понедельника'],
+    ['вторник', 'вторника'],
+    ['среда', 'среды'],
+    ['четверг', 'четверга'],
+    ['пятница', 'пятницы'],
+    ['суббота', 'субботы'],
+  ];
+
+  while (new Date(Date.UTC(year, month, day)).getDay() !== week) {
+    day++;
+  }
+
+  const friday = new Date(Date.UTC(year, month, day));
+  const offsetDate = 10800;
+  const result =
+    Math.floor(friday / 1000) - Math.floor(now / 1000) - offsetDate;
+  if (result < 0) {
+    return callback(`Сегодня ${weeksList[week][0]}!`, {});
+  }
+  return callback(
+    `До ${weeksList[week][1]} осталось ${millisecToTimeStruct(result)}`,
+    {},
+  );
 }
 
 module.exports = {
@@ -405,6 +438,24 @@ module.exports = {
   },
   online: (text, callback, mes, data) => {
     getOnlineUsers(text, callback, mes, data);
+  },
+  whenSunday: (text, callback) => {
+    whenDay(0, text, callback);
+  },
+  whenMonday: (text, callback) => {
+    whenDay(1, text, callback);
+  },
+  whenTuesday: (text, callback) => {
+    whenDay(2, text, callback);
+  },
+  whenWednesday: (text, callback) => {
+    whenDay(3, text, callback);
+  },
+  whenThursday: (text, callback) => {
+    whenDay(4, text, callback);
+  },
+  whenSaturday: (text, callback) => {
+    whenDay(6, text, callback);
   },
 };
 /* eslint-enable */
