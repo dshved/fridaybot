@@ -9,7 +9,7 @@ function randomInteger(min, max) {
 }
 
 function getSticker(data, callback) {
-  Sticker.find({ emoji: data.text }).then(result => {
+  Sticker.find({ emoji: data.text.toUpperCase() }).then(result => {
     if (result.length) {
       request(
         {
