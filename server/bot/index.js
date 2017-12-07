@@ -399,7 +399,12 @@ bot.on('message', data => {
     let mes;
     if (data.text) {
       mes = data.text.toUpperCase();
+      getSticker(data, att => {
+        const attr = isThread(data, att);
+        bot.postMessageToChannel(botParams.channelName, '', attr);
+      });
     }
+
     BotMessages.findOne({ user_message: mes }).then(result => {
       if (result) {
         const att = isThread(data, messageParams);
@@ -410,10 +415,6 @@ bot.on('message', data => {
         );
         saveLog(data);
       }
-    });
-    getSticker(data, att => {
-      const attr = isThread(data, att);
-      bot.postMessageToChannel(botParams.channelName, '', attr);
     });
     if (data.user) {
       UserMessages.findOne({ user_id: data.user }).then(result => {
