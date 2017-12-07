@@ -148,6 +148,9 @@ bot.on('message', data => {
   //   data.text = data.message.text;
   //   data.user = data.message.user;
   // }
+  if (data.text) {
+    data.text = data.text.trim();
+  }
 
   global.io.emit('data', data);
   // console.log(data);
