@@ -32,7 +32,7 @@ const channelsList = [];
 const saveLog = d => {
   const newCommand = new Log({
     user: d.user,
-    command: d.text,
+    command: d.text.toUpperCase(),
     date: d.ts,
   });
   newCommand.save();
@@ -188,7 +188,7 @@ bot.on('message', data => {
       const att = isThread(data, messageParams);
       bot.postMessageToChannel(botParams.channelName, userText, att);
       accessBotPost = true;
-      saveLog(data);
+      // saveLog(data);
     }
   }
 
