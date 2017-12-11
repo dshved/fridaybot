@@ -298,14 +298,12 @@ async function whenFriday(text, callback) {
   const month = now.getMonth();
   let day = now.getDate();
 
-  while (new Date(Date.UTC(year, month, day)).getDay() !== 5) {
+  while (new Date(year, month, day).getDay() !== 5) {
     day++;
   }
 
-  const friday = new Date(Date.UTC(year, month, day));
-  const offsetDate = 10800;
-  const result =
-    Math.floor(friday / 1000) - Math.floor(now / 1000) - offsetDate;
+  const friday = new Date(year, month, day);
+  const result = Math.floor(friday / 1000) - Math.floor(now / 1000);
 
   const attachment = {};
   const imageUrl =
