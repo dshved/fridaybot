@@ -383,14 +383,12 @@ function whenDay(week, text, callback) {
     ['суббота', 'субботы'],
   ];
 
-  while (new Date(Date.UTC(year, month, day)).getDay() !== week) {
+  while (new Date(year, month, day).getDay() !== week) {
     day++;
   }
 
-  const friday = new Date(Date.UTC(year, month, day));
-  const offsetDate = 10800;
-  const result =
-    Math.floor(friday / 1000) - Math.floor(now / 1000) - offsetDate;
+  const friday = new Date(year, month, day);
+  const result = Math.floor(friday / 1000) - Math.floor(now / 1000);
   if (result < 0) {
     return callback(`Сегодня ${weeksList[week][0]}!`, {});
   }
