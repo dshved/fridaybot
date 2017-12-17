@@ -407,7 +407,7 @@ function whenNewYear(text, callback) {
     return callback(`:tada: Сегодня Новый Год!:tada:`, {});
   }
   return callback(
-    `До Нового года осталось ${millisecToTimeStruct(result)} :sad_parrot:`,
+    `До Нового Года осталось ${millisecToTimeStruct(result)} :sad_parrot:`,
     {},
   );
 }
