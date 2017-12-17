@@ -401,11 +401,13 @@ function whenDay(week, text, callback) {
 function whenNewYear(text, callback) {
   const now = new Date();
   const year = now.getFullYear();
-  const newYear = new Date(year + 1, 0, 1);
-  const result = Math.floor(newYear / 1000) - Math.floor(now / 1000);
-  if (result < 0) {
+  const day = now.getDate();
+  const month = now.getMonth();
+  if (day === 1 && month === 0) {
     return callback(`:tada: Сегодня Новый Год!:tada:`, {});
   }
+  const newYear = new Date(year + 1, 0, 1);
+  const result = Math.floor(newYear / 1000) - Math.floor(now / 1000);
   return callback(
     `До Нового Года осталось ${millisecToTimeStruct(result)} :sad_parrot:`,
     {},
