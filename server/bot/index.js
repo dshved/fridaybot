@@ -32,7 +32,7 @@ const channelsList = [];
 const saveLog = d => {
   const newCommand = new Log({
     user: d.user,
-    command: d.text,
+    command: d.text.toUpperCase(),
     date: d.ts,
   });
   newCommand.save();
@@ -142,7 +142,7 @@ global.io.on('connection', socket => {
 });
 
 let accessBotPost;
-
+let currentMessages = 0;
 bot.on('message', data => {
   // if (data.subtype === 'message_changed') {
   //   data.text = data.message.text;
@@ -163,6 +163,21 @@ bot.on('message', data => {
       if (matches !== null) {
         botParams.parrotCount += matches.length;
         countParrots += matches.length;
+        currentMessages = 0;
+      } else {
+        currentMessages++;
+      }
+
+      if (currentMessages >= 50) {
+        currentMessages = 0;
+        const attachment = {};
+        attachment.username = 'fridaybot';
+        attachment.icon_emoji = ':fridaybot_new:';
+        bot.postMessageToChannel(
+          botParams.channelName,
+          'Мало попугаев блеать :fp:',
+          attachment,
+        );
       }
 
       BotSettings.update(
@@ -188,7 +203,7 @@ bot.on('message', data => {
       const att = isThread(data, messageParams);
       bot.postMessageToChannel(botParams.channelName, userText, att);
       accessBotPost = true;
-      saveLog(data);
+      // saveLog(data);
     }
   }
 

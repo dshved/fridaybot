@@ -298,14 +298,12 @@ async function whenFriday(text, callback) {
   const month = now.getMonth();
   let day = now.getDate();
 
-  while (new Date(Date.UTC(year, month, day)).getDay() !== 5) {
+  while (new Date(year, month, day).getDay() !== 5) {
     day++;
   }
 
-  const friday = new Date(Date.UTC(year, month, day));
-  const offsetDate = 10800;
-  const result =
-    Math.floor(friday / 1000) - Math.floor(now / 1000) - offsetDate;
+  const friday = new Date(year, month, day);
+  const result = Math.floor(friday / 1000) - Math.floor(now / 1000);
 
   const attachment = {};
   const imageUrl =
@@ -385,19 +383,31 @@ function whenDay(week, text, callback) {
     ['суббота', 'субботы'],
   ];
 
-  while (new Date(Date.UTC(year, month, day)).getDay() !== week) {
+  while (new Date(year, month, day).getDay() !== week) {
     day++;
   }
 
-  const friday = new Date(Date.UTC(year, month, day));
-  const offsetDate = 10800;
-  const result =
-    Math.floor(friday / 1000) - Math.floor(now / 1000) - offsetDate;
+  const friday = new Date(year, month, day);
+  const result = Math.floor(friday / 1000) - Math.floor(now / 1000);
   if (result < 0) {
     return callback(`Сегодня ${weeksList[week][0]}!`, {});
   }
   return callback(
     `До ${weeksList[week][1]} осталось ${millisecToTimeStruct(result)}`,
+    {},
+  );
+}
+
+function whenNewYear(text, callback) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const newYear = new Date(year + 1, 0, 1);
+  const result = Math.floor(newYear / 1000) - Math.floor(now / 1000);
+  if (result < 0) {
+    return callback(`:tada: Сегодня Новый Год!:tada:`, {});
+  }
+  return callback(
+    `До Нового Года осталось ${millisecToTimeStruct(result)} :sad_parrot:`,
     {},
   );
 }
@@ -456,6 +466,9 @@ module.exports = {
   },
   whenSaturday: (text, callback) => {
     whenDay(6, text, callback);
+  },
+  whenNewYear: (text, callback) => {
+    whenNewYear(text, callback);
   },
 };
 /* eslint-enable */

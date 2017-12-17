@@ -378,6 +378,22 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./statistic').whenSaturday,
   },
+  {
+    messages: [
+      'КОГДА НОВЫЙ ГОД',
+      'КОГДА НОВЫЙ ГОД?',
+      'КОГДА УЖЕ НОВЫЙ ГОД',
+      'КОГДА УЖЕ НОВЫЙ ГОД?',
+      'СКОРО НОВЫЙ ГОД',
+      'СКОРО НОВЫЙ ГОД?',
+      'СКОРО УЖЕ НОВЫЙ ГОД',
+      'СКОРО УЖЕ НОВЫЙ ГОД?',
+    ],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./statistic').whenNewYear,
+  },
 ];
 
 module.exports = { messages };
