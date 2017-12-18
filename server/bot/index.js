@@ -13,6 +13,7 @@ const Log = require('./../models/log').Log;
 const deleteParrots = require('./commands/delmessages').deleteParrots;
 const userJoin = require('./commands/userJoin').userJoin;
 const userLeave = require('./commands/userLeave').userLeave;
+const fewParrotsText = require('./commands/fewParrotsText').message;
 
 const configBot = {
   token: global.BOT_TOKEN,
@@ -175,7 +176,7 @@ bot.on('message', data => {
         attachment.icon_emoji = ':fridaybot_new:';
         bot.postMessageToChannel(
           botParams.channelName,
-          'Мало попугаев блеать :fp:',
+          fewParrotsText,
           attachment,
         );
       }
