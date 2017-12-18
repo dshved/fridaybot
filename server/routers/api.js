@@ -178,7 +178,7 @@ const editBotSettings = (req, res, next) => {
 const getStatisticsData = (date = new Date(), cb) => {
   const now = new Date(date);
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startTimestamp = startOfDay / 1000 - 10800;
+  const startTimestamp = startOfDay / 1000;
   const endTimestamp = startTimestamp + 86400;
   const messages = [];
   const parrots = [];
