@@ -118,7 +118,7 @@ async function getActiveUsers(text, callback) {
     date.getMonth(),
     date.getDate(),
   );
-  const startTimestamp = startOfDay / 1000 - 10800;
+  const startTimestamp = startOfDay / 1000;
   const endTimestamp = endOfDay / 1000 - 10800 + 86400;
   const statistics = await Statistics.aggregate([
     {
