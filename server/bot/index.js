@@ -169,7 +169,7 @@ bot.on('message', data => {
         currentMessages++;
       }
 
-      if (currentMessages >= 50) {
+      if (currentMessages >= 70) {
         currentMessages = 0;
         const attachment = {};
         attachment.username = 'fridaybot';
