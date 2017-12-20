@@ -394,6 +394,13 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./statistic').whenNewYear,
   },
+  {
+    messages: ['TRANSLATE '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./translate').getTranslate,
+  },
 ];
 
 module.exports = { messages };
