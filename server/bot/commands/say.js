@@ -67,29 +67,33 @@ async function replaceMention(str) {
 }
 
 const replaceTextEmoji = str => {
-  const myRegexpEmoji = /^(:\w+:)|(:[-\w]+:)/g;
-  let matchEmoji = myRegexpEmoji.exec(str);
+  const regexpEmoji = /^(:[-\w]+:(.|):[-\w]+:)|(:[-\w]+:)/g;
+  let matchEmoji = regexpEmoji.exec(str);
   let emoji = [];
   while (matchEmoji != null) {
     emoji.push(matchEmoji[0]);
-    matchEmoji = myRegexpEmoji.exec(str);
+    matchEmoji = regexpEmoji.exec(str);
   }
-  const myObj = {};
+  const obj = {};
   if (emoji.length) {
+    emoji = emoji[0].split(/(:\w+:)|(:[-\w]+:)/);
+    emoji = emoji.filter(function(n) {
+      return n !== undefined && n !== '' && n != ' ';
+    });
     let string = emoji.join(' ');
-    myObj.isExec = true;
-    myObj.countEmoji = emoji.length;
-    myObj.emoji = emoji;
-    const message = str.substr(string.length + 1, str.length);
-    myObj.message = message ? message : emoji[1];
+    obj.isExec = true;
+    obj.countEmoji = emoji.length;
+    obj.emoji = emoji;
+    const message = str.substr(string.length, str.length).trim();
+    obj.message = message ? message : emoji[1];
 
-    return myObj;
+    return obj;
   } else {
-    myObj.message = str;
-    myObj.countEmoji = 0;
-    myObj.isExec = false;
+    obj.message = str;
+    obj.countEmoji = 0;
+    obj.isExec = false;
 
-    return myObj;
+    return obj;
   }
 };
 
