@@ -2,6 +2,7 @@ const request = require('request');
 const fs = require('fs');
 const faceapp = require('faceapp');
 const { promisify } = require('util');
+const { random } = require('lodash');
 const crypto = require('crypto');
 const querystring = require('querystring');
 const parseString = require('xml2js').parseString;
@@ -185,10 +186,10 @@ async function xml2json(xml) {
   });
 }
 
-async function getRequestId(urlImage) {
+async function getRequestId(urlImage, filterName) {
   const appId = '64386eb98edce542aff68f8863a43885';
   const key = '9fb4f5b6904dcce2e930e7a05c3ccb54';
-  const text = `<image_process_call><image_url order="1">${urlImage}</image_url><methods_list><method order="1"><name>collage</name><params>template_name=red_santa_hat</params></method></methods_list><result_size>1400</result_size><result_quality>90</result_quality><template_watermark>false</template_watermark><thumb1_size>200</thumb1_size><thumb1_quality>85</thumb1_quality><lang>ru</lang><abort_methods_chain_on_error>true</abort_methods_chain_on_error></image_process_call>`;
+  const text = `<image_process_call><image_url order="1">${urlImage}</image_url><methods_list><method order="1"><name>collage</name><params>template_name=${filterName}</params></method></methods_list><result_size>1400</result_size><result_quality>90</result_quality><template_watermark>false</template_watermark><thumb1_size>200</thumb1_size><thumb1_quality>85</thumb1_quality><lang>ru</lang><abort_methods_chain_on_error>true</abort_methods_chain_on_error></image_process_call>`;
   const signData = await hash(key, text);
   const obj = {
     app_id: appId,
@@ -204,14 +205,14 @@ async function getRequestId(urlImage) {
   return result.request_id[0];
 }
 
-async function getRedHat(text, callback) {
+async function getFunnyPhoto(filter, text, callback) {
   const arr = text
     .trim()
     .replace(/\s{2,}/g, ' ')
     .split(' ');
   const { ok, imageURL } = await checkImage(arr[arr.length - 1]);
   if (ok) {
-    const photoId = await getRequestId(imageURL);
+    const photoId = await getRequestId(imageURL, filter);
     setTimeout(async () => {
       const url = `http://opeapi.ws.pho.to/getresult?request_id=${photoId}`;
       const { data } = await axios.post(url);
@@ -232,9 +233,91 @@ async function getRedHat(text, callback) {
         callback('', {}, attachment);
       }
       callback(result.description[0], {});
-    }, 2000);
+    }, 3000);
   }
 }
+const funnyFilters = [
+  'gangster',
+  'girl_on_beach',
+  'nun_face_in_hole',
+  'eastern_stories',
+  'half_robot_face_mask',
+  'pirate_of_the_caribbean',
+  'clown_face_in_hole',
+  'gollum_face_in_hole',
+  'freckles',
+  'boxer',
+  'model_by_the_pool',
+  'soldier',
+  'just_hatched_new_baby_card',
+  'game_of_thrones',
+  'tears_effect',
+  'myrtle_tree_fairy',
+  'hair_rollers',
+  'mona_lisa',
+  'skier',
+  'i_like_money',
+  'rambo',
+  'hands_over_face',
+  'tankman',
+  'motorcyclist',
+  'astronaut',
+  'summer_girl',
+  'white_rabbit',
+  'apocalypse',
+  'knight_in_arms',
+  'zeus',
+  'native_american_face_in_hole',
+  'cupid',
+  'zombie_at_the_window',
+  'fireman',
+  'sunny_guy',
+  'flora',
+  'kisses_on_face_photo_effect',
+  'set_of_nesting_dolls',
+  'my_xray_film',
+  'windy_girl',
+  'football_fight',
+  'real_king_tut',
+  'devil_girl',
+  'blue_alien_photo_manipulation',
+  'steampunk_robot_face_mask',
+  'hawaiian_girl_sketch',
+  'on_the_bike',
+  'head_explosion_effect',
+  'wild_cat_face_paint',
+  'goalkeeper',
+  'gymnast',
+  'brown_fractal_girl',
+  'prince_charming',
+  'girl_flower_crown_watercolor',
+  'body_study',
+  'female_watercolor_portrait',
+  'scarface',
+  'santa_face_in_hole',
+  'terminator',
+  'mount_rushmore_face_in_hole',
+  'navi_avatar_face_creator',
+  'ninja',
+  'splintered_face_montage',
+  'hulk_face_in_hole',
+  'darth_vader',
+  'yoda',
+  'iron_man',
+  'soldier_girl',
+  'tron',
+  'twilight',
+  'clear_gift',
+  'superman',
+  'southpark',
+  'lisa_simpson',
+  'bart_simpson',
+  'fry_from_futurama',
+  'christmas_girl_face_in_hole',
+  'sketch_santa_hat',
+  'starcraft_2',
+  'be_mine_or_die',
+];
 
 module.exports = {
   drawCombo: (text, callback) => {
@@ -244,6 +327,10 @@ module.exports = {
     getFilterList(text, callback);
   },
   getRedHat: (text, callback) => {
-    getRedHat(text, callback);
+    getFunnyPhoto('red_santa_hat', text, callback);
+  },
+  getFunnyPhoto: (text, callback) => {
+    const randomFilter = funnyFilters[random(0, funnyFilters.length - 1)];
+    getFunnyPhoto(randomFilter, text, callback);
   },
 };

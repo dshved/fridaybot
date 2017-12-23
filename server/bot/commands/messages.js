@@ -408,6 +408,13 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./faceapp.js').getRedHat,
   },
+  {
+    messages: ['FUNNY '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./faceapp.js').getFunnyPhoto,
+  },
 ];
 
 module.exports = { messages };
