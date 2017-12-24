@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const querystring = require('querystring');
 const parseString = require('xml2js').parseString;
 const axios = require('axios');
+const funnyFilters = require('./funnyFilters');
 
 const writeFileAsync = promisify(fs.writeFile);
 
@@ -217,107 +218,32 @@ async function getFunnyPhoto(filter, text, callback) {
       const url = `http://opeapi.ws.pho.to/getresult?request_id=${photoId}`;
       const { data } = await axios.post(url);
       const { image_process_response: result } = await xml2json(data);
+      const attachment = {
+        username: 'fridaybot',
+        icon_emoji: ':fridaybot_new:',
+        attachments: [
+          {
+            fallback: 'Faceapp',
+            color: '#ff0000',
+          },
+        ],
+      };
       if (result.status[0] === 'OK') {
-        const image = result.result_url[0];
-        const attachment = {
-          username: 'fridaybot',
-          icon_emoji: ':fridaybot_new:',
-          attachments: [
-            {
-              fallback: 'Faceapp',
-              color: '#ff0000',
-              image_url: image,
-            },
-          ],
-        };
+        attachment.attachments[0].image_url = result.result_url[0];
         callback('', {}, attachment);
+      } else if (result.status[0] === 'InProgress') {
+        setTimeout(async () => {
+          const { data: req } = await axios.post(url);
+          const { image_process_response: res } = await xml2json(req);
+          attachment.attachments[0].image_url = res.result_url[0];
+          callback('', {}, attachment);
+        }, 5000);
+      } else {
+        callback(result.description[0], {});
       }
-      callback(result.description[0], {});
-    }, 3000);
+    }, 4000);
   }
 }
-const funnyFilters = [
-  'gangster',
-  'girl_on_beach',
-  'nun_face_in_hole',
-  'eastern_stories',
-  'half_robot_face_mask',
-  'pirate_of_the_caribbean',
-  'clown_face_in_hole',
-  'gollum_face_in_hole',
-  'freckles',
-  'boxer',
-  'model_by_the_pool',
-  'soldier',
-  'just_hatched_new_baby_card',
-  'game_of_thrones',
-  'tears_effect',
-  'myrtle_tree_fairy',
-  'hair_rollers',
-  'mona_lisa',
-  'skier',
-  'i_like_money',
-  'rambo',
-  'hands_over_face',
-  'tankman',
-  'motorcyclist',
-  'astronaut',
-  'summer_girl',
-  'white_rabbit',
-  'apocalypse',
-  'knight_in_arms',
-  'zeus',
-  'native_american_face_in_hole',
-  'cupid',
-  'zombie_at_the_window',
-  'fireman',
-  'sunny_guy',
-  'flora',
-  'kisses_on_face_photo_effect',
-  'set_of_nesting_dolls',
-  'my_xray_film',
-  'windy_girl',
-  'football_fight',
-  'real_king_tut',
-  'devil_girl',
-  'blue_alien_photo_manipulation',
-  'steampunk_robot_face_mask',
-  'hawaiian_girl_sketch',
-  'on_the_bike',
-  'head_explosion_effect',
-  'wild_cat_face_paint',
-  'goalkeeper',
-  'gymnast',
-  'brown_fractal_girl',
-  'prince_charming',
-  'girl_flower_crown_watercolor',
-  'body_study',
-  'female_watercolor_portrait',
-  'scarface',
-  'santa_face_in_hole',
-  'terminator',
-  'mount_rushmore_face_in_hole',
-  'navi_avatar_face_creator',
-  'ninja',
-  'splintered_face_montage',
-  'hulk_face_in_hole',
-  'darth_vader',
-  'yoda',
-  'iron_man',
-  'soldier_girl',
-  'tron',
-  'twilight',
-  'clear_gift',
-  'superman',
-  'southpark',
-  'lisa_simpson',
-  'bart_simpson',
-  'fry_from_futurama',
-  'christmas_girl_face_in_hole',
-  'sketch_santa_hat',
-  'starcraft_2',
-  'be_mine_or_die',
-];
 
 module.exports = {
   drawCombo: (text, callback) => {
