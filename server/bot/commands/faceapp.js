@@ -2,6 +2,12 @@ const request = require('request');
 const fs = require('fs');
 const faceapp = require('faceapp');
 const { promisify } = require('util');
+const { random } = require('lodash');
+const crypto = require('crypto');
+const querystring = require('querystring');
+const parseString = require('xml2js').parseString;
+const axios = require('axios');
+const funnyFilters = require('./funnyFilters');
 
 const writeFileAsync = promisify(fs.writeFile);
 
@@ -103,11 +109,12 @@ async function checkImage(str) {
     }
     const userImageUrl = getBigImageUrl(user.profile);
     result = await getImage(userImageUrl);
-
+    result.imageURL = userImageUrl;
     result.fileName = randomName;
     return result;
   } else if (matchUrl) {
     result = await getImage(url);
+    result.imageURL = url;
     result.fileName = randomName;
     return result;
   }
@@ -162,6 +169,81 @@ const getFilterList = (text, callback) => {
   });
   callback(message, {});
 };
+async function hash(key, text) {
+  const hmac = crypto.createHmac('sha1', key);
+  const signData = await hmac.update(text).digest('hex');
+  return signData;
+}
+
+async function xml2json(xml) {
+  return new Promise((resolve, reject) => {
+    parseString(xml, (err, json) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(json);
+      }
+    });
+  });
+}
+
+async function getRequestId(urlImage, filterName) {
+  const appId = '64386eb98edce542aff68f8863a43885';
+  const key = '9fb4f5b6904dcce2e930e7a05c3ccb54';
+  const text = `<image_process_call><image_url order="1">${urlImage}</image_url><methods_list><method order="1"><name>collage</name><params>template_name=${filterName}</params></method></methods_list><result_size>1400</result_size><result_quality>90</result_quality><template_watermark>false</template_watermark><thumb1_size>200</thumb1_size><thumb1_quality>85</thumb1_quality><lang>ru</lang><abort_methods_chain_on_error>true</abort_methods_chain_on_error></image_process_call>`;
+  const signData = await hash(key, text);
+  const obj = {
+    app_id: appId,
+    data: text,
+    sign_data: signData,
+  };
+
+  const url = `http://opeapi.ws.pho.to/queue_url.php?${querystring.stringify(
+    obj,
+  )}`;
+  const { data } = await axios.post(url);
+  const { image_process_response: result } = await xml2json(data);
+  return result.request_id[0];
+}
+
+async function getFunnyPhoto(filter, text, callback) {
+  const arr = text
+    .trim()
+    .replace(/\s{2,}/g, ' ')
+    .split(' ');
+  const { ok, imageURL } = await checkImage(arr[arr.length - 1]);
+  if (ok) {
+    const photoId = await getRequestId(imageURL, filter);
+    setTimeout(async () => {
+      const url = `http://opeapi.ws.pho.to/getresult?request_id=${photoId}`;
+      const { data } = await axios.post(url);
+      const { image_process_response: result } = await xml2json(data);
+      const attachment = {
+        username: 'fridaybot',
+        icon_emoji: ':fridaybot_new:',
+        attachments: [
+          {
+            fallback: 'Faceapp',
+            color: '#ff0000',
+          },
+        ],
+      };
+      if (result.status[0] === 'OK') {
+        attachment.attachments[0].image_url = result.result_url[0];
+        callback('', {}, attachment);
+      } else if (result.status[0] === 'InProgress') {
+        setTimeout(async () => {
+          const { data: req } = await axios.post(url);
+          const { image_process_response: res } = await xml2json(req);
+          attachment.attachments[0].image_url = res.result_url[0];
+          callback('', {}, attachment);
+        }, 5000);
+      } else {
+        callback(result.description[0], {});
+      }
+    }, 4000);
+  }
+}
 
 module.exports = {
   drawCombo: (text, callback) => {
@@ -169,5 +251,12 @@ module.exports = {
   },
   getFilterList: (text, callback) => {
     getFilterList(text, callback);
+  },
+  getRedHat: (text, callback) => {
+    getFunnyPhoto('red_santa_hat', text, callback);
+  },
+  getFunnyPhoto: (text, callback) => {
+    const randomFilter = funnyFilters[random(0, funnyFilters.length - 1)];
+    getFunnyPhoto(randomFilter, text, callback);
   },
 };

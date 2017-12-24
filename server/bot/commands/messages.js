@@ -394,6 +394,27 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./statistic').whenNewYear,
   },
+  {
+    messages: ['TRANSLATE '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./translate').getTranslate,
+  },
+  {
+    messages: ['С НОВЫМ ГОДОМ ', 'С НОВЫМ ГОДОМ! '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./faceapp.js').getRedHat,
+  },
+  {
+    messages: ['FUNNY '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./faceapp.js').getFunnyPhoto,
+  },
 ];
 
 module.exports = { messages };
