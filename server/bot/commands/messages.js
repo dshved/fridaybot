@@ -416,7 +416,7 @@ const messages = [
     callback: require('./faceapp.js').getFunnyPhoto,
   },
   {
-    messages: ['ЕЛКА '],
+    messages: ['ЕЛКА ', 'ЁЛКА ', 'ЕЛОЧКА ', 'ЁЛОЧКА '],
     startFrom: true,
     entrance: false,
     channels: ['test', 'direct', 'friday'],
