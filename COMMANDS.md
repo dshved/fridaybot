@@ -93,3 +93,5 @@
 ### Faceapp список фильтров
 `face list`
 
+### Funny
+`funny [@username]`

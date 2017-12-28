@@ -2,7 +2,7 @@
   "name": "fridaybot",
   "description": "Bot for spb-frontend.slack.com",
   "author": "<dshved@hotmail.com>",
-  "version": "0.1.1",
+  "version": "0.7.0",
   "scripts": {
     "start": "node ./build/www",
     "precommit": "lint-staged",
