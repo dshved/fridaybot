@@ -2,69 +2,69 @@
 
 # Fridaybot  [![Build Status](https://travis-ci.org/dshved/fridaybot.svg?branch=master)](https://travis-ci.org/dshved/fridaybot)
 
-> Бот для slack-канала #friday [SPB Front-end](http://spb-frontend.slack.com)
+> Bot for slack-channel #friday [SPB Front-end](http://spb-frontend.slack.com)
 
 [Website](http://fridaybot.tk)
 
-## Что умеет бот?
-### Список некоторых команд
+## What can a bot do?
+### List of some commands
 <details>
-<summary>- Приветствовать новых пользователей:</summary>
+<summary>- Welcome new users:</summary>
 <br>
 <img src="images/join.gif">
 </details>
 
 <details>
-<summary>- Прощаться с ушедшими пользователями:</summary>
+<summary>- Say goodbye to users:</summary>
 <br>
 <img src="images/leave.gif">
 </details>
 
 <details>
-<summary>- Писать текст из попугаев:</summary>
+<summary>- Write text from parrots:</summary>
 <br>
 <img src="images/hi.gif">
 </details>
 
 <details>
-<summary>- Писать текст из любых emoji:</summary>
+<summary>- Write text from any emoji:</summary>
 <br>
 <img src="images/cop.gif">
 <img src="images/friday.gif">
 </details>
 
 <details>
-<summary>- Считать количество отправленных сообщений:</summary>
+<summary>- Count the number of messages sent:</summary>
 <br>
 <img src="images/live.gif">
 </details>
 
 <details>
-<summary>- Считать количество отправленных пэрротов:</summary>
+<summary>- Count the number of sent parrots:</summary>
 <br>
 <img src="images/count.gif">
 </details>
 
 <details>
-<summary>- Показывать кто больше всех отправляет пэрротов:</summary>
+<summary>- Show who sends the most parrot:</summary>
 <br>
 <img src="images/elite.gif">
 </details>
 
-#### Посмотреть полный список [команд](COMMANDS.md)
+#### View full list [commands](COMMANDS.md)
 
-## Автор
+## Author
 
 * **Dmitriy Shved** - [dshved](https://github.com/dshved)
 
-Посмотреть всех [контрибьюторов](https://github.com/dshved/fridaybot/contributors)
+View all [contributors](https://github.com/dshved/fridaybot/contributors)
 
-### Поддержать разработчика [donate](https://fridaybot.tk/donate)
+### [Donate](https://fridaybot.tk/donate)
 
-## Помощь
+## Help
 
-Пожалуйста прочитайте [CONTRIBUTING.md](CONTRIBUTING.md) для получения подробной информации.
+Read please [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
 
-## Лицензия
+## License
 
-Этот проект разрабатывается под лицензией - [MIT](LICENSE.md)
+[MIT](LICENSE.md)

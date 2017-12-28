@@ -355,6 +355,7 @@ module.exports = {
   },
   sayBorderText,
   sayText,
+  replaceTextEmoji,
 };
 
 /* eslint-enable */

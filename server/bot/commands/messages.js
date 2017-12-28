@@ -415,6 +415,13 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./faceapp.js').getFunnyPhoto,
   },
+  {
+    messages: ['ЕЛКА ', 'ЁЛКА ', 'ЕЛОЧКА ', 'ЁЛОЧКА '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./christmasTree.js').getChristmasTree,
+  },
 ];
 
 module.exports = { messages };
