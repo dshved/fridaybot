@@ -172,8 +172,8 @@ bot.on('message', data => {
       if (currentMessages >= 70) {
         currentMessages = 0;
         const attachment = {};
-        attachment.username = 'Новогодний бот'; //'fridaybot';
-        attachment.icon_emoji = ':new-year-bot:'; //':fridaybot_new:';
+        attachment.username = 'fridaybot';
+        attachment.icon_emoji = ':fridaybot_new:';
         bot.postMessageToChannel(
           botParams.channelName,
           fewParrotsText,
@@ -267,8 +267,8 @@ bot.on('message', data => {
       const result = Math.floor(friday / 1000) - Math.floor(now / 1000) - 10800;
       if (result < 0) {
         const attachment = {};
-        attachment.username = 'Новогодний бот'; //'fridaybot';
-        attachment.icon_emoji = ':new-year-bot:'; //':fridaybot_new:';
+        attachment.username = 'fridaybot';
+        attachment.icon_emoji = ':fridaybot_new:';
         const message = 'В этот светлый день я не могу удалять попугаев!';
         bot.postMessageToChannel(botParams.channelName, message, attachment);
       } else {
@@ -285,8 +285,8 @@ bot.on('message', data => {
         .replace(/>/g, '');
       const message = '';
       const attachment = {};
-      attachment.username = 'Новогодний бот'; //'fridaybot';
-      attachment.icon_emoji = ':new-year-bot:'; //':fridaybot_new:';
+      attachment.username = 'fridaybot';
+      attachment.icon_emoji = ':fridaybot_new:';
       attachment.attachments = [
         {
           fallback: '',

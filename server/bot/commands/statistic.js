@@ -311,8 +311,8 @@ async function whenFriday(text, callback) {
       ? 'http://memok.net/uploads/2014/01/26/52e4f0c4c579a.jpg'
       : 'https://i.ytimg.com/vi/hqcWAPh-pvM/maxresdefault.jpg';
 
-  attachment.username = 'Новогодний бот'; //'fridaybot';
-  attachment.icon_emoji = ':new-year-bot:'; //':fridaybot_new:';
+  attachment.username = 'fridaybot';
+  attachment.icon_emoji = ':fridaybot_new:';
   attachment.attachments = [
     {
       fallback: '',

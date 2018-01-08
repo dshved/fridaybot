@@ -4,7 +4,7 @@ const getBotEmoji = array => {
   if (commandIndex !== -1) {
     return array[commandIndex + 1];
   }
-  return ':new-year-bot:'; //':fridaybot_new:';
+  return ':fridaybot_new:';
 };
 
 const getBotName = array => {
