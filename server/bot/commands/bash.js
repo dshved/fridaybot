@@ -6,10 +6,10 @@ const _ = require('lodash');
 function getBashPost(text, callback) {
   const isYear = /\d{4}$/.test(text);
   let year;
-  if (isYear && text >= 2004 && text <= 2017) {
+  if (isYear && text >= 2004 && text <= 2018) {
     year = text;
   } else {
-    year = _.random(2017, 2004);
+    year = _.random(2018, 2004);
   }
 
   const bashArray = [];
