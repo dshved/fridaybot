@@ -422,6 +422,13 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./christmasTree.js').getChristmasTree,
   },
+  {
+    messages: ['COMMITSTRIP', 'COMTRIP'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./commitstrip'),
+  },
 ];
 
 module.exports = { messages };
