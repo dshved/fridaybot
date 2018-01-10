@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.8.0 - 2018-01-09
+- Extended commands list
+- Added CommitStrip command
+- Fixed old bugs and added new ones
+
 ## 0.7.0 - 2017-12-28
 - Extended commands list
 - Added Funny command

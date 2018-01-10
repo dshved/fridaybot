@@ -95,3 +95,6 @@
 
 ### Funny
 `funny [@username]`
+
+### Get random CommitStrip
+`commitstrip`
