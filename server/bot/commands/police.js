@@ -325,7 +325,7 @@ async function getPolice(text, callback, msg, { channel }) {
   const randomName = `${imageId}-${Math.random()
     .toString(36)
     .substring(2)}`;
-  const policeEscape = random(1);
+  const policeEscape = random(5);
 
   if (!policeEscape) {
     const escapeImage = await getEscapeImage(profileImages);
