@@ -1,10 +1,7 @@
-/* eslint-disable */
 const request = require('request');
-const { promisify } = require('util');
 const { random } = require('lodash');
 const fs = require('fs');
-const unlinkAsync = promisify(fs.unlink);
-const writeFileAsync = promisify(fs.writeFile);
+
 const Jimp = require('jimp');
 const GIFEncoder = require('gifencoder');
 const querystring = require('querystring');
@@ -121,18 +118,15 @@ function promiseRequest(url) {
 async function sendAmnisty(filename, channel) {
   const url = {
     token: global.BOT_TOKEN,
-    channel: channel,
+    channel,
     text: 'Решение суда',
-    attachments:
-      '[{"text": "","fallback": "Youme", "color": "#3AA3E3","image_url": "https://fridaybot.tk/uploads/police/' +
-      filename +
-      '-amnesty.jpg",}]',
+    attachments: `[{"text": "","fallback": "Youme", "color": "#3AA3E3","image_url": "https://fridaybot.tk/uploads/police/${filename}-amnesty.jpg",}]`,
     icon_emoji: ':warneng:',
     username: 'милиция',
     pretty: '1',
   };
   setTimeout(async () => {
-    const result = await promiseRequest(
+    await promiseRequest(
       `https://slack.com/api/chat.postMessage?${querystring.stringify(url)}`,
     );
   }, 30000);
@@ -140,18 +134,21 @@ async function sendAmnisty(filename, channel) {
 
 async function delPrePolice({ ts, channel }) {
   const url = `https://slack.com/api/chat.delete?token=${global.BOT_TOKEN}&channel=${channel}&ts=${ts}`;
-  const result = await promiseRequest(url);
+  await promiseRequest(url);
 }
 
 async function prePoliceQuery(channel) {
-  const url =
-    'https://slack.com/api/chat.postMessage?token=' +
-    global.BOT_TOKEN +
-    '&channel=' +
-    channel +
-    '&text=%D0%92%D1%8B%D0%B7%D0%BE%D0%B2%20%D0%BF%D1%80%D0%B8%D0%BD%D1%8F%D1%82' +
-    '&attachments=%5B%7B%22text%22%3A%20%22%22%2C%22fallback%22%3A%20%22Youme%22%2C%20%22color%22%3A%20%22%233AA3E3%22%2C%22image_url%22%3A%20%22%20%22%2C%7D%5D&icon_emoji=%3Awarneng%3A&username=%D0%BC%D0%B8%D0%BB%D0%B8%D1%86%D0%B8%D1%8F&pretty=1';
-  const result = await promiseRequest(url);
+  const url = {
+    token: global.BOT_TOKEN,
+    channel,
+    text: 'Вызов принят',
+    icon_emoji: ':warneng:',
+    username: 'милиция',
+    pretty: '1',
+  };
+  const result = await promiseRequest(
+    `https://slack.com/api/chat.postMessage?${querystring.stringify(url)}`,
+  );
   return JSON.parse(result);
 }
 
@@ -162,9 +159,7 @@ async function getPolice(text, callback, msg, { channel }) {
   };
   const myRegexpUser = /@\w+/g;
   const matchUser = text.match(myRegexpUser);
-  // if (!text.startsWith(msg)) {
-  //   return;
-  // }
+
   if (!matchUser) {
     return callback(
       ':drudgesiren:Господин полицейский всегда на страже закона.:drudgesiren:\nЕсли у вас жалоба на конкретного человека, то повторите команду и укажите его @username',
@@ -173,7 +168,7 @@ async function getPolice(text, callback, msg, { channel }) {
     );
   }
 
-  const users = [...new Set(matchUser)]; //unique array elements
+  const users = [...new Set(matchUser)];
 
   if (users.length > 5) {
     return callback(
@@ -190,13 +185,13 @@ async function getPolice(text, callback, msg, { channel }) {
   const randomName = `${imageId}-${Math.random()
     .toString(36)
     .substring(2)}`;
-  const policeEscape = random(3) === 3 ? true : false;
+  const policeEscape = random(5);
 
   let baseImg;
-  let baseAmnestyImg = await Jimp.read(
+  const baseAmnestyImg = await Jimp.read(
     `./public/images/police/${imgAmnesty[countUser].imageNames[0]}`,
   );
-  if (!policeEscape) {
+  if (policeEscape) {
     baseImg = await Jimp.read(
       `./public/images/police/${imgInfo[countUser].imageNames[0]}`,
     );
@@ -217,15 +212,15 @@ async function getPolice(text, callback, msg, { channel }) {
   encoder.setDelay(100);
   encoder.setQuality(5);
 
-  let template = new Jimp(width, height);
-  let clear = new Jimp(width, height, 0xffffffff);
-  let ava = new Jimp(width, height);
-  let amnestyAva = new Jimp(amnestyWidth, amnestyHeight);
-  let textName =
+  const template = new Jimp(width, height);
+  const clear = new Jimp(width, height, 0xffffffff);
+  const ava = new Jimp(width, height);
+  const amnestyAva = new Jimp(amnestyWidth, amnestyHeight);
+  const textName =
     countUser > 1
       ? imgDesc[2][random(imgDesc[2].length - 1)]
       : imgDesc[1][random(imgDesc[1].length - 1)];
-  let wastedText = await Jimp.read(`./public/images/police/${textName}`);
+  const wastedText = await Jimp.read(`./public/images/police/${textName}`);
   wastedText.rotate(random(-15, 15));
   for (let i = 0; i < userArray.length; i++) {
     const response = await promiseRequest({
@@ -236,14 +231,16 @@ async function getPolice(text, callback, msg, { channel }) {
     });
     const { user, ok } = JSON.parse(response);
     if (!ok) {
-      return;
+      return false;
     }
 
-    let temp = await Jimp.read(user.profile.image_192);
+    const temp = await Jimp.read(user.profile.image_192);
     temp.resize(128, Jimp.AUTO);
-    let x, y;
-    let x1, y1;
-    if (!policeEscape) {
+    let x;
+    let y;
+    let x1;
+    let y1;
+    if (policeEscape) {
       x = imgInfo[countUser].imagePositions[i][0];
       y = imgInfo[countUser].imagePositions[i][1];
 
@@ -257,14 +254,14 @@ async function getPolice(text, callback, msg, { channel }) {
 
     ava.composite(temp, x, y);
   }
-  if (policeEscape) {
+  if (!policeEscape) {
     template.composite(clear, 0, 0);
     template.composite(ava, 0, 0);
     template.composite(baseImg, 0, 0);
     encoder.addFrame(template.bitmap.data);
     encoder.finish();
 
-    const message = `Не в этот раз, господин полицейский!!!`;
+    const message = 'Не в этот раз, господин полицейский!!!';
     attachment.username = 'Азаза';
     attachment.icon_emoji = ':trollface:';
 
@@ -278,7 +275,7 @@ async function getPolice(text, callback, msg, { channel }) {
     delPrePolice(preMessageData);
     return callback(message, {}, attachment);
   } else {
-    //переписать эту простыню
+    // переписать эту простыню
     template.composite(clear, 0, 0);
     template.composite(ava, 0, 0);
     template.composite(baseImg, 0, 0);
@@ -289,7 +286,7 @@ async function getPolice(text, callback, msg, { channel }) {
     );
 
     encoder.addFrame(template.bitmap.data);
-    let frame = await Jimp.read(
+    const frame = await Jimp.read(
       `./public/images/police/${imgInfo[countUser].imageNames[1]}`,
     );
 
@@ -303,7 +300,7 @@ async function getPolice(text, callback, msg, { channel }) {
     );
     encoder.addFrame(template.bitmap.data);
 
-    let frame2 = await Jimp.read(
+    const frame2 = await Jimp.read(
       `./public/images/police/${imgInfo[countUser].imageNames[2]}`,
     );
 
@@ -329,7 +326,8 @@ async function getPolice(text, callback, msg, { channel }) {
 
     encoder.finish();
 
-    const message = `:drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:`;
+    const message =
+      ':drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren::drudgesiren:';
     attachment.attachments = [
       {
         fallback: message,
@@ -339,7 +337,7 @@ async function getPolice(text, callback, msg, { channel }) {
     ];
     delPrePolice(preMessageData);
 
-    let amnestyText = await Jimp.read(
+    const amnestyText = await Jimp.read(
       `./public/images/police/amnesty_text_${random(1, 7)}.png`,
     );
 
@@ -350,7 +348,6 @@ async function getPolice(text, callback, msg, { channel }) {
       .write(`./public/uploads/police/${randomName}-amnesty.jpg`, () =>
         sendAmnisty(randomName, channel),
       );
-
     return callback(message, {}, attachment);
   }
 }
@@ -360,4 +357,3 @@ module.exports = {
     getPolice(text, callback, msg, data);
   },
 };
-/* eslint-disable */
