@@ -5,11 +5,12 @@ const _ = require('lodash');
 
 function getBashPost(text, callback) {
   const isYear = /\d{4}$/.test(text);
+  const currentYear = new Date().getFullYear();
   let year;
-  if (isYear && text >= 2004 && text <= 2018) {
+  if (isYear && text >= 2004 && text <= currentYear) {
     year = text;
   } else {
-    year = _.random(2018, 2004);
+    year = _.random(currentYear, 2004);
   }
 
   const bashArray = [];
