@@ -220,6 +220,10 @@ const messages = [
       'СКОРО ПЯТНИЦА?',
       'СКОРО УЖЕ ПЯТНИЦА',
       'СКОРО УЖЕ ПЯТНИЦА?',
+      'МИСТЕР БОТ КОГДА ПЯТНИЦА',
+      'МИСТЕР БОТ, КОГДА ПЯТНИЦА',
+      'МИСТЕР БОТ КОГДА ПЯТНИЦА?',
+      'МИСТЕР БОТ, КОГДА ПЯТНИЦА?',
     ],
     startFrom: false,
     entrance: false,
@@ -428,6 +432,22 @@ const messages = [
     entrance: false,
     channels: ['test', 'friday', 'direct'],
     callback: require('./commitstrip'),
+  },
+  {
+    messages: [
+      'КОГДА ЗАВТРАК',
+      'КОГДА ЗАВТРАК?',
+      'КОГДА УЖЕ ЗАВТРАК',
+      'КОГДА УЖЕ ЗАВТРАК?',
+      'СКОРО ЗАВТРАК',
+      'СКОРО ЗАВТРАК?',
+      'СКОРО УЖЕ ЗАВТРАК',
+      'СКОРО УЖЕ ЗАВТРАК?',
+    ],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./statistic').whenBreakfast,
   },
 ];
 
