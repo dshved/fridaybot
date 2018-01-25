@@ -293,18 +293,7 @@ function millisecToTimeStruct(millisec) {
 // }
 
 async function whenFriday(text, callback) {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  let day = now.getDate();
-
-  while (new Date(year, month, day).getDay() !== 5) {
-    day++;
-  }
-
-  const friday = new Date(year, month, day);
-  const result = Math.floor(friday / 1000) - Math.floor(now / 1000);
-
+  const result = whenDayOfWeek(5);
   const attachment = {};
   const imageUrl =
     result < 0
@@ -369,10 +358,6 @@ async function getOnlineUsers(text, callback, mes, { channel }) {
 }
 
 function whenDay(week, text, callback) {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  let day = now.getDate();
   const weeksList = [
     ['воскресенье', 'воскресенья'],
     ['понедельник', 'понедельника'],
@@ -383,12 +368,8 @@ function whenDay(week, text, callback) {
     ['суббота', 'субботы'],
   ];
 
-  while (new Date(year, month, day).getDay() !== week) {
-    day++;
-  }
+  const result = whenDayOfWeek(week);
 
-  const friday = new Date(year, month, day);
-  const result = Math.floor(friday / 1000) - Math.floor(now / 1000);
   if (result < 0) {
     return callback(`Сегодня ${weeksList[week][0]}!`, {});
   }
@@ -412,6 +393,49 @@ function whenNewYear(text, callback) {
     `До Нового Года осталось ${millisecToTimeStruct(result)} :sad_parrot:`,
     {},
   );
+}
+
+function whenDayOfWeek(day) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  let today = now.getDate();
+
+  while (new Date(year, month, today).getDay() !== day) {
+    today++;
+  }
+
+  const breakfast = new Date(year, month, today);
+  const result = Math.floor(breakfast / 1000) - Math.floor(now / 1000);
+  return result;
+}
+
+function whenBreakfast(text, callback) {
+  const result = whenDayOfWeek(4);
+  const attachment = {};
+  const imageUrl =
+    result < 0
+      ? 'https://fridaybot.tk/images/breakfast_today.jpg'
+      : 'https://fridaybot.tk/images/breakfast_coming_soon.jpg';
+
+  attachment.username = 'fridaybot';
+  attachment.icon_emoji = ':fridaybot_new:';
+  attachment.attachments = [
+    {
+      fallback: '',
+      image_url: imageUrl,
+    },
+  ];
+
+  if (result < 0) {
+    callback('Сегодня завтрак! :egg:', {}, attachment);
+  } else {
+    callback(
+      `До завтрака осталось: ${millisecToTimeStruct(result)}`,
+      {},
+      attachment,
+    );
+  }
 }
 
 module.exports = {
@@ -472,5 +496,6 @@ module.exports = {
   whenNewYear: (text, callback) => {
     whenNewYear(text, callback);
   },
+  whenBreakfast,
 };
 /* eslint-enable */
