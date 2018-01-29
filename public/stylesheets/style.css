@@ -14,7 +14,7 @@ body {
 
 body {
   color: #555459;
-  background-color: #F9F9F9;
+  background-color: #f9f9f9;
   font-family: Helvetica, Arial, sans-serif;
 }
 
@@ -33,7 +33,7 @@ body {
 }
 
 .logout:hover {
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .logo {
@@ -63,8 +63,8 @@ body {
 
 .textarea {
   max-height: 250px;
-  background: #FFFFFF;
-  border: 1px solid #C9CCCF;
+  background: #ffffff;
+  border: 1px solid #c9cccf;
   border-radius: 5px;
   resize: none;
   padding: 10px;
@@ -85,17 +85,17 @@ body {
 }
 
 .button_primary {
-  background: #1DB379;
-  color: #FBFBFA;
+  background: #1db379;
+  color: #fbfbfa;
   min-width: 200px;
 }
 
 .button_primary:hover {
-  box-shadow: 0px 1px 0px 0px #0e714b
+  box-shadow: 0px 1px 0px 0px #0e714b;
 }
 
 .input {
-  border: 1px solid #C9CCCF;
+  border: 1px solid #c9cccf;
   border-radius: 5px;
 }
 
@@ -113,7 +113,7 @@ body {
   display: flex;
   justify-content: center;
   margin-bottom: 10px;
-  transition: .3s all ease;
+  transition: 0.3s all ease;
 }
 
 .login__form {
@@ -181,7 +181,8 @@ body {
   font-weight: bold;
 }
 
-.messages {}
+.messages {
+}
 
 .messages__item {
   display: flex;
@@ -250,15 +251,15 @@ body {
 a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
-  border: 1px solid #1DB379;
-  background: #1DB379;
+  border: 1px solid #1db379;
+  background: #1db379;
   font-weight: normal;
   color: #ffffff;
 }
 
 .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
   float: left;
-  padding: .5em .8em;
+  padding: 0.5em 0.8em;
   text-decoration: none;
 }
 
@@ -338,7 +339,7 @@ a.ui-button:active,
   display: flex;
   margin-bottom: 10px;
   padding-bottom: 5px;
-  border-bottom: 1px solid rgba(0, 0, 0, .2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   line-height: 28px;
 }
 
@@ -375,7 +376,7 @@ a.ui-button:active,
     -o-flex-direction: column;
     flex-direction: column;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(0, 0, 0, .2);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     margin-bottom: 10px;
   }
   .messages__item-input {
@@ -537,16 +538,16 @@ a.ui-button:active,
   z-index: -1;
 }
 
-.inputfile+label {
+.inputfile + label {
   display: block;
   cursor: pointer;
 }
 
-.inputfile+label>i {
+.inputfile + label > i {
   font-size: 16px;
   display: inline-block;
   padding: 10px 25px;
-  border: 1px solid #C9CCCF;
+  border: 1px solid #c9cccf;
   border-radius: 5px;
   margin-right: 20px;
   margin-left: 10px;
@@ -554,7 +555,7 @@ a.ui-button:active,
   font-style: normal;
 }
 
-.inputfile+label * {
+.inputfile + label * {
   pointer-events: none;
 }
 
@@ -620,7 +621,7 @@ a.ui-button:active,
 }
 
 .donate__footer a {
-  color: #1DB379;
+  color: #1db379;
 }
 
 .donate__list {
@@ -637,7 +638,7 @@ a.ui-button:active,
 }
 
 .donate__input {
-  border: 1px solid #C9CCCF;
+  border: 1px solid #c9cccf;
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
@@ -650,4 +651,10 @@ a.ui-button:active,
   text-align: center;
   font-size: 18px;
   width: 100%;
+}
+
+.github {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
