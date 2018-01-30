@@ -449,6 +449,22 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./statistic').whenBreakfast,
   },
+  {
+    messages: [
+      'КОГДА ДРИНКАП',
+      'КОГДА ДРИНКАП?',
+      'КОГДА УЖЕ ДРИНКАП',
+      'КОГДА УЖЕ ДРИНКАП?',
+      'СКОРО ДРИНКАП',
+      'СКОРО ДРИНКАП?',
+      'СКОРО УЖЕ ДРИНКАП',
+      'СКОРО УЖЕ ДРИНКАП?',
+    ],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./statistic').whenDrinkUp,
+  },
 ];
 
 module.exports = { messages };

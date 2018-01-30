@@ -438,6 +438,25 @@ function whenBreakfast(text, callback) {
   }
 }
 
+function whenDrinkUp(text, callback) {
+  const result = 1517328000 - Math.floor(new Date().getTime() / 1000);
+  const attachment = {};
+  attachment.username = 'fridaybot';
+  attachment.icon_emoji = ':fridaybot_new:';
+
+  if (result < 0 && result < -18000) {
+    callback('Я хз если честно', {}, attachment);
+  } else if (result < 0) {
+    callback('Уже идет :ehsukablya:', {}, attachment);
+  } else {
+    callback(
+      `До дринкапа осталось: ${millisecToTimeStruct(result)}`,
+      {},
+      attachment,
+    );
+  }
+}
+
 module.exports = {
   parrotCount: (text, callback) => {
     getParrotCount(text, callback);
@@ -497,5 +516,6 @@ module.exports = {
     whenNewYear(text, callback);
   },
   whenBreakfast,
+  whenDrinkUp,
 };
 /* eslint-enable */
