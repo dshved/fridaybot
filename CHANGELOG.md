@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.9.0 - 2018-02-01
+- Extended commands list
+- Fixed old bugs and added new ones
+
 ## 0.8.0 - 2018-01-09
 - Extended commands list
 - Added CommitStrip command

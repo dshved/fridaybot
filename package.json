@@ -2,7 +2,7 @@
   "name": "fridaybot",
   "description": "Bot for spb-frontend.slack.com",
   "author": "<dshved@hotmail.com>",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "scripts": {
     "start": "node ./build/www",
     "precommit": "lint-staged",
@@ -53,5 +53,10 @@
     "eslint-plugin-react": "^6.10.0",
     "husky": "^0.14.3",
     "lint-staged": "^4.0.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dshved/fridaybot.git"
+  },
+  "license": "MIT"
 }
