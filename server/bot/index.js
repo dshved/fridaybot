@@ -461,9 +461,13 @@ bot.on('message', data => {
     }
   }
   if (data.type === 'emoji_changed' && data.subtype === 'add') {
+    const attachment = {};
+    attachment.username = 'fridaybot';
+    attachment.icon_emoji = ':fridaybot_new:';
     bot.postMessageToChannel(
       botParams.channelName,
       `Added new emoji: :${data.name}:`,
+      attachment,
     );
   }
 });
