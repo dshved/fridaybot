@@ -460,6 +460,12 @@ bot.on('message', data => {
       });
     }
   }
+  if (data.type === 'emoji_changed' && data.subtype === 'add') {
+    bot.postMessageToChannel(
+      botParams.channelName,
+      `Added new emoji: :${data.name}:`,
+    );
+  }
 });
 
 bot.on('close', e => {
