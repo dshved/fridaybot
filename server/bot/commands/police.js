@@ -7,32 +7,50 @@ const GIFEncoder = require('gifencoder');
 const querystring = require('querystring');
 
 const imgInfo = {
-  1: {
-    imageNames: ['mask_1-1.png', 'mask_1-2.png', 'mask_1-3.png'],
-    imagePositions: [[240, 214]],
-  },
-  2: {
-    imageNames: ['mask_2-1.png', 'mask_2-2.png', 'mask_2-3.png'],
-    imagePositions: [[214, 214], [403, 218]],
-  },
-  3: {
-    imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
-    imagePositions: [[328, 155], [467, 155], [612, 155]],
-  },
-  4: {
-    imageNames: ['mask_4-1.png', 'mask_4-2.png', 'mask_4-3.png'],
-    imagePositions: [[255, 116], [380, 116], [506, 116], [634, 116]],
-  },
-  5: {
-    imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
-    imagePositions: [
-      [328, 155],
-      [467, 155],
-      [612, 155],
-      [754, 155],
-      [892, 155],
-    ],
-  },
+  1: [
+    {
+      imageNames: ['mask_1-1.png', 'mask_1-2.png', 'mask_1-3.png'],
+      imagePositions: [[240, 214]],
+    },
+    {
+      imageNames: ['one-1-1.png', 'one-1-2.png', 'one-1-3.png'],
+      imagePositions: [[432, 85]],
+    },
+    {
+      imageNames: ['one-2-1.png', 'one-2-2.png', 'one-2-3.png'],
+      imagePositions: [[477, 82]],
+    },
+  ],
+  2: [
+    {
+      imageNames: ['mask_2-1.png', 'mask_2-2.png', 'mask_2-3.png'],
+      imagePositions: [[214, 214], [403, 218]],
+    },
+  ],
+  3: [
+    {
+      imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
+      imagePositions: [[328, 155], [467, 155], [612, 155]],
+    },
+  ],
+  4: [
+    {
+      imageNames: ['mask_4-1.png', 'mask_4-2.png', 'mask_4-3.png'],
+      imagePositions: [[255, 116], [380, 116], [506, 116], [634, 116]],
+    },
+  ],
+  5: [
+    {
+      imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
+      imagePositions: [
+        [328, 155],
+        [467, 155],
+        [612, 155],
+        [754, 155],
+        [892, 155],
+      ],
+    },
+  ],
 };
 
 const imgEscape = {
@@ -193,8 +211,9 @@ async function getEscapeImage(userImages) {
 
 async function getDetentionImage(userImages, randomName) {
   const countUsers = userImages.length;
+  const randomImage = random(imgInfo[countUsers].length - 1);
   const baseImg = await Jimp.read(
-    `./public/images/police/${imgInfo[countUsers].imageNames[0]}`,
+    `./public/images/police/${imgInfo[countUsers][randomImage].imageNames[0]}`,
   );
   const { width, height } = baseImg.bitmap;
   const template = new Jimp(width, height, 0xffffffff);
@@ -209,8 +228,8 @@ async function getDetentionImage(userImages, randomName) {
   let y;
   const ava = new Jimp(width, height, 0xffffffff);
   for (let i = 0; i < userImages.length; i++) {
-    x = imgInfo[countUsers].imagePositions[i][0];
-    y = imgInfo[countUsers].imagePositions[i][1];
+    x = imgInfo[countUsers][randomImage].imagePositions[i][0];
+    y = imgInfo[countUsers][randomImage].imagePositions[i][1];
     ava.composite(userImages[i], x, y);
   }
 
@@ -234,7 +253,7 @@ async function getDetentionImage(userImages, randomName) {
 
   encoder.addFrame(template.bitmap.data);
   const frame = await Jimp.read(
-    `./public/images/police/${imgInfo[countUsers].imageNames[1]}`,
+    `./public/images/police/${imgInfo[countUsers][randomImage].imageNames[1]}`,
   );
 
   template.composite(clear, 0, 0);
@@ -244,7 +263,7 @@ async function getDetentionImage(userImages, randomName) {
   encoder.addFrame(template.bitmap.data);
 
   const frame2 = await Jimp.read(
-    `./public/images/police/${imgInfo[countUsers].imageNames[2]}`,
+    `./public/images/police/${imgInfo[countUsers][randomImage].imageNames[2]}`,
   );
 
   template.composite(clear, 0, 0);
