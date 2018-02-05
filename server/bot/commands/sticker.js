@@ -1,9 +1,8 @@
-/* eslint-disable */
 const request = require('request');
 const Sticker = require('./../../models/sticker').Sticker;
 
 function randomInteger(min, max) {
-  var rand = min + Math.random() * (max + 1 - min);
+  let rand = min + Math.random() * (max + 1 - min);
   rand = Math.floor(rand);
   return rand;
 }
@@ -41,5 +40,3 @@ function getSticker(data, callback) {
 module.exports = {
   getSticker,
 };
-
-/* eslint-enable */

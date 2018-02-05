@@ -1,4 +1,3 @@
-/* eslint-disable */
 const getBotEmoji = array => {
   const commandIndex = array.findIndex(command => command === '-e');
   if (commandIndex !== -1) {
@@ -66,4 +65,3 @@ const parseMessage = text => {
 };
 
 module.exports = { parseMessage };
-/* eslint-enable */

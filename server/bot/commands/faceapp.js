@@ -161,7 +161,7 @@ const combo = async (text, callback) => {
     }
   }
 };
-/* eslint-enable */
+
 const getFilterList = (text, callback) => {
   let message = '';
   filterList.forEach(item => {

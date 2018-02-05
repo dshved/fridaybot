@@ -1,4 +1,3 @@
-/* eslint-disable */
 const cheerio = require('cheerio');
 const request = require('request');
 const iconv = require('iconv-lite');
@@ -39,35 +38,38 @@ function getStory(body, array) {
   });
 }
 
-// setInterval(() => {
-//   pikabuHotStory = [];
-//   pikabuBestStory = [];
-//   pikabuNewStory = [];
-//   request({
-//       url: 'http://pikabu.ru/hot',
-//       encoding: null,
-//     },
-//     (err, res, body) => {
-//       getStory(body, pikabuHotStory);
-//     }
-//   );
-//   request({
-//       url: 'http://pikabu.ru/best',
-//       encoding: null,
-//     },
-//     (err, res, body) => {
-//       getStory(body, pikabuBestStory);
-//     }
-//   );
-//   request({
-//       url: 'http://pikabu.ru/new',
-//       encoding: null,
-//     },
-//     (err, res, body) => {
-//       getStory(body, pikabuNewStory);
-//     }
-//   );
-// }, 1000*60);
+setInterval(() => {
+  pikabuHotStory = [];
+  pikabuBestStory = [];
+  pikabuNewStory = [];
+  request(
+    {
+      url: 'http://pikabu.ru/hot',
+      encoding: null,
+    },
+    (err, res, body) => {
+      getStory(body, pikabuHotStory);
+    },
+  );
+  request(
+    {
+      url: 'http://pikabu.ru/best',
+      encoding: null,
+    },
+    (err, res, body) => {
+      getStory(body, pikabuBestStory);
+    },
+  );
+  request(
+    {
+      url: 'http://pikabu.ru/new',
+      encoding: null,
+    },
+    (err, res, body) => {
+      getStory(body, pikabuNewStory);
+    },
+  );
+}, 1000 * 60);
 
 function currentAttachment(post) {
   if (post.img_1) {
@@ -81,7 +83,7 @@ function currentAttachment(post) {
 }
 
 function getPost(section, array, callback) {
-  const randomPost = Math.floor(Math.random() * (array.length - 1 + 1)) + 1;
+  const randomPost = Math.floor(Math.random() * array.length) + 1;
   const currentPost = array[randomPost];
   const attachment = {};
   attachment.username = `Pikabu/${section}`;
@@ -111,14 +113,13 @@ function getPost(section, array, callback) {
 }
 
 module.exports = {
-  pikabuHot: (text, callback, msg) => {
-    // getPost('hot', pikabuHotStory, callback);
+  pikabuHot: (text, callback) => {
+    getPost('hot', pikabuHotStory, callback);
   },
-  pikabuBest: (text, callback, msg) => {
-    // getPost('best', pikabuBestStory, callback);
+  pikabuBest: (text, callback) => {
+    getPost('best', pikabuBestStory, callback);
   },
-  pikabuNew: (text, callback, msg) => {
-    // getPost('new', pikabuBestStory, callback);
+  pikabuNew: (text, callback) => {
+    getPost('new', pikabuBestStory, callback);
   },
 };
-/* eslint-enable */
