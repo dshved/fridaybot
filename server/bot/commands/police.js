@@ -20,11 +20,19 @@ const imgInfo = {
       imageNames: ['one-2-1.png', 'one-2-2.png', 'one-2-3.png'],
       imagePositions: [[477, 82]],
     },
+    {
+      imageNames: ['five-1-1.png', 'five-1-2.png', 'five-1-3.png'],
+      imagePositions: [[544, 164]],
+    },
   ],
   2: [
     {
       imageNames: ['mask_2-1.png', 'mask_2-2.png', 'mask_2-3.png'],
       imagePositions: [[214, 214], [403, 218]],
+    },
+    {
+      imageNames: ['five-1-1.png', 'five-1-2.png', 'five-1-3.png'],
+      imagePositions: [[544, 164], [689, 164]],
     },
   ],
   3: [
@@ -32,11 +40,19 @@ const imgInfo = {
       imageNames: ['mask_3-5-1.png', 'mask_3-5-2.png', 'mask_3-5-3.png'],
       imagePositions: [[328, 155], [467, 155], [612, 155]],
     },
+    {
+      imageNames: ['five-1-1.png', 'five-1-2.png', 'five-1-3.png'],
+      imagePositions: [[544, 164], [689, 164], [833, 164]],
+    },
   ],
   4: [
     {
       imageNames: ['mask_4-1.png', 'mask_4-2.png', 'mask_4-3.png'],
       imagePositions: [[255, 116], [380, 116], [506, 116], [634, 116]],
+    },
+    {
+      imageNames: ['five-1-1.png', 'five-1-2.png', 'five-1-3.png'],
+      imagePositions: [[544, 164], [689, 164], [833, 164], [976, 164]],
     },
   ],
   5: [
@@ -48,6 +64,16 @@ const imgInfo = {
         [612, 155],
         [754, 155],
         [892, 155],
+      ],
+    },
+    {
+      imageNames: ['five-1-1.png', 'five-1-2.png', 'five-1-3.png'],
+      imagePositions: [
+        [544, 164],
+        [689, 164],
+        [833, 164],
+        [976, 164],
+        [1121, 164],
       ],
     },
   ],

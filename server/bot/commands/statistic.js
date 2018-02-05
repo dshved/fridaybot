@@ -1,16 +1,9 @@
-/* eslint-disable */
 const BotSettings = require('./../../models/botsetting').BotSettings;
 const UserMessages = require('./../../models/usermessage').UserMessages;
 const Statistics = require('./../../models/statistics').Statistics;
 const Log = require('./../../models/log').Log;
 const { random } = require('lodash');
 const axios = require('axios');
-const GoogleImages = require('google-images');
-
-const client = new GoogleImages(
-  '001346344263575798591:zegx-w5mjn0',
-  'AIzaSyDscQc0ULi1FtFwWG6W4AJhdNtLxsjsmDg',
-);
 
 const commandsURL =
   'https://github.com/dshved/fridaybot/blob/master/COMMANDS.md';
@@ -32,6 +25,21 @@ const messagesRus = num => {
   }
   return 'сообщений';
 };
+
+function whenDayOfWeek(day) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  let today = now.getDate();
+
+  while (new Date(year, month, today).getDay() !== day) {
+    today++;
+  }
+
+  const breakfast = new Date(year, month, today);
+  const result = Math.floor(breakfast / 1000) - Math.floor(now / 1000);
+  return result;
+}
 
 async function getParrotCount(text, callback) {
   try {
@@ -285,13 +293,6 @@ function millisecToTimeStruct(millisec) {
   return `${~~days} д. ${~~hours} ч. ${~~minutes} м. ${~~seconds} с.`;
 }
 
-// async function searchImage(query) {
-//   const randomPage = random(1, 5);
-//   const data = await client.search(query, { page: randomPage });
-//   const randomImageUrl = data[random(0, data.length)].url;
-//   return randomImageUrl;
-// }
-
 async function whenFriday(text, callback) {
   const result = whenDayOfWeek(5);
   const attachment = {};
@@ -324,13 +325,12 @@ async function whenFriday(text, callback) {
   } else {
     if (result < 0) {
       callback('Сегодня пятница!:fp:', {}, attachment);
-    } else {
-      callback(
-        `До пятницы осталось: ${millisecToTimeStruct(result)}`,
-        {},
-        attachment,
-      );
     }
+    callback(
+      `До пятницы осталось: ${millisecToTimeStruct(result)}`,
+      {},
+      attachment,
+    );
   }
 }
 
@@ -385,7 +385,7 @@ function whenNewYear(text, callback) {
   const day = now.getDate();
   const month = now.getMonth();
   if (day === 1 && month === 0) {
-    return callback(`:tada: Сегодня Новый Год!:tada:`, {});
+    return callback(':tada: Сегодня Новый Год!:tada:', {});
   }
   const newYear = new Date(year + 1, 0, 1);
   const result = Math.floor(newYear / 1000) - Math.floor(now / 1000);
@@ -393,21 +393,6 @@ function whenNewYear(text, callback) {
     `До Нового Года осталось ${millisecToTimeStruct(result)} :sad_parrot:`,
     {},
   );
-}
-
-function whenDayOfWeek(day) {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  let today = now.getDate();
-
-  while (new Date(year, month, today).getDay() !== day) {
-    today++;
-  }
-
-  const breakfast = new Date(year, month, today);
-  const result = Math.floor(breakfast / 1000) - Math.floor(now / 1000);
-  return result;
 }
 
 function whenBreakfast(text, callback) {
