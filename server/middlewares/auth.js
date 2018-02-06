@@ -11,13 +11,16 @@ const auth = (req, res, next) => {
     jwt.verify(token, 'abcdef', (err, decoded) => {
       if (err) {
         return res.json({ success: false, message: 'Failed token' });
+      } else {
+        req.decoded = decoded;
+        next();
       }
-      req.decoded = decoded;
-      next();
       return true;
     });
+  } else {
+    return res.redirect('/');
   }
-  return res.redirect('/');
+  return true;
 };
 
 module.exports = auth;

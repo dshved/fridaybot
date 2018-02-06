@@ -21,8 +21,8 @@ function getSticker(data, callback) {
             const randomEmoji = randomInteger(0, result.length - 1);
             const attachment = {};
             const domainURL = 'http://fridaybot.tk';
-            attachment.username = json.user.name;
-            attachment.icon_emoji = ':fridaybot_new:';
+            attachment.username = json.user.profile.display_name;
+            attachment.icon_url = json.user.profile.image_72;
             attachment.attachments = [
               {
                 fallback: '',
