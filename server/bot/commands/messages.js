@@ -466,13 +466,7 @@ const messages = [
     callback: require('./statistic').whenDrinkUp,
   },
   {
-    messages: [
-      'PARTY ',
-      'ПАТИ ',
-      'ПРОКАТИ ',
-      'СЕМИРУЛЬНИК ПРОКАТИ ',
-      'СЕМИРУЛЬНИК ПРОКАТИ',
-    ],
+    messages: ['PARTY ', 'ПАТИ ', 'ПРОКАТИ ', 'СЕМИРУЛЬНИК ПРОКАТИ '],
     startFrom: true,
     entrance: false,
     channels: ['test', 'friday', 'direct'],
