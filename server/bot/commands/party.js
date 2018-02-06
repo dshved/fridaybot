@@ -160,7 +160,7 @@ async function getParty(text, callback) {
 
   if (!matchUser) {
     return callback(
-      ':driver:Садись прокачу:driver:\n Просто напиши @username, кого нужно покатать на пати бусе',
+      ':driver:Садись прокачу:driver:\n Просто напиши @username кого нужно покатать на пати бусе',
       {},
       attachment,
     );
