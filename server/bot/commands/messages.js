@@ -465,6 +465,13 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./statistic').whenDrinkUp,
   },
+  {
+    messages: ['PARTY ', 'ПАТИ '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./party').getParty,
+  },
 ];
 
 module.exports = { messages };
