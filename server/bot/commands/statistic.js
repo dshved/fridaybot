@@ -325,12 +325,13 @@ async function whenFriday(text, callback) {
   } else {
     if (result < 0) {
       callback('Сегодня пятница!:fp:', {}, attachment);
+    } else {
+      callback(
+        `До пятницы осталось: ${millisecToTimeStruct(result)}`,
+        {},
+        attachment,
+      );
     }
-    callback(
-      `До пятницы осталось: ${millisecToTimeStruct(result)}`,
-      {},
-      attachment,
-    );
   }
 }
 
