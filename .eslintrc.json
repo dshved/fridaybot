@@ -19,6 +19,7 @@
     "no-unneeded-ternary": 0,
     "no-underscore-dangle": 0,
     "no-mixed-operators": 0,
-    "no-return-assign": 0
+    "no-return-assign": 0,
+    "no-lonely-if": 0
   }
 }
