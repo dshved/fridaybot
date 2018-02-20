@@ -396,28 +396,82 @@ function whenNewYear(text, callback) {
   );
 }
 
-function whenBreakfast(text, callback) {
-  const result = whenDayOfWeek(4);
-  const attachment = {};
-  const imageUrl =
-    result < 0
-      ? 'https://fridaybot.tk/images/breakfast_today.jpg'
-      : 'https://fridaybot.tk/images/breakfast_coming_soon.jpg';
+// function whenBreakfast(text, callback) {
+//   const result = whenDayOfWeek(4);
+//   const attachment = {};
+//   const imageUrl =
+//     result < 0
+//       ? 'https://fridaybot.tk/images/breakfast_today.jpg'
+//       : 'https://fridaybot.tk/images/breakfast_coming_soon.jpg';
 
+//   attachment.username = 'fridaybot';
+//   attachment.icon_emoji = ':fridaybot_new:';
+//   attachment.attachments = [
+//     {
+//       fallback: '',
+//       image_url: imageUrl,
+//     },
+//   ];
+
+//   if (result < 0) {
+//     callback('Сегодня завтрак! :egg:', {}, attachment);
+//   } else {
+//     callback(
+//       `До завтрака осталось: ${millisecToTimeStruct(result)}`,
+//       {},
+//       attachment,
+//     );
+//   }
+// }
+function whenBreakfast(text, callback) {
+  const attachment = {};
   attachment.username = 'fridaybot';
   attachment.icon_emoji = ':fridaybot_new:';
-  attachment.attachments = [
-    {
-      fallback: '',
-      image_url: imageUrl,
-    },
-  ];
 
-  if (result < 0) {
-    callback('Сегодня завтрак! :egg:', {}, attachment);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  let today = now.getDate();
+
+  while (new Date(year, month, today).getDay() !== 4) {
+    today++;
+  }
+  const breakfast = new Date(year, month, today);
+  const startDate = 1517432400;
+  const offset = breakfast / 1000 - startDate;
+  const breakfastToday = offset / 1209600;
+  if (parseInt(breakfastToday, 10) === breakfastToday) {
+    const result = Math.floor(breakfast / 1000) - Math.floor(now / 1000);
+    if (result > 0) {
+      attachment.attachments = [
+        {
+          fallback: '',
+          image_url: 'https://fridaybot.tk/images/breakfast_coming_soon.jpg',
+        },
+      ];
+      return callback(
+        `До завтрака осталось: ${millisecToTimeStruct(result)}`,
+        {},
+        attachment,
+      );
+    }
+    attachment.attachments = [
+      {
+        fallback: '',
+        image_url: 'https://fridaybot.tk/images/breakfast_today.jpg',
+      },
+    ];
+    return callback('Сегодня завтрак! :knife:', {}, attachment);
   } else {
-    callback(
-      `До завтрака осталось: ${millisecToTimeStruct(result)}`,
+    const result = Math.floor(breakfast / 1000) - Math.floor(now / 1000);
+    attachment.attachments = [
+      {
+        fallback: '',
+        image_url: 'https://fridaybot.tk/images/breakfast_coming_soon.jpg',
+      },
+    ];
+    return callback(
+      `До завтрака осталось: ${millisecToTimeStruct(604800 + result)}`,
       {},
       attachment,
     );
