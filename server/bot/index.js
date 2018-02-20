@@ -8,6 +8,9 @@ const BotMessages = require('./../models/botmessage').BotMessages;
 const BotSettings = require('./../models/botsetting').BotSettings;
 const Statistics = require('./../models/statistics').Statistics;
 const getSticker = require('./commands/sticker').getSticker;
+const getCustomResponses = require('./commands/customResponses')
+  .getCustomResponses;
+
 const Log = require('./../models/log').Log;
 
 const deleteParrots = require('./commands/delmessages').deleteParrots;
@@ -412,26 +415,18 @@ bot.on('message', data => {
     data.subtype !== 'message_changed' &&
     data.subtype !== 'file_comment'
   ) {
-    let mes;
     if (data.text) {
-      mes = data.text.toUpperCase();
       getSticker(data, att => {
+        const attr = isThread(data, att);
+        bot.postMessageToChannel(botParams.channelName, '', attr);
+      });
+
+      getCustomResponses(data, att => {
         const attr = isThread(data, att);
         bot.postMessageToChannel(botParams.channelName, '', attr);
       });
     }
 
-    BotMessages.findOne({ user_message: mes }).then(result => {
-      if (result) {
-        const att = isThread(data, messageParams);
-        bot.postMessageToChannel(
-          botParams.channelName,
-          result.bot_message,
-          att,
-        );
-        saveLog(data);
-      }
-    });
     if (data.user) {
       UserMessages.findOne({ user_id: data.user }).then(result => {
         if (!result) {
