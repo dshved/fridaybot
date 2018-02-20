@@ -472,6 +472,13 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./party').getParty,
   },
+  {
+    messages: ['КОД ', 'CODE '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./code.js'),
+  },
 ];
 
 module.exports = { messages };
