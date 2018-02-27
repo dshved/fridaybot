@@ -66,6 +66,15 @@ async function replaceMention(str) {
 }
 
 const replaceTextEmoji = str => {
+  const obj = {};
+  const re = new RegExp(/^:[-\w]+:/);
+  if (!re.test(str)) {
+    obj.message = str;
+    obj.countEmoji = 0;
+    obj.isExec = false;
+
+    return obj;
+  }
   const regexpEmoji = /^(:[-\w]+:(.|):[-\w]+:)|(:[-\w]+:)/g;
   let matchEmoji = regexpEmoji.exec(str);
   let emoji = [];
@@ -73,7 +82,6 @@ const replaceTextEmoji = str => {
     emoji.push(matchEmoji[0]);
     matchEmoji = regexpEmoji.exec(str);
   }
-  const obj = {};
   if (emoji.length) {
     emoji = emoji[0].split(/(:\w+:)|(:[-\w]+:)/);
     emoji = emoji.filter(n => n !== undefined && n !== '' && n !== ' ');
