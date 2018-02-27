@@ -3,7 +3,7 @@ const querystring = require('querystring');
 
 function getTranslate(text, callback) {
   const obj = {
-    id: '8a0e3541.5a3a6dc7.175c81b3-7-0',
+    id: '2ca2a77c.5a954e9d.6d8d9a63-1-0',
     srv: 'tr-text',
     lang: 'ru-emj',
     reason: 'auto',
