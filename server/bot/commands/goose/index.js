@@ -1,5 +1,4 @@
 const request = require('request');
-const config = require('./../../../../config.js');
 const { rightGooseFrames, leftGooseFrames } = require('./frames');
 
 function updateMessage(ts, channelId, frames) {
@@ -8,7 +7,7 @@ function updateMessage(ts, channelId, frames) {
   for (let i = 1; i < 17; i++) {
     const text = encodeURI(frames[i]);
     const updateMessageUrl = `https://slack.com/api/chat.update?token=${
-      config.bot.token
+      global.BOT_TOKEN
     }&channel=${channelId}&text=${text}&ts=${ts}&as_user=fridaybot&pretty=1`;
     arr.push(() => {
       setTimeout(() => {
@@ -26,7 +25,7 @@ function startGoose(channelId, direction) {
   request(
     {
       url: `https://slack.com/api/chat.postMessage?token=${
-        config.bot.token
+        global.BOT_TOKEN
       }&channel=${channelId}&text=${text}&as_user=fridaybot&pretty=1`,
       encoding: null,
     },
