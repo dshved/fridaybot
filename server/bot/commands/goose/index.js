@@ -11,8 +11,8 @@ function updateMessage(ts, channelId, frames) {
       config.bot.token
     }&channel=${channelId}&text=${text}&ts=${ts}&as_user=fridaybot&pretty=1`;
     arr.push(() => {
-      return setTimeout(() => {
-        return request({ url: updateMessageUrl }, (err, res, body) => {});
+      setTimeout(() => {
+        request({ url: updateMessageUrl }, () => {});
       }, 300 * i);
     });
   }
