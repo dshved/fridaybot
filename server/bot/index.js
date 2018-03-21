@@ -259,7 +259,7 @@ bot.on('message', data => {
     }
   }
 
-  if (data.text) {
+  if (data.text && data.channel === botParams.channelId) {
     if (~data.text.toUpperCase().indexOf('ВЫПУСКАЙТЕ ГУСЯ') === -1) {
       if (isGoose) {
         goose(botParams.channelId, isGoose);
@@ -277,7 +277,7 @@ bot.on('message', data => {
     }
   }
 
-  if (data.text) {
+  if (data.text && data.channel === botParams.channelId) {
     if (~data.text.toUpperCase().indexOf('ЗАПУСКАЙТЕ ГУСЯ') === -1) {
       if (!isGoose) {
         goose(botParams.channelId, isGoose);
