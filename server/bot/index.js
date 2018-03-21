@@ -1,5 +1,6 @@
 const SlackBot = require('./../../slackbots.js');
 // const config = require('./../../config.js');
+const goose = require('./commands/goose/index.js').goose;
 const request = require('request');
 const botResponse = require('./commands');
 
@@ -32,6 +33,8 @@ const messageParams = {};
 const botParams = {};
 
 const channelsList = [];
+
+let isGoose = true;
 
 const saveLog = d => {
   const newCommand = new Log({
@@ -219,7 +222,9 @@ bot.on('message', data => {
       if (userID) {
         request(
           {
-            url: `https://slack.com/api/users.info?token=${configBot.token}&user=${userID}&pretty=1`,
+            url: `https://slack.com/api/users.info?token=${
+              configBot.token
+            }&user=${userID}&pretty=1`,
             encoding: null,
           },
           (err, res, body) => {
@@ -251,6 +256,42 @@ bot.on('message', data => {
       const say = require('./commands/sayHow').parseMessage;
       const { message, attachment } = say(userText);
       bot.postMessageToChannel(botParams.channelName, message, attachment);
+    }
+  }
+
+  if (data.text) {
+    if (~data.text.toUpperCase().indexOf('ВЫПУСКАЙТЕ ГУСЯ') === -1) {
+      if (isGoose) {
+        goose(botParams.channelId, isGoose);
+        isGoose = false;
+      } else {
+        const attachment = {};
+        attachment.username = 'fridaybot';
+        attachment.icon_emoji = ':fridaybot_new:';
+        bot.postMessageToChannel(
+          botParams.channelName,
+          'Гусь уже выпущен',
+          attachment,
+        );
+      }
+    }
+  }
+
+  if (data.text) {
+    if (~data.text.toUpperCase().indexOf('ЗАПУСКАЙТЕ ГУСЯ') === -1) {
+      if (!isGoose) {
+        goose(botParams.channelId, isGoose);
+        isGoose = true;
+      } else {
+        const attachment = {};
+        attachment.username = 'fridaybot';
+        attachment.icon_emoji = ':fridaybot_new:';
+        bot.postMessageToChannel(
+          botParams.channelName,
+          'Сначала нужно выпустить гуся',
+          attachment,
+        );
+      }
     }
   }
 
