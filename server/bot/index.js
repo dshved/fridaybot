@@ -222,9 +222,7 @@ bot.on('message', data => {
       if (userID) {
         request(
           {
-            url: `https://slack.com/api/users.info?token=${
-              configBot.token
-            }&user=${userID}&pretty=1`,
+            url: `https://slack.com/api/users.info?token=${configBot.token}&user=${userID}&pretty=1`,
             encoding: null,
           },
           (err, res, body) => {
@@ -255,6 +253,15 @@ bot.on('message', data => {
       const userText = data.text.substr(6);
       const say = require('./commands/sayHow').parseMessage;
       const { message, attachment } = say(userText);
+      bot.postMessageToChannel(botParams.channelName, message, attachment);
+    }
+  }
+  if (data.text && data.channel === botParams.channelId) {
+    if (~data.text.toUpperCase().indexOf('ГДЕ ГУСЬ') === -1) {
+      const message = !isGoose ? 'Гусь гуляет' : 'Гусь дома';
+      const attachment = {};
+      attachment.username = 'fridaybot';
+      attachment.icon_emoji = ':fridaybot_new:';
       bot.postMessageToChannel(botParams.channelName, message, attachment);
     }
   }
