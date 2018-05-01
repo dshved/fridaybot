@@ -314,7 +314,7 @@ async function sendCourtImage(userImages, randomName, channel) {
   const { width, height } = baseAmnestyImg.bitmap;
 
   const amnestyText = await Jimp.read(
-    `./public/images/police/amnesty_text_${random(1, 7)}.png`,
+    `./public/images/police/amnesty_text_${random(1, 8)}.png`,
   );
   const courtImg = await Jimp.read(
     `./public/images/police/${imgAmnesty[countUsers].imageNames[0]}`,
