@@ -472,6 +472,13 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./party').getParty,
   },
+  {
+    messages: ['ВЫПУСКАЙТЕ МАРИО'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./mario').drawMario,
+  },
 ];
 
 module.exports = { messages };
