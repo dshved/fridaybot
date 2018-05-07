@@ -1,4 +1,5 @@
 const request = require('request');
+const { random } = require('lodash');
 const framesMario = require('./frames');
 
 function updateMessage(ts, channelId, frames) {
@@ -17,8 +18,10 @@ function updateMessage(ts, channelId, frames) {
 }
 
 function startDraw(text, callback, msg, data) {
+  const randomStory = random(0, framesMario.length - 1);
+  const frames = framesMario[randomStory];
   const channelId = data.channel;
-  const message = encodeURI(framesMario[0]);
+  const message = encodeURI(frames[0]);
 
   request(
     {
@@ -28,7 +31,7 @@ function startDraw(text, callback, msg, data) {
     (err, res, body) => {
       const json = JSON.parse(body);
       if (json.ok) {
-        updateMessage(json.ts, channelId, framesMario);
+        updateMessage(json.ts, channelId, frames);
       }
     },
   );
