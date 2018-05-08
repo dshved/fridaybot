@@ -1,6 +1,5 @@
 const request = require('request');
-const { random } = require('lodash');
-const framesMario = require('./frames');
+const { getRandomFrame } = require('./randomMap');
 
 function updateMessage(ts, channelId, frames) {
   const arr = [];
@@ -18,8 +17,11 @@ function updateMessage(ts, channelId, frames) {
 }
 
 function startDraw(text, callback, msg, data) {
-  const randomStory = random(0, framesMario.length - 1);
-  const frames = framesMario[randomStory];
+  const randomStory = [];
+  for (let i = 0; i < 35; i++) {
+    randomStory.push(getRandomFrame());
+  }
+  const frames = randomStory;
   const channelId = data.channel;
   const message = encodeURI(frames[0]);
 
