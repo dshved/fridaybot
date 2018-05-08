@@ -473,8 +473,8 @@ const messages = [
     callback: require('./party').getParty,
   },
   {
-    messages: ['ВЫПУСКАЙТЕ МАРИО'],
-    startFrom: false,
+    messages: ['ВЫПУСКАЙТЕ '],
+    startFrom: true,
     entrance: false,
     channels: ['test', 'friday', 'direct'],
     callback: require('./mario').drawMario,

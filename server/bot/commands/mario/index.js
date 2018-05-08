@@ -1,9 +1,10 @@
 const request = require('request');
+const { replaceTextEmoji } = require('../say');
 
 const fire = ':flames:';
 const back = ':black:';
 const brick = ':mariobrick:';
-const mario = ':mario:';
+let mario = ':mario:';
 const superMario = ':mario_run:';
 const monster = ':mario_monster:';
 const shroom = ':powerup:';
@@ -153,26 +154,41 @@ function updateMessage(ts, channelId, frames) {
 }
 
 function startDraw(text, callback, msg, data) {
-  const randomStory = [];
-  for (let i = 0; i < 40; i++) {
-    randomStory.push(gmp.go());
+  text = text.toUpperCase();
+  const obj = replaceTextEmoji(text);
+  let exist = false;
+  if (text === 'МАРИО') {
+    mario = ':mario:';
+    exist = true;
   }
-  const frames = randomStory;
-  const channelId = data.channel;
-  const message = encodeURI(frames[0]);
 
-  request(
-    {
-      url: `https://slack.com/api/chat.postMessage?token=${global.BOT_TOKEN}&channel=${channelId}&text=${message}&as_user=fridaybot&pretty=1`,
-      encoding: null,
-    },
-    (err, res, body) => {
-      const json = JSON.parse(body);
-      if (json.ok) {
-        updateMessage(json.ts, channelId, frames);
-      }
-    },
-  );
+  if (obj.countEmoji > 0) {
+    mario = obj.emoji[0];
+    exist = true;
+  }
+
+  if (exist) {
+    const randomStory = [];
+    for (let i = 0; i < 40; i++) {
+      randomStory.push(gmp.go());
+    }
+    const frames = randomStory;
+    const channelId = data.channel;
+    const message = encodeURI(frames[0]);
+
+    request(
+      {
+        url: `https://slack.com/api/chat.postMessage?token=${global.BOT_TOKEN}&channel=${channelId}&text=${message}&as_user=fridaybot&pretty=1`,
+        encoding: null,
+      },
+      (err, res, body) => {
+        const json = JSON.parse(body);
+        if (json.ok) {
+          // updateMessage(json.ts, channelId, frames);
+        }
+      },
+    );
+  }
 }
 
 module.exports = {
