@@ -154,6 +154,7 @@ function updateMessage(ts, channelId, frames) {
 }
 
 function startDraw(text, callback, msg, data) {
+  player.isSuper = false;
   text = text.toUpperCase();
   const obj = replaceTextEmoji(text);
   let exist = false;
