@@ -184,7 +184,7 @@ function startDraw(text, callback, msg, data) {
       (err, res, body) => {
         const json = JSON.parse(body);
         if (json.ok) {
-          // updateMessage(json.ts, channelId, frames);
+          updateMessage(json.ts, channelId, frames);
         }
       },
     );
