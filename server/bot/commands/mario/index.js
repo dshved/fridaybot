@@ -1,3 +1,4 @@
+/* eslint-disable */
 const request = require('request');
 const { replaceTextEmoji } = require('../say');
 
@@ -11,14 +12,14 @@ const shroom = ':powerup:';
 
 const playArea = new Array(8);
 
-const player = {
+let player = {
   isSuper: false,
   x: 4,
   y: 5,
   jumped: false,
 };
 
-const pShroom = {
+let pShroom = {
   x: 1,
   y: 5,
   onMap: false,
@@ -136,8 +137,6 @@ class Gp {
   }
 }
 
-const gmp = new Gp();
-
 function updateMessage(ts, channelId, frames) {
   const arr = [];
 
@@ -154,7 +153,21 @@ function updateMessage(ts, channelId, frames) {
 }
 
 function startDraw(text, callback, msg, data) {
-  player.isSuper = false;
+  player = {
+    isSuper: false,
+    x: 4,
+    y: 5,
+    jumped: false,
+  };
+
+  pShroom = {
+    x: 1,
+    y: 5,
+    onMap: false,
+  };
+  pArea = [];
+  const gmp = new Gp();
+
   text = text.toUpperCase();
   const obj = replaceTextEmoji(text);
   let exist = false;
@@ -170,7 +183,7 @@ function startDraw(text, callback, msg, data) {
 
   if (exist) {
     const randomStory = [];
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 60; i++) {
       randomStory.push(gmp.go());
     }
     const frames = randomStory;
@@ -197,3 +210,4 @@ module.exports = {
     startDraw(text, callback, msg, data);
   },
 };
+/* eslint-enable */
