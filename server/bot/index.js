@@ -3,6 +3,7 @@ const SlackBot = require('./../../slackbots.js');
 const goose = require('./commands/goose/index.js').goose;
 const request = require('request');
 const botResponse = require('./commands');
+const querystring = require('querystring');
 
 const UserMessages = require('./../models/usermessage').UserMessages;
 const BotMessages = require('./../models/botmessage').BotMessages;
@@ -517,9 +518,20 @@ bot.on('message', data => {
 
 bot.on('close', e => {
   console.log('websocket closing', e);
-  bot.on('start', () => {
-    console.log('start');
-  });
+  const params = {
+    token: global.BOT_TOKEN,
+    channel: botParams.channelName,
+    text: 'Я упал :ehsukablya:',
+    icon_emoji: ':fridaybot_new:',
+    username: 'fridaybot',
+    pretty: '1',
+  };
+  request(
+    `https://slack.com/api/chat.postMessage?${querystring.stringify(params)}`,
+    (err, response, body) => {
+      console.log(body);
+    },
+  );
 });
 
 bot.on('error', e => {
