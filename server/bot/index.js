@@ -388,7 +388,10 @@ bot.on('message', data => {
         return `${~~days}:${~~hours}:${~~minutes}:${~~seconds}`;
       };
       const uptime = process.uptime();
-      sendToWhom(data, millisecToTimeStruct(uptime));
+      const message = millisecToTimeStruct(uptime)
+        .replace(/(:)/g, ':colon:')
+        .replace(/(\d)/g, ':$1:');
+      sendToWhom(data, message);
     }
   }
 
