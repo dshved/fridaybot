@@ -464,5 +464,24 @@ $(document).ready(function() {
   });
 
   autosize($('.messages__textarea'));
+
+  $('#restart-bot').on('click', function(e) {
+    e.preventDefault();
+    const $this = $(this);
+    $this.html('Restarting');
+    setTimeout(function() {
+      $this.html('Restart');
+    }, 2000);
+    $.ajax({
+      type: 'POST',
+      url: '/api/restart',
+      success: function(data) {
+        console.log(data);
+      },
+      failure: function(errMsg) {
+        console.log(errMsg);
+      },
+    });
+  });
 });
 /* eslint-disable */

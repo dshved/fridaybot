@@ -1,4 +1,5 @@
 const express = require('express');
+const pm2 = require('pm2');
 
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -222,6 +223,18 @@ const getStatistics = (req, res, next) => {
   });
 };
 
+const restart = (req, res, next) => {
+  pm2.connect(err => {
+    if (err) throw err;
+    pm2.restart('Fridaybot', e => {
+      console.log(e);
+    });
+  });
+  res.send({
+    msg: 'bot restarting',
+  });
+};
+
 const testSlackCommand = (req, res, next) => {
   console.log(req.body);
   const testObj = {
@@ -273,6 +286,7 @@ router.get('/getUserMessages', getUserMessages);
 
 router.get('/getBotSettings', getBotSettings);
 router.post('/editBotSettings', editBotSettings);
+router.post('/restart', restart);
 
 module.exports = router;
 /* eslint-enable */

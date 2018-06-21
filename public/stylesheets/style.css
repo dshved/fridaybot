@@ -90,10 +90,20 @@ body {
   min-width: 200px;
 }
 
+
 .button_primary:hover {
   box-shadow: 0px 1px 0px 0px #0e714b;
 }
 
+.button_warning {
+  float: right;
+  background: #ff1212;
+  color: #fff;
+  min-width: 100px;
+}
+.button_warning:hover {
+  box-shadow: 0px 1px 0px 0px #c51515;
+}
 .input {
   border: 1px solid #c9cccf;
   border-radius: 5px;
