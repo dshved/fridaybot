@@ -299,7 +299,7 @@ class Bot extends EventEmitter {
      * @returns {Promise<object>}
      */
   postMessage(id, text, params) {
-    //since this doesn't use deep option set to true i am not sure do we need this
+    //since this doesn't use deep option set to true i am not sure do we need this   
     params = extend(
       {
         text,
@@ -308,6 +308,12 @@ class Bot extends EventEmitter {
       },
       params || {},
     );
+
+
+    // FOR ORNAIA SREDA
+    if (new Date().getDay() == 3) {
+      params.text = params.text.toUpperCase();
+    }
 
     return this._api('chat.postMessage', params);
   }
