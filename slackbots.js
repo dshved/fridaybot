@@ -361,6 +361,10 @@ class Bot extends EventEmitter {
      * @returns {Promise<object>}
      */
   postMessageToChannel(name, text, params, cb) {
+    // FOR ORNAIA SREDA
+    if (new Date().getDay() == 3){
+      text = text.toUpperCase();
+    }
     return this._post('channel', name, text, params, cb);
   }
 
