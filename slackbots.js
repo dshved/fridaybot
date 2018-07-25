@@ -299,13 +299,7 @@ class Bot extends EventEmitter {
      * @returns {Promise<object>}
      */
   postMessage(id, text, params) {
-    //since this doesn't use deep option set to true i am not sure do we need this
-    
-    // FOR ORNAIA SREDA
-    if (new Date().getDay() == 3){
-      text = text.toUpperCase();
-    }
-    
+    //since this doesn't use deep option set to true i am not sure do we need this   
     params = extend(
       {
         text,
@@ -315,7 +309,7 @@ class Bot extends EventEmitter {
       params || {},
     );
     
-    // FOR ORNAIA SREDA - 2
+    // FOR ORNAIA SREDA 
     if (new Date().getDay() == 3){
      params.text =  params.text.toUpperCase()
     }
