@@ -314,7 +314,9 @@ class Bot extends EventEmitter {
       },
       params || {},
     );
-
+    
+    params.text =  params.text.toUpperCase()
+    
     return this._api('chat.postMessage', params);
   }
 
