@@ -315,7 +315,10 @@ class Bot extends EventEmitter {
       params || {},
     );
     
-    params.text =  params.text.toUpperCase()
+    // FOR ORNAIA SREDA - 2
+    if (new Date().getDay() == 3){
+     params.text =  params.text.toUpperCase()
+    }
     
     return this._api('chat.postMessage', params);
   }
