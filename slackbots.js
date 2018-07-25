@@ -300,6 +300,12 @@ class Bot extends EventEmitter {
      */
   postMessage(id, text, params) {
     //since this doesn't use deep option set to true i am not sure do we need this
+    
+    // FOR ORNAIA SREDA
+    if (new Date().getDay() == 3){
+      text = text.toUpperCase();
+    }
+    
     params = extend(
       {
         text,
@@ -361,10 +367,6 @@ class Bot extends EventEmitter {
      * @returns {Promise<object>}
      */
   postMessageToChannel(name, text, params, cb) {
-    // FOR ORNAIA SREDA
-    if (new Date().getDay() == 3){
-      text = text.toUpperCase();
-    }
     return this._post('channel', name, text, params, cb);
   }
 
