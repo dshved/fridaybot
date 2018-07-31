@@ -241,7 +241,7 @@ $(document).ready(function() {
 
     const userLeaveActive = $('#leave_active').is(':checked');
     const userLeaveText = $('#user_leave').val();
-
+    const drinkup = $('#drinkup').val();
     const message = {
       id: botId,
       params: {
@@ -253,9 +253,9 @@ $(document).ready(function() {
           active: userLeaveActive,
           message: userLeaveText,
         },
+        drinkup: drinkup,
       },
     };
-
     $.ajax({
       type: 'POST',
       url: '/api/editBotSettings',

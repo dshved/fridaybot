@@ -28,6 +28,11 @@ p Задайте настроки для вашего бота
       input.input.settings__checkbox#leave_active(type="checkbox" checked=settings.user_leave.active)
     .settings__item-col
       textarea( name="user_leave" id="user_leave").textarea.settings__textarea= settings.user_leave.message
+  .settings__item
+    .settings__item-col
+      label(for="drinkup") Drinkup
+    .settings__item-col
+      input.input.settings__input(type="datetime-local" id="drinkup" value=settings.drinkup)
   .settings__save
     .settings__message
     button.button.button_primary(data-bot-id=settings._id) Сохранить

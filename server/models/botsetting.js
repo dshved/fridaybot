@@ -2,6 +2,15 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+function formatDate(value) {
+  const date = new Date(value);
+  const year = date.getFullYear();
+  const data = `0${date.getDate()}`.slice(-2);
+  const month = `0${date.getMonth() + 1}`.slice(-2);
+  const minutes = `0${date.getMinutes()}`.slice(-2);
+  const hours = `0${date.getHours()}`.slice(-2);
+  return `${year}-${month}-${data}T${hours}:${minutes}`;
+}
 const botSettings = new Schema({
   name: {
     type: String,
@@ -60,6 +69,10 @@ const botSettings = new Schema({
       type: String,
       default: 'Пока',
     },
+  },
+  drinkup: {
+    type: String,
+    set: formatDate,
   },
 });
 

@@ -469,8 +469,10 @@ function whenBreakfast(text, callback) {
   }
 }
 
-function whenDrinkUp(text, callback) {
-  const result = 1517328000 - Math.floor(new Date().getTime() / 1000);
+async function whenDrinkUp(text, callback) {
+  const botSettings = await BotSettings.findOne();
+  const drinkUpDate = new Date(botSettings.drinkup).getTime() / 1000;
+  const result = drinkUpDate - Math.floor(new Date().getTime() / 1000);
   const attachment = {};
   attachment.username = 'fridaybot';
   attachment.icon_emoji = ':fridaybot_new:';
