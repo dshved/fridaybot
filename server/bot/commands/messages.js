@@ -479,6 +479,30 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./mario').drawMario,
   },
+  {
+    messages: [
+      'КОГДА ДР',
+      'КОГДА ДЕНЬ РОЖДЕНИЯ',
+      'КОГДА ДР?',
+      'КОГДА ДЕНЬ РОЖДЕНИЯ?',
+      'КОГДА УЖЕ ДР',
+      'КОГДА УЖЕ ДЕНЬ РОЖДЕНИЯ',
+      'КОГДА УЖЕ ДР?',
+      'КОГДА УЖЕ ДЕНЬ РОЖДЕНИЯ?',
+      'СКОРО ДР',
+      'СКОРО ДЕНЬ РОЖДЕНИЯ',
+      'СКОРО ДР?',
+      'СКОРО ДЕНЬ РОЖДЕНИЯ?',
+      'СКОРО УЖЕ ДР',
+      'СКОРО УЖЕ ДЕНЬ РОЖДЕНИЯ',
+      'СКОРО УЖЕ ДР?',
+      'СКОРО УЖЕ ДЕНЬ РОЖДЕНИЯ?',
+    ],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./statistic').whenBirthday,
+  },
 ];
 
 module.exports = { messages };

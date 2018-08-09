@@ -396,6 +396,29 @@ function whenNewYear(text, callback) {
   );
 }
 
+function whenBirthday(text, callback) {
+  const now = new Date();
+  const year = now.getFullYear();
+  let birthday;
+  if (
+    now.getTime() >= new Date(`${year}-08-19`).getTime() &&
+    now.getTime() < new Date(`${year}-08-20`).getTime()
+  ) {
+    return callback(':tada: Сегодня День Рождения фрайдача!:tada:', {});
+  } else if (now.getTime() < new Date(`${year}-08-19`).getTime()) {
+    birthday = new Date(year, 7, 19);
+  } else {
+    birthday = new Date(year + 1, 7, 19);
+  }
+  const result = Math.floor(birthday / 1000) - Math.floor(now / 1000);
+  return callback(
+    `До дня рождения фрайдача осталось ${millisecToTimeStruct(
+      result,
+    )} :sad_parrot:`,
+    {},
+  );
+}
+
 function whenBreakfast(text, callback) {
   const attachment = {};
   attachment.username = 'fridaybot';
@@ -550,5 +573,6 @@ module.exports = {
   },
   whenBreakfast,
   whenDrinkUp,
+  whenBirthday,
 };
 /* eslint-enable */
