@@ -56,6 +56,7 @@ const filterList = [
   'glasses',
   'wave',
   'makeup',
+  'mustache',
 ];
 
 function checkFilter(array) {
