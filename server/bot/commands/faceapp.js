@@ -35,35 +35,39 @@ function getBigImageUrl(data) {
 }
 
 const filterList = [
-  'no-filter',
-  'smile',
-  'smile_2',
-  'hot',
+  'female-cropped',
+  'female_2-cropped',
   'old',
   'young',
-  'hollywood',
-  'hitman',
-  'pan',
-  'heisenberg',
-  'female',
-  'female_2',
-  'male',
-  'impression',
-  'lion',
-  'goatee',
+  'smile_2',
+  'frown-cropped',
+  'makeup_2-cropped',
+  'hollywood-cropped',
+  'black_hair',
+  'blond_hair-cropped',
+  'red_hair-cropped',
+  'tinted_hair-cropped',
+  'bangs_2',
+  'long_hair-cropped',
+  'straight_hair-cropped',
+  'glasses-cropped',
+  'sunglasses-cropped',
   'hipster',
-  'bangs',
-  'glasses',
-  'wave',
-  'makeup',
-  'mustache',
+  'goatee-cropped',
+  'mustache-cropped',
+  'full_beard-cropped',
+  'grand_goatee-cropped',
+  'petit_goatee-cropped',
+  'male-cropped',
+  'wavy-cropped',
+  'hitman-cropped',
 ];
 
 function checkFilter(array) {
   const newArray = [];
   array.forEach(filterName => {
     const filtred = filterList.filter(
-      item => item.replace('_', '') === filterName.toLowerCase(),
+      item => item.replace('-cropped', '') === filterName.toLowerCase(),
     );
     if (filtred.length > 0) {
       newArray.push(filtred[0]);
@@ -166,7 +170,7 @@ const combo = async (text, callback) => {
 const getFilterList = (text, callback) => {
   let message = '';
   filterList.forEach(item => {
-    message += `${item.replace('_', '')}\n`;
+    message += `${item.replace('-cropped', '')}\n`;
   });
   callback(message, {});
 };
