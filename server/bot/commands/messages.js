@@ -412,13 +412,13 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./faceapp.js').getRedHat,
   },
-  // {
-  //   messages: ['FUNNY '],
-  //   startFrom: true,
-  //   entrance: false,
-  //   channels: ['test', 'direct', 'friday'],
-  //   callback: require('./faceapp.js').getFunnyPhoto,
-  // },
+  {
+    messages: ['FUNNY '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'direct', 'friday'],
+    callback: require('./faceapp.js').getFunnyPhoto,
+  },
   {
     messages: ['ЕЛКА ', 'ЁЛКА ', 'ЕЛОЧКА ', 'ЁЛОЧКА '],
     startFrom: true,
