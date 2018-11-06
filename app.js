@@ -17,7 +17,14 @@ global.BOT_SLACK_NAME =
 
 /* eslint-enable global-require */
 mongoose.Promise = global.Promise;
-mongoose.connect(global.DB_PATH);
+mongoose.connect(global.DB_PATH, {
+  server: {
+    socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 },
+    reconnectTries: 10,
+    reconnectInterval: 1000,
+  },
+  replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
+});
 
 logger.token(
   'remote-addr',
