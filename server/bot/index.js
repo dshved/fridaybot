@@ -1,4 +1,5 @@
 const SlackBot = require('./../../slackbots.js');
+const pm2 = require('pm2');
 // const config = require('./../../config.js');
 const goose = require('./commands/goose/index.js').goose;
 const request = require('request');
@@ -48,6 +49,7 @@ const saveLog = d => {
 
 bot.on('start', () => {
   console.log('bot started');
+
   bot.getUser(configBot.name).then(res => {
     if (res) {
       botParams.botId = res.id;
@@ -535,6 +537,12 @@ bot.on('close', e => {
       console.log(body);
     },
   );
+  pm2.connect(err => {
+    if (err) throw err;
+    pm2.restart('Fridaybot', error => {
+      console.log(error);
+    });
+  });
 });
 
 bot.on('error', e => {
