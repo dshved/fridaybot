@@ -121,23 +121,23 @@ const imgDesc = {
 
 const imgAmnesty = {
   1: {
-    imageNames: ['amnesty_1.png'],
+    imageNames: ['amnesty_1-1.png'],
     imagePositions: [[590, 306]],
   },
   2: {
-    imageNames: ['amnesty_2.png'],
+    imageNames: ['amnesty_2-1.png'],
     imagePositions: [[590, 306], [768, 364]],
   },
   3: {
-    imageNames: ['amnesty_3.png'],
+    imageNames: ['amnesty_3-1.png'],
     imagePositions: [[590, 306], [768, 364], [850, 237]],
   },
   4: {
-    imageNames: ['amnesty_4.png'],
+    imageNames: ['amnesty_4-1.png'],
     imagePositions: [[590, 306], [768, 364], [850, 237], [708, 235]],
   },
   5: {
-    imageNames: ['amnesty_5.png'],
+    imageNames: ['amnesty_5-1.png'],
     imagePositions: [
       [590, 306],
       [768, 364],
