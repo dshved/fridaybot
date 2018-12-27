@@ -503,6 +503,20 @@ const messages = [
     channels: ['test', 'direct', 'friday'],
     callback: require('./statistic').whenBirthday,
   },
+  {
+    messages: ['СНЕГ'],
+    startFrom: false,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./snow').drawSnow,
+  },
+  {
+    messages: ['СНЕГ '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./snow').drawSnowReplace,
+  },
 ];
 
 module.exports = { messages };
