@@ -364,4 +364,5 @@ module.exports = {
   sayBorderText,
   sayText,
   replaceTextEmoji,
+  getRandomEmoji,
 };

@@ -517,6 +517,13 @@ const messages = [
     channels: ['test', 'friday', 'direct'],
     callback: require('./snow').drawSnowReplace,
   },
+  {
+    messages: ['СЫЧЕСКРЕБ '],
+    startFrom: true,
+    entrance: false,
+    channels: ['test', 'friday', 'direct'],
+    callback: require('./skyscraper').drawSkyscraper,
+  },
 ];
 
 module.exports = { messages };
