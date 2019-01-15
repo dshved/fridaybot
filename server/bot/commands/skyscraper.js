@@ -21,7 +21,7 @@ function startDraw(text, callback, msg, data) {
             url: `https://slack.com/api/chat.postMessage?token=${global.BOT_TOKEN}&channel=${channelId}&text=${message}&as_user=fridaybot&pretty=1`,
             encoding: null,
           },
-          (err, res, body) => {},
+          () => {},
         );
       });
     }
