@@ -14,20 +14,18 @@ function getBashPost(text, callback) {
   }
 
   const bashArray = [];
-  const randomBashId = _.random(1, 50);
+  const randomBashId = _.random(1, 24);
   const randomMonth = _.random(1, 12);
   request(
     {
-      url: `http://bash.im/bestyear/${year}/${randomMonth}`,
+      url: `http://bash.im/best/${year}/${randomMonth}`,
       encoding: null,
     },
     (err, res, body) => {
-      const $ = cheerio.load(iconv.decode(body, 'cp1251'), {
+      const $ = cheerio.load(iconv.decode(body, 'utf-8'), {
         decodeEntities: false,
       });
-
-      const quote = $('#body > .quote > .text');
-
+      const quote = $('.quote__body');
       quote.each((i, post) => {
         bashArray[i] = $(post)
           .html()
@@ -36,7 +34,7 @@ function getBashPost(text, callback) {
           .replace(/&lt;/g, '<')
           .replace(/&gt;/g, '>');
       });
-      callback(`${year} год\n ${bashArray[randomBashId]}`, {});
+      callback(`${year} год\n ${bashArray[randomBashId].trim()}`, {});
     },
   );
 }
